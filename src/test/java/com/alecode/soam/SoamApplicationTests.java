@@ -1,4 +1,4 @@
-package com.alecode.SOAM;
+package com.alecode.soam;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
