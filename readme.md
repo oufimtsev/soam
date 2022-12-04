@@ -12,8 +12,8 @@ Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) applicatio
 ```
 git clone https://github.com/alecode84/soam-prototype.git
 cd soam-prototype
-./mvnw package
-java -jar target/*.jar
+mvnw package
+java -jar target/SOAM-0.0.1-SNAPSHOT.jar
 ```
 
 You can then access SOAM prototype here: http://localhost:8080/
@@ -22,7 +22,7 @@ You can then access SOAM prototype here: http://localhost:8080/
 Or you can run it from Maven directly using the Spring Boot Maven plugin. If you do this it will pick up changes that you make in the project immediately (changes to Java source files require a compile as well - most people use an IDE for this):
 
 ```
-./mvnw spring-boot:run
+mvnw spring-boot:run
 ```
 
 > NOTE: Windows users should set `git config core.autocrlf true` to avoid format assertions failing the build (use `--global` to set that flag globally).
@@ -33,7 +33,7 @@ Or you can run it from Maven directly using the Spring Boot Maven plugin. If you
 There is no `Dockerfile` in this project. You can build a container image (if you have a docker daemon) using the Spring Boot build plugin:
 
 ```
-./mvnw spring-boot:build-image
+mvnw spring-boot:build-image
 ```
 
 
