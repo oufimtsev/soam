@@ -1,0 +1,20 @@
+<html>
+<body>
+<th:block th:fragment="templateButton (templates)">
+<div class="dropdown" >
+    <button class="btn btn-outline-dark btn-sm" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Use Template &nbsp;<i class="fa fa-object-ungroup" aria-hidden="true"></i>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li th:each="tempTemplate : ${templates}" >
+            <a class="dropdown-item template-item" href="javascript:void(0)" th:text="${tempTemplate.name}"
+               th:attr="data-temp-name=${tempTemplate.name},
+                 data-temp-notes=${tempTemplate.notes},
+                 data-temp-description=${tempTemplate.description},
+                 data-temp-priority=${tempTemplate.priority}"></a>
+        </li>
+    </ul>
+</div>
+</th:block>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'specifications')}">
+  <head></head>
+  <body>
+    <h2>Specification Information</h2>
+    <table class="table table-striped" th:object="${specification}">
+      <tr>
+        <th>Name</th>
+        <td><b th:text="*{name}"></b></td>
+      </tr>
+      <tr>
+        <th>Description</th>
+        <td th:text="*{description}"></td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td th:text="*{notes}"></td>
+      </tr>
+      <tr>
+        <th>Priority</th>
+        <td th:text="*{priority}"></td>
+      </tr>
+    </table>
+  
+    <a th:href="@{__${specification.id}__/edit}" class="btn btn-primary">Edit
+      Specification</a>
+    <a href="#" onclick="alert('Under Development');" class="btn btn-primary">Add
+      New Stakeholder</a>
+  
+<!--    <br />-->
+<!--    <br />-->
+<!--    <br />-->
+<!--    -->
+<!--    <h2>Stakeholders and Objectives</h2>-->
+<!--    <table class="table table-striped">-->
+<!--      <tr th:each="stakeholder : ${specification.stakeholders}">-->
+<!--        <td valign="top">-->
+<!--          <dl class="dl-horizontal">-->
+<!--            <dt>Name</dt>-->
+<!--            <dd th:text="${stakeholder.stakeholderName}"></dd>-->
+<!--          </dl>-->
+<!--        </td>-->
+<!--        <td valign="top">-->
+<!--          <table class="table-condensed">-->
+<!--            <thead>-->
+<!--              <tr>-->
+<!--                <th>Visit Date</th>-->
+<!--                <th>Description</th>-->
+<!--              </tr>-->
+<!--            </thead>-->
+<!--            <tr th:each="objective : ${stakeholder.objectives}">-->
+<!--              <td th:text="${#temporals.format(objective.createDate, 'yyyy-MM-dd')}"></td>-->
+<!--              <td th:text="${objective?.objectiveDescription}"></td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--              <td><a th:href="@{__${specification.id}__/stakeholder/__${stakeholder.id}__/edit}">Edit Pet</a></td>-->
+<!--              <td><a th:href="@{__${specification.id}__/stakeholder/__${stakeholder.id}__/objectives/new}">Add Visit</a></td>-->
+<!--            </tr>-->
+<!--          </table>-->
+<!--        </td>-->
+<!--      </tr>-->
+<!--  -->
+<!--    </table>-->
+  
+  </body>
+
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'templates')}">
+<head></head>
+<body>
+<h2>Specification Templates</h2>
+
+<table id="specification_templates" class="table table-striped">
+  <thead>
+  <tr>
+      <th style="width: 150px;">Name</th>
+      <th style="width: 200px;">Description</th>
+      <th>Notes</th>
+      <th>Priority</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="specificationTemplate : ${listSpecificationTemplates}">
+    <td>
+      <a th:href="@{/specification/template/__${specificationTemplate.id}__/edit}" th:text="${specificationTemplate.name}"/></a>
+    </td>
+    <td th:text="${specificationTemplate.description}"/>
+    <td th:text="${specificationTemplate.notes}"/>
+    <td th:text="${specificationTemplate.priority}"/>
+  </tr>
+  </tbody>
+</table>
+<div th:if="${totalPages > 1}">
+  <span>Pages:</span>
+  <span>[</span>
+  <span th:each="i: ${#numbers.sequence(1, totalPages)}">
+      <a th:if="${currentPage != i}" th:href="@{'/specification/template/list?page=' + ${i}}">[[${i}]]</a>
+      <span th:unless="${currentPage != i}">[[${i}]]</span>
+    </span>
+  <span>]&nbsp;</span>
+  <span>
+      <a th:if="${currentPage > 1}" th:href="@{'/specification/template/list?page=1'}" title="First"
+         class="fa fa-fast-backward"></a>
+      <span th:unless="${currentPage > 1}" title="First" class="fa fa-fast-backward"></span>
+    </span>
+  <span>
+      <a th:if="${currentPage > 1}" th:href="@{'/specification/template/list?page=__${currentPage - 1}__'}" title="Previous"
+         class="fa fa-step-backward"></a>
+      <span th:unless="${currentPage > 1}" title="Previous" class="fa fa-step-backward"></span>
+    </span>
+  <span>
+      <a th:if="${currentPage < totalPages}" th:href="@{'/specification/template/list?page=__${currentPage + 1}__'}" title="Next"
+         class="fa fa-step-forward"></a>
+      <span th:unless="${currentPage < totalPages}" title="Next" class="fa fa-step-forward"></span>
+    </span>
+  <span>
+      <a th:if="${currentPage < totalPages}" th:href="@{'/specification/template/list?page=__${totalPages}__'}" title="Last"
+         class="fa fa-fast-forward"></a>
+      <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-step-forward"></span>
+    </span>
+</div>
+<a class="btn btn-primary" th:href="@{/specification/template/new}">Add Specification Template</a>
+</body>
+</html>
+

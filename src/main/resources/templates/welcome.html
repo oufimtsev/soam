@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'home')}">
+<head></head>
+<body>
+<p th:text="#{welcome}" class="display-6">Welcome</p>
+<div class="row">
+    <div class="col-md-12">
+            <div class="alert alert-secondary p-3 mt-3">
+                A product (project or program) succeeds when it satisfies the objectives of its stakeholders. Understanding who
+                stakeholders are and what their objectives are is the bedrock on which a successful product is built. Our
+                Stakeholder & Objective Analysis and Management (SOAM) tool makes it faster and easier for users to:
+                <ul>
+                    <li>Identify, understand, and document:</li>
+                    <ul>
+                        <li>Stakeholders</li>
+                        <li>Stakeholder objectives,</li>
+                    </ul>
+                    <li>Find and resolve conflicts between them,</li>
+                    <li>Develop a communications plan, and</li>
+                    <li>Engage stakeholders.</li>
+                </ul>
+            </div>
+    </div>
+</div>
+
+</body>
+
+</html>

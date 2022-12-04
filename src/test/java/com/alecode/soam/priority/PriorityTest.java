@@ -1,0 +1,52 @@
+package com.alecode.soam.priority;
+
+import com.alecode.soam.model.priority.PriorityType;
+import jakarta.validation.constraints.AssertTrue;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Test;
+import org.springframework.util.Assert;
+import org.thymeleaf.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Optional;
+
+import static org.springframework.test.util.AssertionErrors.assertEquals;
+
+public class PriorityTest {
+
+    private PriorityType getPriorityLow(){
+        PriorityType low = new PriorityType();
+        low.setId(1);
+        low.setName("Low");
+        low.setSequence(1);
+        return low;
+    }
+
+    private PriorityType getPriorityMedium(){
+        PriorityType medium = new PriorityType();
+        medium.setId(2);
+        medium.setName("Medium");
+        medium.setSequence(2);
+        return medium;
+    }
+
+    private PriorityType getPriorityHigh(){
+        PriorityType high = new PriorityType();
+        high.setId(3);
+        high.setName("High");
+        high.setSequence(3);
+        return high;
+    }
+
+    @Test
+    void testPriorityType() {
+        PriorityType low = this.getPriorityLow();
+        PriorityType medium = this.getPriorityMedium();
+        PriorityType high = this.getPriorityHigh();
+        ArrayList<PriorityType> unsorted = Lists.newArrayList( high, low, medium);
+        Optional<PriorityType> first = unsorted.stream().sorted().findFirst();
+
+        assertEquals("Check your priorities", first.get(), low  );
+    }
+
+}
