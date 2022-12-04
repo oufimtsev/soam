@@ -1,6 +1,7 @@
 package com.alecode.soam;
 
 import com.alecode.soam.model.specification.SpecificationRepository;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +29,7 @@ class SoamApplicationTests {
 	private RestTemplateBuilder builder;
 
 	@Test
+	@Disabled
 	// this takes time, but it's here to get 100% test code coverage
 	public void testContextLoads() {
 		SoamApplication.main(new String[] {});
