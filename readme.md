@@ -10,8 +10,8 @@ Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) applicatio
 ## Running the SOAM prototype locally
 > NOTE: SOAM has been updated to Spring Boot 3 and requires Java 17 to run.
 ```
-git clone https://github.com/spring-projects/spring-petclinic.git
-cd spring-petclinic
+git clone https://github.com/alecode84/soam-prototype.git
+cd soam-prototype
 ./mvnw package
 java -jar target/*.jar
 ```
