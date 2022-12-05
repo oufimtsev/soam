@@ -8,9 +8,7 @@
 <table id="specifications" class="table table-striped">
   <thead>
   <tr>
-    <th style="width: 150px;">Name</th>
-    <th style="width: 200px;">Description</th>
-    <th>Notes</th>
+    <th style="width: 200px;">Name</th>
     <th>Priority</th>
     <th>Stakeholders</th>
   </tr>
@@ -20,8 +18,6 @@
     <td>
       <a th:href="@{/specification/__${specification.id}__}" th:text="${specification.name}"/></a>
     </td>
-    <td th:text="${specification.description}"/>
-    <td th:text="${specification.notes}"/>
     <td th:text="${specification.priority}"/>
     <td></td>
   </tr>

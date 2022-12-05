@@ -8,9 +8,7 @@
 <table id="specification_templates" class="table table-striped">
   <thead>
   <tr>
-      <th style="width: 150px;">Name</th>
-      <th style="width: 200px;">Description</th>
-      <th>Notes</th>
+      <th style="width: 200px;">Name</th>
       <th>Priority</th>
   </tr>
   </thead>
@@ -19,8 +17,6 @@
     <td>
       <a th:href="@{/specification/template/__${specificationTemplate.id}__/edit}" th:text="${specificationTemplate.name}"/></a>
     </td>
-    <td th:text="${specificationTemplate.description}"/>
-    <td th:text="${specificationTemplate.notes}"/>
     <td th:text="${specificationTemplate.priority}"/>
   </tr>
   </tbody>
