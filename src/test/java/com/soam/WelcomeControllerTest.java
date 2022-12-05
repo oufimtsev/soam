@@ -1,6 +1,6 @@
-package com.alecode.soam;
+package com.soam;
 
-import com.alecode.soam.web.WelcomeController;
+import com.soam.web.WelcomeController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

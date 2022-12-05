@@ -1,4 +1,4 @@
-package com.alecode.soam.model.priority;
+package com.soam.model.priority;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.CrudRepository;

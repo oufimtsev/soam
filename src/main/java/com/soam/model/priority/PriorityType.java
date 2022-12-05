@@ -1,6 +1,6 @@
-package com.alecode.soam.model.priority;
+package com.soam.model.priority;
 
-import com.alecode.soam.model.BaseEntity;
+import com.soam.model.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import org.springframework.util.comparator.Comparators;

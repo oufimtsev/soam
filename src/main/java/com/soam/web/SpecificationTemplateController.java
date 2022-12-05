@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alecode.soam.web;
+package com.soam.web;
 
-import com.alecode.soam.model.priority.PriorityRepository;
-import com.alecode.soam.model.specification.SpecificationTemplate;
-import com.alecode.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.model.priority.PriorityRepository;
+import com.soam.model.specification.SpecificationTemplate;
+import com.soam.model.specification.SpecificationTemplateRepository;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,4 +1,4 @@
-package com.alecode.soam.model.specification;
+package com.soam.model.specification;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

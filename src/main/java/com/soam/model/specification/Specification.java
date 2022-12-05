@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alecode.soam.model.specification;
+package com.soam.model.specification;
 
-import com.alecode.soam.model.SoamEntity;
+import com.soam.model.SoamEntity;
 import jakarta.persistence.*;
 import org.springframework.core.style.ToStringCreator;
 

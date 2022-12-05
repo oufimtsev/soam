@@ -1,11 +1,8 @@
-package com.alecode.soam.priority;
+package com.soam.priority;
 
-import com.alecode.soam.model.priority.PriorityType;
-import jakarta.validation.constraints.AssertTrue;
+import com.soam.model.priority.PriorityType;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
-import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Optional;

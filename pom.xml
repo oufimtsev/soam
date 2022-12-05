@@ -7,11 +7,11 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.0.0</version>
 	</parent>
-	<groupId>com.alecode</groupId>
+	<groupId>com.soam</groupId>
 	<artifactId>SOAM</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>SOAM</name>
-	<description>SOAM prototype</description>
+	<description>Stakeholder and Objective Analysis and Management</description>
 	<properties>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

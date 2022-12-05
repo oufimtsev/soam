@@ -1,6 +1,6 @@
-package com.alecode.soam.model.specification;
+package com.soam.model.specification;
 
-import com.alecode.soam.model.SoamEntity;
+import com.soam.model.SoamEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;

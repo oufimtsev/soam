@@ -1,11 +1,11 @@
-package com.alecode.soam.specification;
+package com.soam.specification;
 
-import com.alecode.soam.model.priority.PriorityRepository;
-import com.alecode.soam.model.priority.PriorityType;
-import com.alecode.soam.model.specification.Specification;
-import com.alecode.soam.model.specification.SpecificationRepository;
-import com.alecode.soam.model.specification.SpecificationTemplateRepository;
-import com.alecode.soam.web.SpecificationController;
+import com.soam.model.priority.PriorityRepository;
+import com.soam.model.priority.PriorityType;
+import com.soam.model.specification.Specification;
+import com.soam.model.specification.SpecificationRepository;
+import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.web.SpecificationController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

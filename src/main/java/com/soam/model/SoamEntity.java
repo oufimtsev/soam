@@ -1,6 +1,6 @@
-package com.alecode.soam.model;
+package com.soam.model;
 
-import com.alecode.soam.model.priority.PriorityType;
+import com.soam.model.priority.PriorityType;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
