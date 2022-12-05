@@ -3,7 +3,7 @@
   <form>
     <th:block th:fragment="select (label, name, items)">
       <div th:with="valid=${!#fields.hasErrors(name)}"
-        th:class="${'form-group' + (valid ? '' : ' has-error')}"
+        th:class="|${'form-group' + (valid ? '' : ' has-error')} mb-3|"
         class="form-group">
         <label class="col-sm-2 control-label" th:text="${label}">Label</label>
 
