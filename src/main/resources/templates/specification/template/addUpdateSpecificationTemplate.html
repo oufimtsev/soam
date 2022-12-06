@@ -24,8 +24,8 @@
       <div class="col-sm-offset-2 col-sm-10">
         <button
           th:with="text=${specificationTemplate['new']} ? 'Add Specification Template' : 'Update Specification Template'"
-          class="btn btn-primary" type="submit" th:text="${text}">Create
-          Specification Template</button>
+          class="btn btn-primary" type="submit"><i class="fa fa-plus me-1" aria-hidden="true"></i> <span th:text="${text}">Add
+          Specification Template</span></button>
       </div>
     </div>
   </form>
