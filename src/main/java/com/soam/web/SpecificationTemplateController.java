@@ -16,6 +16,7 @@
 package com.soam.web;
 
 import com.soam.model.priority.PriorityRepository;
+import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -87,29 +89,58 @@ public class SpecificationTemplateController {
 		return REDIRECT_TEMPLATE_LIST;
 	}
 
+	@GetMapping("/specification/template/find")
+	public String initFindForm(Map<String, Object> model) {
+		model.put("specificationTemplate", new SpecificationTemplate());
+		return "specification/template/findSpecificationTemplate";
+	}
+
+	@GetMapping("/specification/templates")
+	public String processFindForm(@RequestParam(defaultValue = "1") int page, SpecificationTemplate specificationTemplate,
+								  BindingResult result, Model model) {
+
+		if (specificationTemplate.getName() == null) {
+			specificationTemplate.setName(""); // empty string signifies broadest possible search
+		}
+
+		Page<SpecificationTemplate> specificationResults = findPaginatedForSpecificationTemplateName(page, specificationTemplate.getName());
+		if (specificationResults.isEmpty()) {
+			result.rejectValue("name", "notFound", "not found");
+			return "specification/template/findSpecificationTemplate";
+		}
+
+		if (specificationResults.getTotalElements() == 1) {
+			specificationTemplate = specificationResults.iterator().next();
+			return String.format( "redirect:/specification/template/%s/edit", specificationTemplate.getId());
+		}
+
+		return addPaginationModel(page, model, specificationResults);
+	}
+
 
 	@GetMapping("/specification/template/list")
 	public String listSpecificationTemplates( @RequestParam(defaultValue = "1") int page, Model model ){
 
 		Page<SpecificationTemplate> specificationTemplateResults =
-				findPaginatedSpecificationTemplates(page);
+				findPaginatedForSpecificationTemplateName(page, "");
 		addPaginationModel( page, model, specificationTemplateResults );
 		return "specification/template/specificationTemplateList";
 	}
 
-	private void addPaginationModel(int page, Model model, Page<SpecificationTemplate> paginated) {
+	private String addPaginationModel(int page, Model model, Page<SpecificationTemplate> paginated) {
 		model.addAttribute("paginated", paginated);
 		List<SpecificationTemplate> listSpecificationTemplates = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("listSpecificationTemplates", listSpecificationTemplates);
+		return "specification/template/specificationTemplateList";
 	}
 
-	private Page<SpecificationTemplate> findPaginatedSpecificationTemplates(int page) {
+	private Page<SpecificationTemplate> findPaginatedForSpecificationTemplateName(int page, String name) {
 		int pageSize = 10;
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("name"));
-		return specificationTemplates.findAll(pageable);
+		return specificationTemplates.findByNameContainingIgnoreCase(name, pageable);
 	}
 
 	@GetMapping("/specification/template/{specificationTemplateId}/edit")
