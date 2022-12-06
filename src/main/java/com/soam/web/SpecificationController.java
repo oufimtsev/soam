@@ -72,7 +72,7 @@ public class SpecificationController {
 
 	@PostMapping("/specification/new")
 	public String processCreationForm(@Valid Specification specification, BindingResult result, Model model) {
-		Optional<Specification> testTemplate = specifications.findByName(specification.getName());
+		Optional<Specification> testTemplate = specifications.findByNameIgnoreCase(specification.getName());
 		if( testTemplate.isPresent() ){
 			result.rejectValue("name", "unique", "Template already exists");
 		}
@@ -146,7 +146,7 @@ public class SpecificationController {
 	public String processUpdateSpecificationForm(@Valid Specification specification, BindingResult result,
 			@PathVariable("specificationId") int specificationId, Model model) {
 
-		Optional<Specification> testTemplate = specifications.findByName(specification.getName());
+		Optional<Specification> testTemplate = specifications.findByNameIgnoreCase(specification.getName());
 		if( testTemplate.isPresent()  && testTemplate.get().getId() != specificationId  ){
 			result.rejectValue("name", "unique", "Template already exists");
 		}
