@@ -57,7 +57,7 @@ public class SpecificationController {
 
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
-		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(false);
 		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
 	}
 

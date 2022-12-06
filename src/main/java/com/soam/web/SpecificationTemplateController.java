@@ -19,6 +19,7 @@ import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import jakarta.validation.Valid;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +51,12 @@ public class SpecificationTemplateController {
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
+	}
+
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(false);
+		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
 	}
 
 
