@@ -11,5 +11,5 @@ public interface SpecificationTemplateRepository extends CrudRepository<Specific
     Page<SpecificationTemplate> findAll(Pageable pageable);
     Optional<SpecificationTemplate> findByName(String name );
     Optional<SpecificationTemplate> findByNameIgnoreCase(String name);
-    Page<SpecificationTemplate> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<SpecificationTemplate> findByNameStartsWithIgnoreCase(String name, Pageable pageable);
 }

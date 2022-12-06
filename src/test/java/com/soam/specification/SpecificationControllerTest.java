@@ -69,7 +69,7 @@ public class SpecificationControllerTest {
         given( this.specifications.findById(TEST_SPECIFICATION_ID)).willReturn(Optional.of(testSpec));
         given( this.specifications.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
-        given( this.specifications.findByNameContainingIgnoreCase(eq("Test"), any(Pageable.class)))
+        given( this.specifications.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
                 .willReturn(new PageImpl<Specification>(Lists.newArrayList(testSpec)));
 
     }
@@ -116,7 +116,7 @@ public class SpecificationControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<Specification> specifications = new PageImpl<Specification>(Lists.newArrayList(testSpecification(), new Specification()));
-        Mockito.when(this.specifications.findByNameContainingIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specifications);
+        Mockito.when(this.specifications.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specifications);
         mockMvc.perform(get("/specifications?page=1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("specification/specificationList"));
@@ -126,8 +126,8 @@ public class SpecificationControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(testSpecification()));
         //todo: Use constant for "Test"
-        Mockito.when(this.specifications.findByNameContainingIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
-        Mockito.when(this.specifications.findByNameContainingIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        Mockito.when(this.specifications.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
+        Mockito.when(this.specifications.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/specifications?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())

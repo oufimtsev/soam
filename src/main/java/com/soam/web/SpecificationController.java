@@ -128,7 +128,7 @@ public class SpecificationController {
 		int pageSize = 20;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return specifications.findByNameContainingIgnoreCase(name, pageable);
+		return specifications.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 
 	@GetMapping("/specification/{specificationId}/edit")
