@@ -151,6 +151,8 @@ public class SpecificationController {
 		}
 
 		if (result.hasErrors()) {
+			specification.setId( specificationId );
+			model.addAttribute("specification", specification );
 			this.populateFormModel( model );
 			return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
 		}

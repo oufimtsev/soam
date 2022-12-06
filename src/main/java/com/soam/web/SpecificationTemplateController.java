@@ -134,6 +134,8 @@ public class SpecificationTemplateController {
 		}
 
 		if (result.hasErrors()) {
+			specificationTemplate.setId( specificationTemplateId );
+			model.addAttribute("specification", specificationTemplate );
 			this.populateFormModel( model );
 			return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
 		}
