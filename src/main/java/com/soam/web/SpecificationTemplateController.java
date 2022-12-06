@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -100,7 +101,7 @@ public class SpecificationTemplateController {
 
 	private Page<SpecificationTemplate> findPaginatedSpecificationTemplates(int page) {
 		int pageSize = 10;
-		Pageable pageable = PageRequest.of(page - 1, pageSize);
+		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("name"));
 		return specificationTemplates.findAll(pageable);
 	}
 

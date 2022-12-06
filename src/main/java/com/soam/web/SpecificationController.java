@@ -24,6 +24,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -125,7 +126,7 @@ public class SpecificationController {
 
 	private Page<Specification> findPaginatedForSpecificationName(int page, String name) {
 		int pageSize = 20;
-		Pageable pageable = PageRequest.of(page - 1, pageSize);
+		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("name"));
 		return specifications.findByNameContainingIgnoreCase(name, pageable);
 	}
 
