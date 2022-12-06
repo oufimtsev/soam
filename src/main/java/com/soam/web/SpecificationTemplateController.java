@@ -139,7 +139,8 @@ public class SpecificationTemplateController {
 
 	private Page<SpecificationTemplate> findPaginatedForSpecificationTemplateName(int page, String name) {
 		int pageSize = 10;
-		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("name"));
+		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
+		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return specificationTemplates.findByNameContainingIgnoreCase(name, pageable);
 	}
 

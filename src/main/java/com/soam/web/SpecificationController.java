@@ -126,7 +126,8 @@ public class SpecificationController {
 
 	private Page<Specification> findPaginatedForSpecificationName(int page, String name) {
 		int pageSize = 20;
-		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("name"));
+		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
+		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return specifications.findByNameContainingIgnoreCase(name, pageable);
 	}
 
