@@ -15,6 +15,7 @@
  */
 package com.soam.web;
 
+import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
@@ -30,6 +31,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -96,7 +98,8 @@ public class SpecificationTemplateController {
 	}
 
 	@GetMapping("/specification/templates")
-	public String processFindForm(@RequestParam(defaultValue = "1") int page, SpecificationTemplate specificationTemplate,
+	public String processFindForm(@RequestParam(defaultValue = "false") boolean forceList,
+			@RequestParam(defaultValue = "1") int page, SpecificationTemplate specificationTemplate,
 								  BindingResult result, Model model) {
 
 		if (specificationTemplate.getName() == null) {
@@ -109,7 +112,7 @@ public class SpecificationTemplateController {
 			return "specification/template/findSpecificationTemplate";
 		}
 
-		if (specificationResults.getTotalElements() == 1) {
+		if ( !forceList && specificationResults.getTotalElements() == 1) {
 			specificationTemplate = specificationResults.iterator().next();
 			return String.format( "redirect:/specification/template/%s/edit", specificationTemplate.getId());
 		}
@@ -177,6 +180,22 @@ public class SpecificationTemplateController {
 		this.specificationTemplates.save(specificationTemplate);
 		return REDIRECT_TEMPLATE_LIST;
 	}
+
+	@PostMapping("/specification/template/{specificationTemplateId}/delete")
+	public String processDeleteSpecification(
+			@PathVariable("specificationTemplateId") int specificationTemplateId, SpecificationTemplate specificationTemplate,
+			RedirectAttributes redirectAttributes ){
+
+		Optional<SpecificationTemplate> specificationTemplateById = specificationTemplates.findById(specificationTemplateId);
+		//todo: validate specificationById's name matches the passed in Specification's name.
+
+		redirectAttributes.addFlashAttribute(Util.SUCCESS, "Successfully deleted specification");
+		specificationTemplates.delete( specificationTemplateById.get() );
+		return "redirect:/specification/templates?forceList=true";
+
+	}
+
+
 
 	private void populateFormModel( Model model ){
 		model.addAttribute("priorities", priorities.findAll());

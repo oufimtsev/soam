@@ -15,11 +15,13 @@
  */
 package com.soam.web;
 
+import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import jakarta.validation.Valid;
+import org.apache.catalina.connector.Request;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Map;
@@ -93,8 +96,9 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specifications")
-	public String processFindForm(@RequestParam(defaultValue = "1") int page, Specification specification,
-			BindingResult result, Model model) {
+	public String processFindForm( @RequestParam(defaultValue = "false") boolean forceList,
+			@RequestParam(defaultValue = "1") int page, Specification specification,
+			BindingResult result, Model model ) {
 
 		if (specification.getName() == null) {
 			specification.setName(""); // empty string signifies broadest possible search
@@ -106,7 +110,7 @@ public class SpecificationController {
 			return "specification/findSpecification";
 		}
 
-		if (specificationResults.getTotalElements() == 1) {
+		if (!forceList && specificationResults.getTotalElements() == 1) {
 			specification = specificationResults.iterator().next();
 			return "redirect:/specification/" + specification.getId();
 		}
@@ -142,6 +146,7 @@ public class SpecificationController {
 		return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
 	}
 
+
 	@PostMapping("/specification/{specificationId}/edit")
 	public String processUpdateSpecificationForm(@Valid Specification specification, BindingResult result,
 			@PathVariable("specificationId") int specificationId, Model model) {
@@ -161,6 +166,20 @@ public class SpecificationController {
 		specification.setId(specificationId);
 		this.specifications.save(specification);
 		return "redirect:/specification/{specificationId}";
+	}
+
+	@PostMapping("/specification/{specificationId}/delete")
+	public String processDeleteSpecification(
+			@PathVariable("specificationId") int specificationId, Specification specification,
+			BindingResult result,  Model model, RedirectAttributes redirectAttributes ){
+
+		Optional<Specification> specificationById = specifications.findById(specificationId);
+		//todo: validate specificationById's name matches the passed in Specification's name.
+
+		redirectAttributes.addFlashAttribute(Util.SUCCESS, "Successfully deleted specification");
+		specifications.delete( specificationById.get() );
+		return "redirect:/specifications?forceList=true";
+
 	}
 
 	@GetMapping("/specification/{specificationId}")
