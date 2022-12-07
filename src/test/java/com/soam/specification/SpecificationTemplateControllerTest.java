@@ -65,6 +65,7 @@ public class SpecificationTemplateControllerTest {
     void setup() {
         SpecificationTemplate testSpec = testSpecification();
         given( this.specificationTemplates.findByName("Test Spec")).willReturn(Optional.of(testSpec));
+        given( this.specificationTemplates.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(testSpec));
         given( this.specificationTemplates.findById(TEST_SPECIFICATION_ID)).willReturn(Optional.of(testSpec));
         given( this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
@@ -106,7 +107,7 @@ public class SpecificationTemplateControllerTest {
     @Test
     void testListSpecificationTemplates() throws Exception{
         Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(testSpecification()));
-        Mockito.when(this.specificationTemplates.findAll(any(Pageable.class))).thenReturn(specificationTemplatesPage);
+        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
         mockMvc.perform( get("/specification/template/list"))
                 .andExpect(model().attributeExists("listSpecificationTemplates"))

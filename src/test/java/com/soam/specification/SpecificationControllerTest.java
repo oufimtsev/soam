@@ -66,6 +66,7 @@ public class SpecificationControllerTest {
     void setup() {
         Specification testSpec = testSpecification();
         given( this.specifications.findByName(testSpec.getName())).willReturn(Optional.of(testSpec));
+        given( this.specifications.findByNameIgnoreCase(testSpec.getName())).willReturn(Optional.of(testSpec));
         given( this.specifications.findById(TEST_SPECIFICATION_ID)).willReturn(Optional.of(testSpec));
         given( this.specifications.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
@@ -92,7 +93,7 @@ public class SpecificationControllerTest {
 
     @Test
     void testProcessCreationFormHasErrors() throws Exception {
-        mockMvc.perform(post("/specification/new").param("name", "Test Spec")
+        mockMvc.perform(post("/specification/new").param("name", testSpecification().getName())
                         .param("notes", "spec notes").param("description", "Description"))
                         .andExpect(model().attributeHasErrors("specification"))
                           .andExpect(model().attributeHasFieldErrors("specification", "name"))
