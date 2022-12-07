@@ -1,23 +1,7 @@
-/*
- * Copyright 2012-2019 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.soam.web;
 
 import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
-import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import jakarta.validation.Valid;
@@ -189,8 +173,13 @@ public class SpecificationTemplateController {
 		Optional<SpecificationTemplate> specificationTemplateById = specificationTemplates.findById(specificationTemplateId);
 		//todo: validate specificationById's name matches the passed in Specification's name.
 
-		redirectAttributes.addFlashAttribute(Util.SUCCESS, "Successfully deleted specification");
-		specificationTemplates.delete( specificationTemplateById.get() );
+		if( specificationTemplateById.isPresent()) {
+			redirectAttributes.addFlashAttribute(Util.SUCCESS, "Successfully deleted specification template");
+			specificationTemplates.delete(specificationTemplateById.get());
+		}else{
+			redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
+		}
+
 		return "redirect:/specification/templates?forceList=true";
 
 	}
