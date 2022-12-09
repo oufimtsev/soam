@@ -69,7 +69,7 @@
   </nav>
   <div class="container-fluid">
     <div class="container xd-container">
-      <div th:replace="fragments/flash :: flash"></div>
+      <div th:replace="~{fragments/flash :: flash}"></div>
       <th:block th:insert="${template}" />
       <div class="container mt-4">
       </div>

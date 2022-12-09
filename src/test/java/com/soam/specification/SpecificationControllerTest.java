@@ -1,5 +1,6 @@
 package com.soam.specification;
 
+import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
@@ -103,7 +104,7 @@ public class SpecificationControllerTest {
         mockMvc.perform(post("/specification/new").param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
                 .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrorCode("specification", "description", "NotEmpty"))
+                .andExpect(model().attributeHasFieldErrorCode("specification", "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("specification/addUpdateSpecification"));
     }
@@ -133,6 +134,10 @@ public class SpecificationControllerTest {
         mockMvc.perform(get("/specifications?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/" + TEST_SPECIFICATION_ID));
+
+        mockMvc.perform(get("/specifications?page=1").param("name", "Test").param("forceList", "true"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("specification/specificationList"));
 
         mockMvc.perform(get("/specifications?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())
@@ -210,6 +215,26 @@ public class SpecificationControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/find"));
 
+
+    }
+
+    @Test
+    void testProcessDeleteSpecificationSuccess() throws Exception {
+        mockMvc.perform(post("/specification/{specificationId}/delete", TEST_SPECIFICATION_ID)
+                        .param("name", testSpecification().getName()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.SUCCESS))
+                .andExpect(view().name("redirect:/specifications?forceList=true"));
+
+    }
+
+    @Test
+    void testProcessDeleteSpecificationError() throws Exception {
+        mockMvc.perform(post("/specification/{specificationId}/delete", EMPTY_SPECIFICATION_ID)
+                        .param("name", testSpecification().getName()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect( flash().attributeExists(Util.DANGER))
+                .andExpect(view().name("redirect:/specifications?forceList=true"));
 
     }
 }

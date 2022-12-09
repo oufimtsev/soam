@@ -6,7 +6,6 @@ import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +13,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 
 @Controller
-public class SpecificationController {
+public class SpecificationController extends SoamFormController {
 
 	private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
 
@@ -37,17 +38,6 @@ public class SpecificationController {
 		this.specificationTemplates = specificationTemplateRepository;
 		this.priorities = priorityRepository;
 	}
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
-
-	@InitBinder
-	public void initBinder(WebDataBinder dataBinder) {
-		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(false);
-		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
-	}
-
 
 	@GetMapping("/specification/new")
 	public String initCreationForm(Model model) {
@@ -131,15 +121,17 @@ public class SpecificationController {
 	}
 
 
+
 	@PostMapping("/specification/{specificationId}/edit")
 	public String processUpdateSpecificationForm(@Valid Specification specification, BindingResult result,
 			@PathVariable("specificationId") int specificationId, Model model) {
 
 		Optional<Specification> testSpecification = specifications.findByNameIgnoreCase(specification.getName());
-		if( testSpecification.isPresent()  && testSpecification.get().getId() != specificationId  ){
-			result.rejectValue("name", "unique", "Specification already exists");
-		}
-
+		testSpecification.ifPresent(s-> {
+				if( testSpecification.get().getId() != specificationId ){
+					result.rejectValue("name", "unique", "Specification already exists");
+				}
+		});
 		if (result.hasErrors()) {
 			specification.setId( specificationId );
 			model.addAttribute("specification", specification );

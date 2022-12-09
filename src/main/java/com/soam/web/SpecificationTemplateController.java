@@ -5,7 +5,6 @@ import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import jakarta.validation.Valid;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,8 +12,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Optional;
 
 
 @Controller
-public class SpecificationTemplateController {
+public class SpecificationTemplateController extends SoamFormController {
 
 	private static final String VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM = "specification/template/addUpdateSpecificationTemplate";
 	private static final String REDIRECT_TEMPLATE_LIST = "redirect:/specification/template/list";
@@ -35,18 +36,6 @@ public class SpecificationTemplateController {
 		this.specificationTemplates = specificationTemplateRepository;
 		this.priorities = priorityRepository;
 	}
-
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
-
-	@InitBinder
-	public void initBinder(WebDataBinder dataBinder) {
-		StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(false);
-		dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
-	}
-
 
 	@GetMapping("/specification/template/new")
 	public String initCreationForm(Model model ) {
@@ -160,7 +149,7 @@ public class SpecificationTemplateController {
 		}
 
 
-		specificationTemplate.setId(specificationTemplateId); // strange
+		specificationTemplate.setId(specificationTemplateId);
 		this.specificationTemplates.save(specificationTemplate);
 		return REDIRECT_TEMPLATE_LIST;
 	}

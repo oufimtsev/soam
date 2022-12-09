@@ -6,7 +6,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -22,12 +21,12 @@ public abstract class SoamEntity extends BaseEntity  {
     private String name;
 
     @Column(name = "description")
-    @NotEmpty
+    @NotBlank
     @Length(max = 80)
     private String description;
 
     @Column(name = "notes")
-    @NotEmpty
+    @NotBlank
     @Length(max = 255)
     private String notes;
 

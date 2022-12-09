@@ -1,5 +1,6 @@
 package com.soam.specification;
 
+import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationRepository;
@@ -18,11 +19,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -99,10 +101,46 @@ public class SpecificationTemplateControllerTest {
         mockMvc.perform(post("/specification/template/new").param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
                 .andExpect(model().attributeHasErrors("specificationTemplate"))
-                .andExpect(model().attributeHasFieldErrorCode("specificationTemplate", "description", "NotEmpty"))
+                .andExpect(model().attributeHasFieldErrorCode("specificationTemplate", "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
     }
+
+    @Test
+    void tesInitFind() throws Exception {
+        mockMvc.perform(get("/specification/template/find")).andExpect(status().isOk())
+                .andExpect(view().name("specification/template/findSpecificationTemplate"));
+    }
+
+    @Test
+    void testProcessFindFormSuccess() throws Exception {
+        Page<SpecificationTemplate> specificationTemplates = new PageImpl<>(Lists.newArrayList(testSpecification(), new SpecificationTemplate()));
+        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specificationTemplates);
+        mockMvc.perform(get("/specification/templates?page=1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("specification/template/specificationTemplateList"));
+    }
+
+    @Test
+    void testProcessFindFormByName() throws Exception {
+        Page<SpecificationTemplate> specifications = new PageImpl<>(Lists.newArrayList(testSpecification()));
+        //todo: Use constant for "Test"
+        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
+        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+
+        mockMvc.perform(get("/specification/templates?page=1").param("name", "Test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/specification/template/" + TEST_SPECIFICATION_ID+"/edit"));
+
+        mockMvc.perform(get("/specification/templates?page=1").param("name", "Test").param("forceList", "true"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("specification/template/specificationTemplateList"));
+
+        mockMvc.perform(get("/specification/templates?page=1").param("name", "Not Present"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("specification/template/findSpecificationTemplate"));
+    }
+
 
     @Test
     void testListSpecificationTemplates() throws Exception{
@@ -171,5 +209,25 @@ public class SpecificationTemplateControllerTest {
                 .andExpect(model().attributeHasErrors("specificationTemplate"))
                 .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
                 .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
+    }
+
+    @Test
+    void testProcessDeleteSpecificationSuccess() throws Exception {
+        mockMvc.perform(post("/specification/template/{specificationId}/delete", TEST_SPECIFICATION_ID)
+                        .param("name", testSpecification().getName()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.SUCCESS))
+                .andExpect(view().name("redirect:/specification/templates?forceList=true"));
+
+    }
+
+    @Test
+    void testProcessDeleteSpecificationError() throws Exception {
+        mockMvc.perform(post("/specification/template/{specificationId}/delete", EMPTY_SPECIFICATION_ID)
+                        .param("name", testSpecification().getName()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect( flash().attributeExists(Util.DANGER))
+                .andExpect(view().name("redirect:/specification/templates?forceList=true"));
+
     }
 }
