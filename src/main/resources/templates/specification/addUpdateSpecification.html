@@ -6,14 +6,6 @@
 <body>
   <h2>Specification</h2>
 
-    <div class="col-sm-10 text-end d-flex justify-content-end" th:if="${!#lists.isEmpty(specificationTemplates)}">
-      <form th:if="${!specification['new']}" id="deleteForm" class="me-2" th:object="${specification}" th:action="@{/specification/__${specification.id}__/delete}" method="post">
-        <input type="hidden" th:field="*{id}"/>
-        <input type="hidden" id="delete-name"  th:field="*{name}"/>
-        <a class="btn btn-sm btn-primary" onclick="if(confirm('Are you sure you want to delete this specification?')) document.getElementById('deleteForm').submit()">Delete<i class="fa fa-trash-o ms-2" aria-hidden="true"></i> </a>
-      </form>
-      <div th:replace="~{fragments/soamTemplateButton :: templateButton(${specificationTemplates})}" />
-    </div>
   <form th:object="${specification}" class="form-horizontal" id="add-specification-form" method="post">
     <div class="form-group has-feedback">
       <input
@@ -26,13 +18,24 @@
         th:replace="~{fragments/prioritySelectField :: select ('Priority', 'priority', ${priorities})}" />
     </div>
     <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10">
-        <button
-          th:with="text=${specification['new']} ? 'Add Specification' : 'Update Specification'"
-          class="btn btn-primary" type="submit" ><i class="fa fa-pencil me-1" aria-hidden="true"></i> <span th:text="${text}">Add
-          Specification</span></button>
+      <div class="col-sm-offset-2 col-sm-10 d-flex">
+        <button class="btn btn-primary" type="submit"
+          th:with="text=${specification['new']} ? 'Add Specification' : 'Update Specification',
+                  icon=${specification['new']} ? 'fa-plus' : 'fa-pencil-square-o'">
+          <i class="fa me-1"  th:classappend="${icon}" aria-hidden="true"></i>
+          <span th:text="${text}">Add/Update</span>
+        </button>
+        <div th:replace="~{fragments/soamTemplateButton :: templateButton(${specificationTemplates})}" />
+        <span class="flex-grow-1"></span>
+        <a th:if="${!specification['new']}" class="btn btn-primary" onclick="if(confirm('Are you sure you want to delete this specification?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete Specification</a>
       </div>
     </div>
   </form>
+  <div class="col-sm-10 text-end d-flex justify-content-end" >
+    <form th:if="${!specification['new']}" id="deleteForm" th:object="${specification}" th:action="@{/specification/__${specification.id}__/delete}" method="post">
+      <input type="hidden" th:field="*{id}"/>
+      <input type="hidden" id="delete-name"  th:field="*{name}"/>
+    </form>
+  </div>
 </body>
 </html>
