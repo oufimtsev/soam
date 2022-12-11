@@ -9,8 +9,7 @@
     <div class="control-group" id="lastNameGroup">
       <label class="col-sm-2 control-label">Name </label>
       <div class="col-sm-10">
-        <input class="form-control" th:field="*{name}" size="30"
-               maxlength="80" minlength="1" required/> <span class="help-inline"><div
+        <input class="form-control" th:field="*{name}" size="30" /> <span class="help-inline"><div
               th:if="${#fields.hasAnyErrors()}">
               <p th:each="err : ${#fields.allErrors()}" th:text="${err}">Error</p>
             </div></span>
@@ -20,7 +19,7 @@
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-primary"><i class="fa fa-search me-1" aria-hidden="true"></i> Find Specification Template</button>
-      <a class="btn btn-primary" th:href="@{/specification/templates}"><i class="fa fa-list-ul me-1" aria-hidden="true"></i> List all</a>
+      <a class="btn btn-primary" th:href="@{/specification/template/list}"><i class="fa fa-list-ul me-1" aria-hidden="true"></i> List all</a>
     </div>
   </div>
   <a class="btn btn-primary" th:href="@{/specification/template/new}"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add Specification Template</a>

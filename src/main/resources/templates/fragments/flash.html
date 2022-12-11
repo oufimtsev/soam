@@ -1,7 +1,5 @@
 <html>
 <body>
-
-
 <div th:fragment="flash" id="alert-wrapper">
     <div th:if="${success != null }" class="alert alert-success alert-dismissible" role="alert">
         <p th:text="${success}">This is a <strong>success</strong> message</p>
@@ -18,6 +16,12 @@
     <div th:if="${danger != null }" class="alert alert-danger alert-dismissible" role="alert">
         <p th:text="${danger}">This is a danger message</p>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+<div th:fragment="subFlashMessage" id="sub-flash-message">
+    <div th:if="${subFlashMessage != null }">
+        <span class="fa fa-remove form-control-feedback" aria-hidden="true"></span>
+        <span class="help-inline" th:text="${subFlashMessage}">Error</span>
     </div>
 </div>
 </body>

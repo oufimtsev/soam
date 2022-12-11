@@ -50,6 +50,7 @@
       <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-step-forward"></span>
     </span>
 </div>
+<div th:replace="~{fragments/flash :: subFlashMessage}"></div>
 <a class="btn btn-primary" th:href="@{/specification/template/new}"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add Specification Template</a>
 </body>
 </html>

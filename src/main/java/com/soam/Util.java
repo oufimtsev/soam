@@ -7,6 +7,7 @@ public class Util {
     public static final String SUCCESS = "success";
     public static final String INFO = "info";
     public static final String DANGER = "danger";
+    public static final String SUB_FLASH = "subFlashMessage";
 
 
 }
