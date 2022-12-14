@@ -23,11 +23,11 @@
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10 d-flex align-items-center">
-        <a class="btn btn-primary me-2" type="submit"
+        <button class="btn btn-primary me-2" type="submit"
           th:with="text=${specificationTemplate['new']} ? 'Add Specification Template' : 'Update Specification Template',
                 icon=${specificationTemplate['new']} ? 'fa-plus' : 'fa-pencil-square-o'">
           <i class="fa me-2" th:classappend="${icon}" aria-hidden="true"></i><span th:text="${text}">Add/Update</span>
-        </a>
+        </button>
         <span class="flex-grow-1"></span>
       </div>
     </div>
