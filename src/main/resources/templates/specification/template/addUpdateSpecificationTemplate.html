@@ -7,6 +7,10 @@
 
   <h2>Specification Template</h2>
   <form th:object="${specificationTemplate}" class="form-horizontal" id="add-specification-form" method="post">
+    <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
+      <div th:if="${!#lists.isEmpty(specificationTemplates)}" th:replace="~{fragments/soamTemplateButton :: templateButton(${specificationTemplates})}" />
+      <a class="btn btn-sm btn-primary ms-2" th:if="${!specificationTemplate['new']}" onclick="if(confirm('Are you sure you want to delete this specification template?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>
+    </div>
     <div class="form-group has-feedback">
       <input
         th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
@@ -18,15 +22,13 @@
         th:replace="~{fragments/prioritySelectField :: select ('Priority', 'priority', ${priorities})}" />
     </div>
     <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10 d-flex ">
-        <button class="btn btn-primary me-2" type="submit"
+      <div class="col-sm-offset-2 col-sm-10 d-flex align-items-center">
+        <a class="btn btn-primary me-2" type="submit"
           th:with="text=${specificationTemplate['new']} ? 'Add Specification Template' : 'Update Specification Template',
                 icon=${specificationTemplate['new']} ? 'fa-plus' : 'fa-pencil-square-o'">
           <i class="fa me-2" th:classappend="${icon}" aria-hidden="true"></i><span th:text="${text}">Add/Update</span>
-        </button>
-        <div th:if="${!#lists.isEmpty(specificationTemplates)}" th:replace="~{fragments/soamTemplateButton :: templateButton(${specificationTemplates})}" />
+        </a>
         <span class="flex-grow-1"></span>
-        <a class="btn btn-primary" th:if="${!specificationTemplate['new']}" onclick="if(confirm('Are you sure you want to delete this template?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete Template</a>
       </div>
     </div>
   </form>
