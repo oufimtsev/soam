@@ -5,12 +5,12 @@ INSERT INTO priority_types VALUES (default, 'High', 3 );
 INSERT INTO specifications VALUES (default, 'Accounts Receivable', 'Describe system', 'Notes on the new ERP system', 1);
 INSERT INTO specifications VALUES (default, 'Accounts Payable', 'Describe system', 'Notes on the new ERP system', 1);
 
--- INSERT INTO stakeholders VALUES (default, 1, 'Accounts Receivable Clerk', 'Describe Accounts Receivable', 'Notes on Accounts Receivable stakeholder', 1);
--- INSERT INTO stakeholders VALUES (default, 1, 'Manager', 'Describe Manager', 'Notes on Manager', 1);
--- INSERT INTO stakeholders VALUES (default, 1, 'Customer','Describe Customer', 'Notes on Customer', 1);
+INSERT INTO stakeholders VALUES (default, 1, 'Accounts Receivable Clerk', 'Describe Accounts Receivable', 'Notes on Accounts Receivable stakeholder', 1);
+INSERT INTO stakeholders VALUES (default, 1, 'Manager', 'Describe Manager', 'Notes on Manager', 1);
+INSERT INTO stakeholders VALUES (default, 1, 'Customer','Describe Customer', 'Notes on Customer', 1);
 
--- INSERT INTO stakeholders VALUES (default,  2, 'Accounts Payable Clerk', 'Describe Accounts Payable', 'Notes on Accounts Payable stakeholder', 1);
--- INSERT INTO stakeholders VALUES (default, 2, 'Supplier', 'Describe Supplier', 'Notes on Supplier stakeholder', 1);
+INSERT INTO stakeholders VALUES (default, 2, 'Accounts Payable Clerk', 'Describe Accounts Payable', 'Notes on Accounts Payable stakeholder', 1);
+INSERT INTO stakeholders VALUES (default, 2, 'Supplier', 'Describe Supplier', 'Notes on Supplier stakeholder', 1);
 
 
 -- INSERT INTO objectives VALUES (default, 1, 'Increase productivity by 25%',  '', '', 3 );
