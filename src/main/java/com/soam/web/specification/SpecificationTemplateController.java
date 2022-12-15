@@ -1,8 +1,9 @@
-package com.soam.web;
+package com.soam.web.specification;
 
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.web.SoamFormController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

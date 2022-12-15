@@ -1,10 +1,11 @@
-package com.soam.web;
+package com.soam.web.specification;
 
 import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
 
 @Controller
-public class SpecificationFormController extends SoamFormController  {
+public class SpecificationFormController extends SoamFormController {
     private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
     private final SpecificationRepository specifications;
     private final SpecificationTemplateRepository specificationTemplates;

@@ -1,0 +1,45 @@
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'stakeholders')}">
+<head>
+  <script type="text/javascript" th:src="@{/resources/js/soamTemplate.js}"></script>
+</head>
+<body>
+  <h2>Stakeholder</h2>
+
+  <form th:object="${stakeholder}" class="form-horizontal" id="add-stakeholder-form" method="post">
+    <input type="hidden" th:field="*{specification}"/>
+    <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
+      <div th:if="${!#lists.isEmpty(stakeholderTemplates)}" th:replace="~{fragments/soamTemplateButton :: templateButton(${stakeholderTemplates})}" />
+      <a th:if="${!stakeholder['new']}" class="btn btn-sm btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this stakeholder?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>
+    </div>
+    <div class="form-group has-feedback">
+      <input
+        th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('Notes', 'notes', 'textarea')}" />
+      <input
+        th:replace="~{fragments/prioritySelectField :: select ('Priority', 'priority', ${priorities})}" />
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10 d-flex">
+        <button class="btn btn-primary" type="submit"
+          th:with="text=${stakeholder['new']} ? 'Add Stakeholder' : 'Update Stakeholder',
+                  icon=${stakeholder['new']} ? 'fa-plus' : 'fa-pencil-square-o'">
+          <i class="fa me-1"  th:classappend="${icon}" aria-hidden="true"></i>
+          <span th:text="${text}">Add/Update</span>
+        </button>
+        <span class="flex-grow-1"></span>
+      </div>
+    </div>
+  </form>
+  <div class="col-sm-10 text-end d-flex justify-content-end" >
+    <form th:if="${!stakeholder['new']}" id="deleteForm" th:object="${stakeholder}" th:action="@{/stakeholder/__${stakeholder.id}__/delete}" method="post">
+      <input type="hidden" th:field="*{id}"/>
+      <input type="hidden" th:field="*{specification}"/>
+      <input type="hidden" id="delete-name"  th:field="*{name}"/>
+    </form>
+  </div>
+</body>
+</html>

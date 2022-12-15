@@ -49,17 +49,19 @@
             <span class="fa fa-home" aria-hidden="true"></span>
             <span>Home</span>
           </li>
-          <li th:replace="~{::menuItem ('/specification/find','specifications','List Specifications','','Specifications')}">
-            <span class="fa fa-search" aria-hidden="true"></span>
-            <span>Find Specifications</span>
+          <li th:replace="~{::menuItem ('/specification/find','specifications','Find Specifications','','Specifications')}">
+            <span>Specifications</span>
+          </li>
+          <li th:replace="~{::menuItem ('/stakeholder/find','stakeholders','Find Stakeholders','','Stakeholders')}">
+            <span>Specifications</span>
           </li>
           <li class="nav-item dropdown" >
             <a class="nav-link dropdown-toggle" th:classappend="${menu=='templates' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Templates
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="/specification/template/find">Specification</a></li>
-              <li><a class="dropdown-item" href="#">Stakeholder</a></li>
+              <li><a class="dropdown-item" th:href="@{/specification/template/find}">Specification</a></li>
+              <li><a class="dropdown-item" th:href="@{/stakeholder/template/find}">Stakeholder</a></li>
               <li><a class="dropdown-item" href="#">Objective</a></li>
             </ul>
           </li>

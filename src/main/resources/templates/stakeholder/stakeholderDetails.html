@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
 <html xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'specifications')}">
+  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'stakeholders')}">
   <head></head>
   <body>
-    <h2>Specification Information</h2>
-    <table class="table table-striped" th:object="${specification}">
+    <h2>Stakeholder Information</h2>
+    <table class="table table-striped" th:object="${stakeholder}">
       <tr>
         <th>Name</th>
         <td><b th:text="*{name}"></b></td>
@@ -23,9 +23,9 @@
         <td th:text="*{priority}"></td>
       </tr>
     </table>
-    <a th:href="@{__${specification.id}__/edit}" class="btn btn-primary"><i class="fa fa-pencil me-1" aria-hidden="true"></i> Edit
-      Specification</a>
-    <a th:href="@{__${specification.id}__/stakeholder/new}" class="btn btn-primary"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add
+    <a th:href="@{__${stakeholder.id}__/edit}" class="btn btn-primary"><i class="fa fa-pencil me-1" aria-hidden="true"></i> Edit
+      Stakeholder</a>
+    <a href="#" onclick="alert('Under Development');" class="btn btn-primary"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add
       Stakeholder</a>
   </body>
 

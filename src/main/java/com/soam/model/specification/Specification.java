@@ -16,8 +16,13 @@
 package com.soam.model.specification;
 
 import com.soam.model.SoamEntity;
+import com.soam.model.stakeholder.Stakeholder;
 import jakarta.persistence.*;
 import org.springframework.core.style.ToStringCreator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Simple JavaBean domain object representing a specification.
@@ -26,48 +31,46 @@ import org.springframework.core.style.ToStringCreator;
 @Table(name = "specifications")
 public class Specification extends SoamEntity {
 
-	//todo: implement Stakeholder
-//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//	@JoinColumn(name = "specification_id")
-//	@OrderBy("stakeholderName")
-//	private List<Stakeholder> stakeholders = new ArrayList<>();
+	@OneToMany( fetch = FetchType.EAGER)
+	@JoinColumn(name = "specification_id")
+	@OrderBy("name")
+	private List<Stakeholder> stakeholders = new ArrayList<>();
 
+	public List<Stakeholder> getStakeholders() {
+		return this.stakeholders;
+	}
 
-	//	public List<Stakeholder> getStakeholders() {
-//		return this.stakeholders;
-//	}
-//
-//	public void addStakeholder(Stakeholder stakeholder) {
-//		if (stakeholder.isNew()) {
-//			getStakeholders().add(stakeholder);
-//		}
-//	}
+	public void addStakeholder(Stakeholder stakeholder) {
+		if (stakeholder.isNew()) {
+			getStakeholders().add(stakeholder);
+		}
+	}
 
 	/**
 	 * Return an Optional Stakeholder with the given name
 	 * @param name to test
 	 * @return an Optional Stakeholder if stakeholder name is already in use
 	 */
-//	public Optional<Stakeholder> getStakeholder(String name) {
-//		return getStakeholder(name, false);
-//	}
+	public Optional<Stakeholder> getStakeholder(String name) {
+		return getStakeholder(name, false);
+	}
 
 	/**
 	 * Return an Optional Stakeholder with the given id
 	 * @param id to test
 	 * @return an Optional Stakeholder if stakeholder id is already in use
 	 */
-//	public Optional<Stakeholder> getStakeholder(Integer id) {
-//		for (Stakeholder stakeholder : getStakeholders()) {
-//			if (!stakeholder.isNew()) {
-//				Integer compId = stakeholder.getId();
-//				if (compId.equals(id)) {
-//					return stakeholder;
-//				}
-//			}
-//		}
-//		return null;
-//	}
+	public Optional<Stakeholder> getStakeholder(Integer id) {
+		for (Stakeholder stakeholder : getStakeholders()) {
+			if (!stakeholder.isNew()) {
+				Integer compId = stakeholder.getId();
+				if (compId.equals(id)) {
+					return Optional.of(stakeholder);
+				}
+			}
+		}
+		return Optional.empty();
+	}
 
 	/**
 	 * Return an Stakeholder with the given name. If the id is blanks, skip
@@ -75,19 +78,19 @@ public class Specification extends SoamEntity {
 	 * @param ignoreNew if set to true, do not return unsaved stakeholders
 	 * @return an optional pet if pet name is already in use
 	 */
-//	public Stakeholder getStakeholder(String name, boolean ignoreNew) {
-//		name = name.toLowerCase();
-//		for (Stakeholder stakeholder : getStakeholders()) {
-//			if (!ignoreNew || !stakeholder.isNew()) {
-//				String compName = stakeholder.getStakeholderName();
-//				compName = compName == null ? "" : compName.toLowerCase();
-//				if (compName.equals(name)) {
-//					return stakeholder;
-//				}
-//			}
-//		}
-//		return null;
-//	}
+	public Optional<Stakeholder> getStakeholder(String name, boolean ignoreNew) {
+		name = name.toLowerCase();
+		for (Stakeholder stakeholder : getStakeholders()) {
+			if (!ignoreNew || !stakeholder.isNew()) {
+				String compName = stakeholder.getName();
+				compName = compName == null ? "" : compName.toLowerCase();
+				if (compName.equals(name)) {
+					return Optional.of(stakeholder);
+				}
+			}
+		}
+		return Optional.empty();
+	}
 
 	@Override
 	public String toString() {
