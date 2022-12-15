@@ -6,6 +6,9 @@
         <i class="fa fa-object-ungroup me-2" aria-hidden="true"></i>Use Template
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li class="dropdown-item disabled" th:if="${#lists.isEmpty(templates)}">
+            <span class="text-danger">No templates defined.</span>
+        </li>
         <li th:each="tempTemplate : ${templates}" >
             <a class="dropdown-item template-item" href="javascript:void(0)" th:text="${tempTemplate.name}"
                th:attr="data-temp-name=${tempTemplate.name},
