@@ -95,20 +95,19 @@ public class SpecificationFormController extends SoamFormController {
             @PathVariable("specificationId") int specificationId, Specification specification,
             BindingResult result,  Model model, RedirectAttributes redirectAttributes ){
 
-        Optional<Specification> specificationById = specifications.findById(specificationId);
+        Optional<Specification> maybeSpecification = specifications.findById(specificationId);
         //todo: validate specificationById's name matches the passed in Specification's name.
 
-        if(specificationById.isPresent()) {
-
-            if(specification.getStakeholders() != null && !specification.getStakeholders().isEmpty()){
+        if(maybeSpecification.isPresent()) {
+            Specification specificationById = maybeSpecification.get();
+            if(specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()){
                 redirectAttributes.addFlashAttribute(Util.DANGER,
-                        String.format("Error. Please delete this specification's stakeholder%s first.",
-                        specification.getStakeholders().size() > 1 ? "s" : ""));
+                        String.format("Please delete this specification's stakeholder%s first.",
+                                specificationById.getStakeholders().size() > 1 ? "s" : ""));
                 return "redirect:/specification/"+ specificationId;
             }
-            Specification fetchedSpecification = specificationById.get();
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedSpecification.getName()));
-            specifications.delete(fetchedSpecification);
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationById.getName()));
+            specifications.delete(specificationById);
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification");
         }
