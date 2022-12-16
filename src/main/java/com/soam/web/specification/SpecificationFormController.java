@@ -96,10 +96,16 @@ public class SpecificationFormController extends SoamFormController {
             BindingResult result,  Model model, RedirectAttributes redirectAttributes ){
 
         Optional<Specification> specificationById = specifications.findById(specificationId);
-
         //todo: validate specificationById's name matches the passed in Specification's name.
 
         if(specificationById.isPresent()) {
+
+            if(specification.getStakeholders() != null && !specification.getStakeholders().isEmpty()){
+                redirectAttributes.addFlashAttribute(Util.DANGER,
+                        String.format("Error. Please delete this specification's stakeholder%s first.",
+                        specification.getStakeholders().size() > 1 ? "s" : ""));
+                return "redirect:/specification/"+ specificationId;
+            }
             Specification fetchedSpecification = specificationById.get();
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedSpecification.getName()));
             specifications.delete(fetchedSpecification);
