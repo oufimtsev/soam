@@ -52,6 +52,7 @@
         </tr>
         </tbody>
     </table>
+    <div th:replace="~{fragments/flash :: subFlashMessage}"></div>
     <a th:href="@{__${specification.id}__/stakeholder/new}" class="btn btn-primary"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add Stakeholder</a>
     </div>
   </body>

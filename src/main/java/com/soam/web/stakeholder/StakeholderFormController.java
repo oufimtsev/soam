@@ -120,10 +120,14 @@ public class StakeholderFormController extends SoamFormController {
             Stakeholder fetchedStakeholder = maybeStakeholder.get();
             stakeholders.delete(fetchedStakeholder);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholder.getName()));
+            return "redirect:/specification/"+fetchedStakeholder.getSpecification().getId();
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
+            return "redirect:/stakeholder/"+stakeholderId;
         }
-        return "redirect:/stakeholder/list";
+
+
+
     }
 
     private void populateFormModel( Model model ){
