@@ -20,7 +20,6 @@
 </div>
 <div th:fragment="subFlashMessage" id="sub-flash-message">
     <div th:if="${subFlashMessage != null }">
-        <span class="fa fa-remove form-control-feedback" aria-hidden="true"></span>
         <span class="help-inline" th:text="${subFlashMessage}">Error</span>
     </div>
 </div>
