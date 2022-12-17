@@ -20,7 +20,7 @@ import java.util.Optional;
 @Controller
 public class ObjectiveTemplateFormController extends SoamFormController {
 
-    private static final String VIEWS_objective_TEMPLATE_ADD_OR_UPDATE_FORM = "objective/template/addUpdateObjectiveTemplate";
+    private static final String VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM = "objective/template/addUpdateObjectiveTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/objective/template/list";
 
     private final ObjectiveRepository objectives;
@@ -40,7 +40,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         model.addAttribute("objectiveTemplate", objectiveTemplate);
         this.populateFormModel( model );
 
-        return VIEWS_objective_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/objective/template/new")
@@ -53,7 +53,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel( model );
-            return VIEWS_objective_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
         this.objectiveTemplates.save(objectiveTemplate);
@@ -69,7 +69,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         }
         model.addAttribute(maybeObjectiveTemplate.get());
         this.populateFormModel( model );
-        return VIEWS_objective_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/objective/template/{objectiveTemplateId}/edit")
@@ -85,7 +85,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
             objectiveTemplate.setId( objectiveTemplateId );
             model.addAttribute("objective", objectiveTemplate );
             this.populateFormModel( model );
-            return VIEWS_objective_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
 
