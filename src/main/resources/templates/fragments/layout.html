@@ -55,6 +55,9 @@
           <li th:replace="~{::menuItem ('/stakeholder/find','stakeholders','Find Stakeholders','','Stakeholders')}">
             <span>Specifications</span>
           </li>
+          <li th:replace="~{::menuItem ('/objective/find','objectives','Find Objectives','','Objectives')}">
+            <span>Objectives</span>
+          </li>
           <li class="nav-item dropdown" >
             <a class="nav-link dropdown-toggle" th:classappend="${menu=='templates' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Templates
@@ -62,7 +65,7 @@
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" th:href="@{/specification/template/find}">Specification</a></li>
               <li><a class="dropdown-item" th:href="@{/stakeholder/template/find}">Stakeholder</a></li>
-              <li><a class="dropdown-item" href="#">Objective</a></li>
+              <li><a class="dropdown-item" th:href="@{/objective/template/find}">Objective</a></li>
             </ul>
           </li>
         </ul>

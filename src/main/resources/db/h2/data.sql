@@ -12,21 +12,20 @@ INSERT INTO stakeholders VALUES (default, 1, 'Customer','Describe Customer', 'No
 INSERT INTO stakeholders VALUES (default, 2, 'Accounts Payable Clerk', 'Describe Accounts Payable', 'Notes on Accounts Payable stakeholder', 1);
 INSERT INTO stakeholders VALUES (default, 2, 'Supplier', 'Describe Supplier', 'Notes on Supplier stakeholder', 1);
 
+INSERT INTO objectives VALUES (default, 1, 'Objective 1-1', 'Increase productivity by 25%',  '', 3 );
+INSERT INTO objectives VALUES (default, 1, 'Objective 1-2',  'Reduce errors by 70%,', '', 2 );
 
--- INSERT INTO objectives VALUES (default, 1, 'Increase productivity by 25%',  '', '', 3 );
--- INSERT INTO objectives VALUES (default, 1, 'Reduce errors by 70%,', '', '', 2 );
+INSERT INTO objectives VALUES (default, 2, 'Objective 2-1', 'See outstanding receivables accurate to within 24 hours', '', 1 );
+INSERT INTO objectives VALUES (default, 2, 'Objective 2-2', 'Suspend customer activity when outstanding balance > $6,000',  '', 3 );
 
--- INSERT INTO objectives VALUES (default, 2, 'Objective 1', 'See outstanding receivables accurate to within 24 hours', '', 1 );
--- INSERT INTO objectives VALUES (default, 2, 'Objective 2', 'Suspend customer activity when outstanding balance > $6,000',  '', 3 );
+INSERT INTO objectives VALUES (default, 3, 'Objective 3-1', 'Have ability to see status of orders online', '', 1 );
+INSERT INTO objectives VALUES (default, 3, 'Objective 3-2', 'Update address online', '', 1 );
 
--- INSERT INTO objectives VALUES (default, 3, 'Objective 1', 'Have ability to see status of orders online', '', 1 );
--- INSERT INTO objectives VALUES (default, 3, 'Objective 2', 'Update address online', '', 1 );
+INSERT INTO objectives VALUES (default, 4, 'Objective 4-1', 'Take all supplier discounts',  '', 2 );
+INSERT INTO objectives VALUES (default, 4, 'Objective 4-2', 'Reduce errors by 70%', '', 3 );
 
--- INSERT INTO objectives VALUES (default, 4, 'Objective 1', 'Take all supplier discounts',  '', 2 );
--- INSERT INTO objectives VALUES (default, 4, 'Objective 2', 'Reduce errors by 70%', '', 3 );
-
--- INSERT INTO objectives VALUES (default, 4, 'Objective 1', 'See status of invoices', '', 1 );
--- INSERT INTO objectives VALUES (default, 4, 'Objective 2', 'Update address online', '', 1 );
+INSERT INTO objectives VALUES (default, 4, 'Objective 4-3', 'See status of invoices', '', 1 );
+INSERT INTO objectives VALUES (default, 4, 'Objective 4-4', 'Update address online', '', 1 );
 
 
 INSERT INTO specification_templates VALUES ( default, 'Major Product', 'Describe product here', 'Notes on major product', 1);

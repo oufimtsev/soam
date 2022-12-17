@@ -16,12 +16,14 @@
 package com.soam.model.stakeholder;
 
 import com.soam.model.SoamEntity;
+import com.soam.model.objective.Objective;
 import com.soam.model.specification.Specification;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.springframework.core.style.ToStringCreator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Simple JavaBean domain object representing a Stakeholder.
@@ -29,6 +31,67 @@ import org.springframework.core.style.ToStringCreator;
 @Entity
 @Table(name = "stakeholders")
 public class Stakeholder extends SoamEntity {
+
+	@OneToMany( fetch = FetchType.EAGER)
+	@JoinColumn(name = "stakeholder_id")
+	@OrderBy("name")
+	private List<Objective> objectives = new ArrayList<>();
+
+	public List<Objective> getObjectives() {
+		return this.objectives;
+	}
+
+	public void addObjective(Objective objective) {
+		if (objective.isNew()) {
+			getObjectives().add(objective);
+		}
+	}
+
+	/**
+	 * Return an Optional Objective with the given name
+	 * @param name to test
+	 * @return an Optional Objective if objective name is already in use
+	 */
+	public Optional<Objective> getObjective(String name) {
+		return getObjective(name, false);
+	}
+
+	/**
+	 * Return an Optional Objective with the given id
+	 * @param id to test
+	 * @return an Optional Objective if objective id is already in use
+	 */
+	public Optional<Objective> getObjective(Integer id) {
+		for (Objective objective : getObjectives()) {
+			if (!objective.isNew()) {
+				Integer compId = objective.getId();
+				if (compId.equals(id)) {
+					return Optional.of(objective);
+				}
+			}
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * Return an Objective with the given name. If the id is blanks, skip
+	 * @param name to test
+	 * @param ignoreNew if set to true, do not return unsaved objectives
+	 * @return an optional pet if pet name is already in use
+	 */
+	public Optional<Objective> getObjective(String name, boolean ignoreNew) {
+		name = name.toLowerCase();
+		for (Objective objective : getObjectives()) {
+			if (!ignoreNew || !objective.isNew()) {
+				String compName = objective.getName();
+				compName = compName == null ? "" : compName.toLowerCase();
+				if (compName.equals(name)) {
+					return Optional.of(objective);
+				}
+			}
+		}
+		return Optional.empty();
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "specification_id")
