@@ -46,7 +46,7 @@
       <tbody>
       <tr th:each="objective : ${stakeholder.objectives}">
         <td>
-          <a th:href="@{/objective/__${stakeholder.id}__}" th:text="${objective.name}"/></a>
+          <a th:href="@{/objective/__${objective.id}__}" th:text="${objective.name}"/></a>
         </td>
         <td th:text="${objective.priority}"/>
       </tr>
