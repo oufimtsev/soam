@@ -34,12 +34,10 @@
       </div>
     </div>
   </form>
-  <div class="col-sm-10 text-end d-flex justify-content-end" >
-    <form th:if="${!stakeholder['new']}" id="deleteForm" th:object="${stakeholder}" th:action="@{/stakeholder/__${stakeholder.id}__/delete}" method="post">
-      <input type="hidden" th:field="*{id}"/>
-      <input type="hidden" th:field="*{specification}"/>
-      <input type="hidden" id="delete-name"  th:field="*{name}"/>
-    </form>
-  </div>
+  <form th:if="${!stakeholder['new']}" id="deleteForm" th:object="${stakeholder}" th:action="@{/stakeholder/__${stakeholder.id}__/delete}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <input type="hidden" th:field="*{specification}"/>
+    <input type="hidden" id="delete-name"  th:field="*{name}"/>
+  </form>
 </body>
 </html>

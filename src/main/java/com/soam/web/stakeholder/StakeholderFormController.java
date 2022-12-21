@@ -125,9 +125,6 @@ public class StakeholderFormController extends SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
             return "redirect:/stakeholder/"+stakeholderId;
         }
-
-
-
     }
 
     private void populateFormModel( Model model ){
