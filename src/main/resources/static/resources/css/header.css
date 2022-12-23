@@ -7,8 +7,7 @@
   border-right: 0; }
 
 .navbar a.navbar-brand {
-  font-size: 4rem;
-}
+  font-size: 2rem; }
 
 .navbar a.navbar-brand:hover span {
   opacity: 1; }

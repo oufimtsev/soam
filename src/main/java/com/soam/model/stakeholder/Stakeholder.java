@@ -21,7 +21,6 @@ import com.soam.model.specification.Specification;
 import jakarta.persistence.*;
 import org.springframework.core.style.ToStringCreator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,15 +30,31 @@ import java.util.Optional;
 @Entity
 @Table(name = "stakeholders")
 public class Stakeholder extends SoamEntity {
+	@ManyToOne
+	@JoinColumn(name = "specification_id")
+	private Specification specification;
 
-	@OneToMany( fetch = FetchType.EAGER)
-	@JoinColumn(name = "stakeholder_id")
+	@OneToMany( fetch = FetchType.EAGER, mappedBy = "stakeholder" )
 	@OrderBy("name")
-	private List<Objective> objectives = new ArrayList<>();
+	private List<Objective> objectives;
 
 	public List<Objective> getObjectives() {
 		return this.objectives;
 	}
+
+	public void setObjectives(List<Objective> objectives) {
+		this.objectives = objectives;
+	}
+
+	public Specification getSpecification() {
+		return specification;
+	}
+
+	public void setSpecification(Specification specification) {
+		this.specification = specification;
+	}
+
+
 
 	public void addObjective(Objective objective) {
 		if (objective.isNew()) {
@@ -91,18 +106,6 @@ public class Stakeholder extends SoamEntity {
 			}
 		}
 		return Optional.empty();
-	}
-
-	@ManyToOne
-	@JoinColumn(name = "specification_id")
-	private Specification specification;
-
-	public Specification getSpecification() {
-		return specification;
-	}
-
-	public void setSpecification(Specification specification) {
-		this.specification = specification;
 	}
 
 	@Override

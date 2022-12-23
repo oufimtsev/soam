@@ -267,10 +267,6 @@ th {
   text-align: inherit;
   text-align: -webkit-match-parent; }
 
-.navbar a.navbar-brand {
-  font-size: 2rem;
-}
-
 thead,
 tbody,
 tfoot,
@@ -7771,6 +7767,11 @@ textarea.form-control-lg {
 .nav > li > a {
   color: #838789; }
 
+.breadcrumb-nav {
+  background-color: #f1f1f1;
+  border-bottom: 1px solid #DADADA;
+}
+
 .btn-primary {
   margin-top: 12px;
   border-width: 2px;
@@ -7932,6 +7933,9 @@ strong {
   border-bottom: 0;
   border-left: 0;
   border-right: 0; }
+
+.navbar a.navbar-brand {
+  font-size: 2rem; }
 
 .navbar a.navbar-brand:hover span {
   opacity: 1; }

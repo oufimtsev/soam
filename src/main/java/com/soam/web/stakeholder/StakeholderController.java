@@ -1,6 +1,7 @@
 package com.soam.web.stakeholder;
 
 import com.soam.model.priority.PriorityRepository;
+import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
@@ -12,25 +13,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Controller
 public class StakeholderController {
 	private final StakeholderRepository stakeholders;
 	private final StakeholderTemplateRepository stakeholderTemplates;
+	private final SpecificationRepository specificationRepository;
 	private final PriorityRepository priorities;
 
-	public StakeholderController(StakeholderRepository stakeholderRepository, PriorityRepository priorityRepository, StakeholderTemplateRepository stakeholderTemplateRepository) {
-		this.stakeholders = stakeholderRepository;
-		this.stakeholderTemplates = stakeholderTemplateRepository;
-		this.priorities = priorityRepository;
+	public StakeholderController(StakeholderRepository stakeholders, StakeholderTemplateRepository stakeholderTemplates, SpecificationRepository specificationRepository, PriorityRepository priorities) {
+		this.stakeholders = stakeholders;
+		this.stakeholderTemplates = stakeholderTemplates;
+		this.specificationRepository = specificationRepository;
+		this.priorities = priorities;
 	}
 
 
@@ -60,7 +61,8 @@ public class StakeholderController {
 
 		if ( stakeholderResults.getTotalElements() == 1) {
 			stakeholder = stakeholderResults.iterator().next();
-			return "redirect:/stakeholder/" + stakeholder.getId();
+			return String.format("redirect:/specification/%s/stakeholder/%s",stakeholder.getSpecification().getId(),
+					stakeholder.getId());
 		}
 
 		return addPaginationModel(page, model, stakeholderResults);
@@ -91,17 +93,4 @@ public class StakeholderController {
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return stakeholders.findByNameStartsWithIgnoreCase(name, pageable);
 	}
-
-
-	@GetMapping("/stakeholder/{stakeholderId}")
-	public String showStakeholder(@PathVariable("stakeholderId") int stakeholderId, Model model) {
-		Optional<Stakeholder> maybeStakeholder = this.stakeholders.findById(stakeholderId);
-		if(maybeStakeholder.isEmpty()){
-			return "redirect:/stakeholder/find";
-		}
-		model.addAttribute(maybeStakeholder.get());
-		return "stakeholder/stakeholderDetails";
-	}
-
-
 }

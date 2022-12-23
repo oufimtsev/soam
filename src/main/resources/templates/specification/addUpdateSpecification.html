@@ -7,6 +7,7 @@
   <h2>Specification</h2>
 
   <form th:object="${specification}" class="form-horizontal" id="add-specification-form" method="post">
+<!--    <input type="hidden" th:field="*{stakeholders}" />-->
     <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
       <div th:if="${!#lists.isEmpty(specificationTemplates)}" th:replace="~{fragments/soamTemplateButton :: templateButton(${specificationTemplates})}" />
       <a th:if="${!specification['new']}" class="btn btn-sm btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this specification?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>

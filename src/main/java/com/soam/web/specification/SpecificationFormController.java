@@ -78,22 +78,23 @@ public class SpecificationFormController extends SoamFormController {
                 result.rejectValue("name", "unique", "Specification already exists");
             }
         });
+
+        specification.setId( specificationId );
         if (result.hasErrors()) {
-            specification.setId( specificationId );
+
             model.addAttribute("specification", specification );
             this.populateFormModel( model );
             return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
-        specification.setId(specificationId);
         this.specifications.save(specification);
         return "redirect:/specification/{specificationId}";
     }
 
     @PostMapping("/specification/{specificationId}/delete")
     public String processDeleteSpecification(
-            @PathVariable("specificationId") int specificationId, Specification specification,
-            BindingResult result,  Model model, RedirectAttributes redirectAttributes ){
+            @PathVariable("specificationId") int specificationId,
+            Model model, RedirectAttributes redirectAttributes ){
 
         Optional<Specification> maybeSpecification = specifications.findById(specificationId);
         //todo: validate specificationById's name matches the passed in Specification's name.

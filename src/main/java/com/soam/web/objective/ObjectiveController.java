@@ -12,13 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Controller
@@ -32,7 +30,6 @@ public class ObjectiveController {
 		this.objectiveTemplates = objectiveTemplateRepository;
 		this.priorities = priorityRepository;
 	}
-
 
 	@GetMapping("/objective/find")
 	public String initFindForm(Map<String, Object> model) {
@@ -60,7 +57,9 @@ public class ObjectiveController {
 
 		if ( objectiveResults.getTotalElements() == 1) {
 			objective = objectiveResults.iterator().next();
-			return "redirect:/objective/" + objective.getId();
+			return String.format("redirect:/specification/%s/stakeholder/%s/objective/",
+					objective.getStakeholder().getSpecification().getId(),
+					objective.getStakeholder().getId(), objective.getId());
 		}
 
 		return addPaginationModel(page, model, objectiveResults);
@@ -91,17 +90,4 @@ public class ObjectiveController {
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return objectives.findByNameStartsWithIgnoreCase(name, pageable);
 	}
-
-
-	@GetMapping("/objective/{objectiveId}")
-	public String showObjective(@PathVariable("objectiveId") int objectiveId, Model model) {
-		Optional<Objective> maybeObjective = this.objectives.findById(objectiveId);
-		if(maybeObjective.isEmpty()){
-			return "redirect:/objective/find";
-		}
-		model.addAttribute(maybeObjective.get());
-		return "objective/objectiveDetails";
-	}
-
-
 }

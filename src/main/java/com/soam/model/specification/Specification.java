@@ -20,7 +20,6 @@ import com.soam.model.stakeholder.Stakeholder;
 import jakarta.persistence.*;
 import org.springframework.core.style.ToStringCreator;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,13 +30,16 @@ import java.util.Optional;
 @Table(name = "specifications")
 public class Specification extends SoamEntity {
 
-	@OneToMany( fetch = FetchType.EAGER)
-	@JoinColumn(name = "specification_id")
+	@OneToMany( fetch = FetchType.EAGER, mappedBy = "specification")
 	@OrderBy("name")
-	private List<Stakeholder> stakeholders = new ArrayList<>();
+	private List<Stakeholder> stakeholders;
 
 	public List<Stakeholder> getStakeholders() {
 		return this.stakeholders;
+	}
+
+	public void setStakeholders(List<Stakeholder> stakeholders) {
+		this.stakeholders = stakeholders;
 	}
 
 	public void addStakeholder(Stakeholder stakeholder) {
