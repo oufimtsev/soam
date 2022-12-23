@@ -75,7 +75,24 @@
   <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb">
     <div class="container">
       <ol class="breadcrumb m-0 p-0">
-        <li class="breadcrumb-item active" aria-current="page">Home</li>
+        <li class="breadcrumb-item" th:classappend="${specification == null ? 'active' : ''}">
+          <a th:href="@{/}">Home</a>
+        </li>
+        <li class="breadcrumb-item" th:if="${specification != null}" th:classappend="${stakeholder == null ? 'active' : ''}" >
+          <a th:if="${specification['new']}">Specifications</a>
+          <a th:if="${!specification['new']}" th:text="${specification.name}"
+             th:href="@{/specification/__${specification.id}__}">Specification</a>
+        </li>
+        <li class="breadcrumb-item" th:if="${stakeholder != null}" th:classappend="${objective == null ? 'active' : ''}"  >
+          <a th:if="${stakeholder.name == null}">Stakeholder</a>
+          <a th:if="${stakeholder.name != null }" th:text="${stakeholder.name}"
+             th:href="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__}"
+          >Stakeholder Name</a>
+        </li>
+        <li class="breadcrumb-item active" th:if="${objective != null}">
+          <a th:if="${objective.name == null}">Objective</a>
+          <a th:if="${objective.name != null }" th:text="${objective.name}">Objective Name</a>
+        </li>
       </ol>
     </div>
   </nav>

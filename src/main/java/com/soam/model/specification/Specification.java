@@ -17,7 +17,10 @@ package com.soam.model.specification;
 
 import com.soam.model.SoamEntity;
 import com.soam.model.stakeholder.Stakeholder;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
 import org.springframework.core.style.ToStringCreator;
 
 import java.util.List;
@@ -30,7 +33,7 @@ import java.util.Optional;
 @Table(name = "specifications")
 public class Specification extends SoamEntity {
 
-	@OneToMany( fetch = FetchType.EAGER, mappedBy = "specification")
+	@OneToMany( mappedBy = "specification")
 	@OrderBy("name")
 	private List<Stakeholder> stakeholders;
 

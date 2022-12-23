@@ -34,7 +34,7 @@ public class Stakeholder extends SoamEntity {
 	@JoinColumn(name = "specification_id")
 	private Specification specification;
 
-	@OneToMany( fetch = FetchType.EAGER, mappedBy = "stakeholder" )
+	@OneToMany( mappedBy = "stakeholder" )
 	@OrderBy("name")
 	private List<Objective> objectives;
 

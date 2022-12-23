@@ -72,6 +72,8 @@ public class SpecificationController {
 		Page<Specification> specificationResults =
 				findPaginatedForSpecificationName(page, "");
 		addPaginationModel( page, model, specificationResults );
+
+		model.addAttribute("specification", new Specification()); // for breadcrumb
 		return "specification/specificationList";
 	}
 
