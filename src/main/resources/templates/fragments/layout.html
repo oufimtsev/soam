@@ -72,22 +72,24 @@
       </div>
     </div>
   </nav>
-  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb">
+  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${specification != null}">
     <div class="container">
       <ol class="breadcrumb m-0 p-0">
         <li class="breadcrumb-item" th:classappend="${specification == null ? 'active' : ''}">
           <a th:href="@{/}">Home</a>
         </li>
-        <li class="breadcrumb-item" th:if="${specification != null}" th:classappend="${stakeholder == null ? 'active' : ''}" >
+        <li class="breadcrumb-item" th:with="specificationActive=${stakeholder == null}" th:classappend="${specificationActive ? 'active' : ''}" >
           <a th:if="${specification['new']}">Specifications</a>
-          <a th:if="${!specification['new']}" th:text="${specification.name}"
+
+          <a th:if="${!specificationActive && !specification['new']}" th:text="${specification.name}"
              th:href="@{/specification/__${specification.id}__}">Specification</a>
+          <span th:if="${specificationActive && !specification['new']}" th:text="${specification.name}">Specification Name</span>
         </li>
-        <li class="breadcrumb-item" th:if="${stakeholder != null}" th:classappend="${objective == null ? 'active' : ''}"  >
+        <li class="breadcrumb-item"  th:with="stakeholderActive=${objective == null}"  th:if="${stakeholder != null}" th:classappend="${stakeholderActive ? 'active' : ''}"  >
           <a th:if="${stakeholder.name == null}">Stakeholder</a>
-          <a th:if="${stakeholder.name != null }" th:text="${stakeholder.name}"
-             th:href="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__}"
-          >Stakeholder Name</a>
+          <a th:if="${!stakeholderActive && stakeholder.name != null }" th:text="${stakeholder.name}"
+             th:href="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__}">Stakeholder Name</a>
+          <span th:if="${stakeholderActive && stakeholder.name != null }" th:text="${stakeholder.name}">StakeholderName</span>
         </li>
         <li class="breadcrumb-item active" th:if="${objective != null}">
           <a th:if="${objective.name == null}">Objective</a>
