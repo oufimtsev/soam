@@ -72,6 +72,7 @@ public class ObjectiveTemplateController extends SoamFormController {
 		Page<ObjectiveTemplate> objectiveTemplateResults =
 				findPaginatedForObjectiveTemplateName(page, "");
 		addPaginationModel( page, model, objectiveTemplateResults );
+		model.addAttribute("objectiveTemplate", new ObjectiveTemplate());
 		return "objective/template/objectiveTemplateList";
 	}
 

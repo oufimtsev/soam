@@ -72,6 +72,7 @@ public class StakeholderTemplateController extends SoamFormController {
 		Page<StakeholderTemplate> stakeholderTemplateResults =
 				findPaginatedForStakeholderTemplateName(page, "");
 		addPaginationModel( page, model, stakeholderTemplateResults );
+		model.addAttribute("stakeholderTemplate", new StakeholderTemplate());
 		return "stakeholder/template/stakeholderTemplateList";
 	}
 

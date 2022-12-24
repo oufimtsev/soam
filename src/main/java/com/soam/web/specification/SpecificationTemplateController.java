@@ -72,6 +72,7 @@ public class SpecificationTemplateController extends SoamFormController {
 		Page<SpecificationTemplate> specificationTemplateResults =
 				findPaginatedForSpecificationTemplateName(page, "");
 		addPaginationModel( page, model, specificationTemplateResults );
+		model.addAttribute("specificationTemplate", new SpecificationTemplate());
 		return "specification/template/specificationTemplateList";
 	}
 

@@ -72,9 +72,9 @@
       </div>
     </div>
   </nav>
-  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${specification != null}">
+  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu !='template' && specification != null }" >
     <div class="container">
-      <ol class="breadcrumb m-0 p-0">
+      <ol class="breadcrumb m-0 p-0" >
         <li class="breadcrumb-item" th:classappend="${specification == null ? 'active' : ''}">
           <a th:href="@{/}">Home</a>
         </li>
@@ -94,6 +94,46 @@
         <li class="breadcrumb-item active" th:if="${objective != null}">
           <a th:if="${objective.name == null}">Objective</a>
           <a th:if="${objective.name != null }" th:text="${objective.name}">Objective Name</a>
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='templates' }" >
+    <div class="container">
+      <ol class="breadcrumb m-0 p-0" th:if="${specificationTemplate != null }">
+        <li class="breadcrumb-item" >
+          <a th:href="@{/}">Home</a>
+        </li>
+        <li class="breadcrumb-item"  >
+          <a th:href="@{/specification/template/find}" th:if="${specificationTemplates != null}">Specification Templates</a>
+          <span th:if="${specificationTemplates == null}">Specification Templates</span>
+        </li>
+        <li class="breadcrumb-item" th:if="${specificationTemplates != null}" >
+          <span th:text="${specificationTemplate.name != null ? specificationTemplate.name : 'Add Specification Template'}">Specification Template</span>
+        </li>
+      </ol>
+      <ol class="breadcrumb m-0 p-0" th:if="${stakeholderTemplate != null }">
+        <li class="breadcrumb-item" >
+          <a th:href="@{/}">Home</a>
+        </li>
+        <li class="breadcrumb-item"  >
+          <a th:href="@{/stakeholder/template/find}" th:if="${stakeholderTemplates != null}">Stakeholder Templates</a>
+          <span th:if="${stakeholderTemplates == null}">Stakeholder Templates</span>
+        </li>
+        <li class="breadcrumb-item" th:if="${stakeholderTemplates != null}" >
+          <span th:text="${stakeholderTemplate.name != null ? stakeholderTemplate.name : 'Add Stakeholder Template'}">Stakeholder Template</span>
+        </li>
+      </ol>
+      <ol class="breadcrumb m-0 p-0" th:if="${objectiveTemplate != null }">
+        <li class="breadcrumb-item" >
+          <a th:href="@{/}">Home</a>
+        </li>
+        <li class="breadcrumb-item"  >
+          <a th:href="@{/objective/template/find}" th:if="${objectiveTemplates != null}">Objective Templates</a>
+          <span th:if="${objectiveTemplates == null}">Objective Templates</span>
+        </li>
+        <li class="breadcrumb-item" th:if="${objectiveTemplates != null}" >
+          <span th:text="${objectiveTemplate.name != null ? objectiveTemplate.name : 'Add Objective Template'}">Objective Template</span>
         </li>
       </ol>
     </div>
