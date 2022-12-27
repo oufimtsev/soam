@@ -2,10 +2,30 @@
 
 <html xmlns:th="https://www.thymeleaf.org"
   th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'specifications')}">
-  <head></head>
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) =>{
+
+        const dataTable = new simpleDatatables.DataTable("#stakeholdersTable", {
+          searchable: true,
+          paging: false
+          // fixedHeight: true,
+        })
+        // $('#example').DataTable( {
+        //   ajax:           "../data/2500.txt",
+        //   deferRender:    true,
+        //   scrollY:        200,
+        //   scrollCollapse: true,
+        //   scroller:       true
+        // } );
+      })
+    </script>
+  </head>
   <body>
-    <h2>Specification Information</h2>
-    <table class="table table-striped" th:object="${specification}">
+    <h1>Specification Details</h1>
+    <table class="table table-striped mt-2" th:object="${specification}">
       <tr>
         <th>Name</th>
         <td><b th:text="*{name}"></b></td>
@@ -33,12 +53,12 @@
     </div>
     <p class="mt-4"></p>
     <hr/>
-    <h2 >Stakeholders</h2>
-    <div class="col-md-8">
+    <h2>Stakeholders</h2>
+    <div class="col-md-10 ">
     <div class="alert alert-warning" th:if="${#lists.isEmpty(specification.stakeholders)}">
       No Stakeholders have been added to this specification.
     </div>
-    <table class="table table-striped" th:if="${!#lists.isEmpty(specification.stakeholders)}">
+    <table id="stakeholdersTable" class="table table-striped" th:if="${!#lists.isEmpty(specification.stakeholders)}">
         <thead>
         <tr>
           <th style="width: 350px;">Name</th>
