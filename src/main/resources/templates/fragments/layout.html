@@ -109,7 +109,7 @@
           <span th:if="${specificationTemplates == null}">Specification Templates</span>
         </li>
         <li class="breadcrumb-item" th:if="${specificationTemplates != null}" >
-          <span th:text="${specificationTemplate.name != null ? specificationTemplate.name : 'Add Specification Template'}">Specification Template</span>
+          <span th:text="${specificationTemplate.id != null ?  (!#strings.isEmpty(specificationTemplate.name) ? specificationTemplate.name : 'Update Specification Template') : 'Add Specification Template'}">Specification Template</span>
         </li>
       </ol>
       <ol class="breadcrumb m-0 p-0" th:if="${stakeholderTemplate != null }">
@@ -121,7 +121,7 @@
           <span th:if="${stakeholderTemplates == null}">Stakeholder Templates</span>
         </li>
         <li class="breadcrumb-item" th:if="${stakeholderTemplates != null}" >
-          <span th:text="${stakeholderTemplate.name != null ? stakeholderTemplate.name : 'Add Stakeholder Template'}">Stakeholder Template</span>
+          <span th:text="${stakeholderTemplate.id != null ? (!#strings.isEmpty(stakeholderTemplate.name) ? stakeholderTemplate.name : 'Update Template') : 'Add Stakeholder Template'}">Stakeholder Template</span>
         </li>
       </ol>
       <ol class="breadcrumb m-0 p-0" th:if="${objectiveTemplate != null }">
@@ -133,7 +133,7 @@
           <span th:if="${objectiveTemplates == null}">Objective Templates</span>
         </li>
         <li class="breadcrumb-item" th:if="${objectiveTemplates != null}" >
-          <span th:text="${objectiveTemplate.name != null ? objectiveTemplate.name : 'Add Objective Template'}">Objective Template</span>
+          <span th:text="${objectiveTemplate.id != null ? (!#strings.isEmpty(objectiveTemplate.name) ? objectiveTemplate.name : 'Update Template') : 'Add Objective Template'}">Objective Template</span>
         </li>
       </ol>
     </div>

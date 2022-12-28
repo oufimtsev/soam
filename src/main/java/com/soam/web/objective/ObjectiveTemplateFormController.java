@@ -53,6 +53,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel( model );
+            model.addAttribute("objectiveTemplate", objectiveTemplate );
             return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 

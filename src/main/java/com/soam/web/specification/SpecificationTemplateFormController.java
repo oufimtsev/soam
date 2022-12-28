@@ -83,7 +83,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
 
         if (result.hasErrors()) {
             specificationTemplate.setId( specificationTemplateId );
-            model.addAttribute("specification", specificationTemplate );
+            model.addAttribute("specificationTemplate", specificationTemplate );
             this.populateFormModel( model );
             return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
