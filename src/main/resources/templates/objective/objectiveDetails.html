@@ -6,12 +6,14 @@
   <body>
     <h2>Objective Information</h2>
 
-    <p class="lead mb-3">Stakeholder: <a th:href="@{/specification/__${specification.id}__/stakeholder/__${objective.stakeholder.id}__}" th:text="${objective.stakeholder.name}"></a></p>
-
     <table class="table table-striped" th:object="${objective}">
       <tr>
         <th>Name</th>
         <td><b th:text="*{name}"></b></td>
+      </tr>
+      <tr>
+        <th>Stakeholder</th>
+        <td><span th:text="${objective.stakeholder.name}"></span></td>
       </tr>
       <tr>
         <th>Description</th>

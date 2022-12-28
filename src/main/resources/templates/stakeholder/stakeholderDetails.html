@@ -5,13 +5,14 @@
   <head></head>
   <body>
     <h2>Stakeholder Information</h2>
-
-    <p class="lead mb-3">Specification: <a th:href="@{/specification/__${stakeholder.specification.id}__}" th:text="${stakeholder.specification.name}"></a></p>
-
     <table class="table table-striped" th:object="${stakeholder}">
       <tr>
         <th>Name</th>
         <td><b th:text="*{name}"></b></td>
+      </tr>
+      <tr>
+        <th>Specification</th>
+        <td><span th:text="${stakeholder.specification.name}"></span></td>
       </tr>
       <tr>
         <th>Description</th>
