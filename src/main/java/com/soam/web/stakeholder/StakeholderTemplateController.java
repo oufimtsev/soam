@@ -1,6 +1,5 @@
 package com.soam.web.stakeholder;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.SoamFormController;
@@ -24,11 +23,9 @@ public class StakeholderTemplateController extends SoamFormController {
 
 
 	private final StakeholderTemplateRepository stakeholderTemplates;
-	private final PriorityRepository priorities;
 
-	public StakeholderTemplateController(StakeholderTemplateRepository stakeholderTemplateRepository, PriorityRepository priorityRepository) {
+	public StakeholderTemplateController(StakeholderTemplateRepository stakeholderTemplateRepository) {
 		this.stakeholderTemplates = stakeholderTemplateRepository;
-		this.priorities = priorityRepository;
 	}
 
 

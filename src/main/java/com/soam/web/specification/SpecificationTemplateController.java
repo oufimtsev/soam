@@ -1,6 +1,5 @@
 package com.soam.web.specification;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.SoamFormController;
@@ -24,11 +23,9 @@ public class SpecificationTemplateController extends SoamFormController {
 
 
 	private final SpecificationTemplateRepository specificationTemplates;
-	private final PriorityRepository priorities;
 
-	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository,  PriorityRepository priorityRepository) {
+	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository) {
 		this.specificationTemplates = specificationTemplateRepository;
-		this.priorities = priorityRepository;
 	}
 
 

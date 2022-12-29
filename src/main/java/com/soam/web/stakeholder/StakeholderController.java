@@ -1,10 +1,7 @@
 package com.soam.web.stakeholder;
 
-import com.soam.model.priority.PriorityRepository;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,17 +18,12 @@ import java.util.Map;
 
 
 @Controller
+@Deprecated
 public class StakeholderController {
 	private final StakeholderRepository stakeholders;
-	private final StakeholderTemplateRepository stakeholderTemplates;
-	private final SpecificationRepository specificationRepository;
-	private final PriorityRepository priorities;
 
-	public StakeholderController(StakeholderRepository stakeholders, StakeholderTemplateRepository stakeholderTemplates, SpecificationRepository specificationRepository, PriorityRepository priorities) {
+	public StakeholderController(StakeholderRepository stakeholders) {
 		this.stakeholders = stakeholders;
-		this.stakeholderTemplates = stakeholderTemplates;
-		this.specificationRepository = specificationRepository;
-		this.priorities = priorities;
 	}
 
 

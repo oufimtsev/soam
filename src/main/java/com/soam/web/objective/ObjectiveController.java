@@ -2,8 +2,6 @@ package com.soam.web.objective;
 
 import com.soam.model.objective.Objective;
 import com.soam.model.objective.ObjectiveRepository;
-import com.soam.model.objective.ObjectiveTemplateRepository;
-import com.soam.model.priority.PriorityRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,15 +18,12 @@ import java.util.Map;
 
 
 @Controller
+@Deprecated
 public class ObjectiveController {
 	private final ObjectiveRepository objectives;
-	private final ObjectiveTemplateRepository objectiveTemplates;
-	private final PriorityRepository priorities;
 
-	public ObjectiveController(ObjectiveRepository objectiveRepository, PriorityRepository priorityRepository, ObjectiveTemplateRepository objectiveTemplateRepository) {
+	public ObjectiveController(ObjectiveRepository objectiveRepository) {
 		this.objectives = objectiveRepository;
-		this.objectiveTemplates = objectiveTemplateRepository;
-		this.priorities = priorityRepository;
 	}
 
 	@GetMapping("/objective/find")
@@ -57,7 +52,7 @@ public class ObjectiveController {
 
 		if ( objectiveResults.getTotalElements() == 1) {
 			objective = objectiveResults.iterator().next();
-			return String.format("redirect:/specification/%s/stakeholder/%s/objective/",
+			return String.format("redirect:/specification/%s/stakeholder/%s/objective/%s",
 					objective.getStakeholder().getSpecification().getId(),
 					objective.getStakeholder().getId(), objective.getId());
 		}

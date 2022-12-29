@@ -2,7 +2,6 @@ package com.soam.web.objective;
 
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
-import com.soam.model.priority.PriorityRepository;
 import com.soam.web.SoamFormController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,11 +23,9 @@ public class ObjectiveTemplateController extends SoamFormController {
 
 
 	private final ObjectiveTemplateRepository objectiveTemplates;
-	private final PriorityRepository priorities;
 
-	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository, PriorityRepository priorityRepository) {
+	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository) {
 		this.objectiveTemplates = objectiveTemplateRepository;
-		this.priorities = priorityRepository;
 	}
 
 

@@ -44,13 +44,13 @@ public class ObjectiveFormController extends SoamFormController {
     @ModelAttribute("specification")
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElseGet(null);
+        return oSpecification.orElse(null);
     }
 
     @ModelAttribute("stakeholder")
     public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId){
         Optional<Stakeholder> oStakeholder = stakeholderRepository.findById(stakeholderId);
-        return oStakeholder.orElseGet(null);
+        return oStakeholder.orElse(null);
     }
 
     @GetMapping("/objective/{objectiveId}")
@@ -65,10 +65,11 @@ public class ObjectiveFormController extends SoamFormController {
     }
 
     @GetMapping("/objective/new")
-    public String initCreationForm(@PathVariable("stakeholderId") int stakeholderId, Model model) {
+    public String initCreationForm(Specification specification, Stakeholder stakeholder,
+                                   @PathVariable("stakeholderId") int stakeholderId, Model model) {
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
         if( maybeStakeholder.isEmpty() ){
-            //todo: throw error!
+            return String.format("redirect:/specification/%s/stakeholder/%s", specification.getId(), stakeholder.getId());
         }
 
         Objective objective = new Objective();

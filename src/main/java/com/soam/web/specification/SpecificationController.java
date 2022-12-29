@@ -1,9 +1,7 @@
 package com.soam.web.specification;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
-import com.soam.model.specification.SpecificationTemplateRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,13 +22,9 @@ import java.util.Optional;
 @Controller
 public class SpecificationController {
 	private final SpecificationRepository specifications;
-	private final SpecificationTemplateRepository specificationTemplates;
-	private final PriorityRepository priorities;
 
-	public SpecificationController(SpecificationRepository specificationRepository, PriorityRepository priorityRepository, SpecificationTemplateRepository specificationTemplateRepository) {
+	public SpecificationController(SpecificationRepository specificationRepository) {
 		this.specifications = specificationRepository;
-		this.specificationTemplates = specificationTemplateRepository;
-		this.priorities = priorityRepository;
 	}
 
 

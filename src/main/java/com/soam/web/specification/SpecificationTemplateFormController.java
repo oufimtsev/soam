@@ -2,7 +2,6 @@ package com.soam.web.specification;
 
 import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.SoamFormController;
@@ -22,13 +21,10 @@ public class SpecificationTemplateFormController  extends SoamFormController {
 
     private static final String VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM = "specification/template/addUpdateSpecificationTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/specification/template/list";
-
-    private final SpecificationRepository specifications;
-    private final SpecificationTemplateRepository specificationTemplates;
+        private final SpecificationTemplateRepository specificationTemplates;
     private final PriorityRepository priorities;
 
-    public SpecificationTemplateFormController(SpecificationRepository specifications, SpecificationTemplateRepository specificationTemplates, PriorityRepository priorities) {
-        this.specifications = specifications;
+    public SpecificationTemplateFormController(SpecificationTemplateRepository specificationTemplates, PriorityRepository priorities) {
         this.specificationTemplates = specificationTemplates;
         this.priorities = priorities;
     }

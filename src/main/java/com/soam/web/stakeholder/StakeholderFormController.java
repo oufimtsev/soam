@@ -39,7 +39,7 @@ public class StakeholderFormController extends SoamFormController {
     @ModelAttribute("specification")
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElseGet(null);
+        return oSpecification.orElse(null);
     }
 
 
@@ -59,6 +59,7 @@ public class StakeholderFormController extends SoamFormController {
         Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
         if( maybeSpecification.isEmpty() ){
             //todo: throw error!
+            return "redirect:/specification/list";
         }
 
         Stakeholder stakeholder = new Stakeholder();

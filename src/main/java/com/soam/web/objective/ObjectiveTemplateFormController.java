@@ -1,7 +1,6 @@
 package com.soam.web.objective;
 
 import com.soam.Util;
-import com.soam.model.objective.ObjectiveRepository;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
@@ -22,13 +21,10 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
     private static final String VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM = "objective/template/addUpdateObjectiveTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/objective/template/list";
-
-    private final ObjectiveRepository objectives;
     private final ObjectiveTemplateRepository objectiveTemplates;
     private final PriorityRepository priorities;
 
-    public ObjectiveTemplateFormController(ObjectiveRepository objectives, ObjectiveTemplateRepository objectiveTemplates, PriorityRepository priorities) {
-        this.objectives = objectives;
+    public ObjectiveTemplateFormController(ObjectiveTemplateRepository objectiveTemplates, PriorityRepository priorities) {
         this.objectiveTemplates = objectiveTemplates;
         this.priorities = priorities;
     }
