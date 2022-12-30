@@ -27,9 +27,30 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(SpecificationTemplateFormController.class)
 public class SpecificationTemplateFormControllerTest {
 
-    private static final int TEST_SPECIFICATION_ID = 100;
+    private static final SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
     private static final int EMPTY_SPECIFICATION_ID = 200;
-    //todo: define more constants!
+
+    private static final String URL_NEW_TEMPLATE =  "/specification/template/new";
+    private static final String URL_EDIT_TEMPLATE =  "/specification/template/{specificationId}/edit";
+    private static final String URL_DELETE_TEMPLATE =  "/specification/template/{specificationId}/delete";
+    
+    private static final String VIEW_ADD_UPDATE_TEMPLATE = "specification/template/addUpdateSpecificationTemplate";
+    private static final String VIEW_REDIRECT_LIST_TEMPLATE = "redirect:/specification/template/list";
+
+    static {
+
+        PriorityType lowPriority = new PriorityType();
+        lowPriority.setName("Low");
+        lowPriority.setId(1);
+        lowPriority.setSequence(1);
+
+
+        TEST_SPECIFICATION_1.setId(100);
+        TEST_SPECIFICATION_1.setName("Test Spec 1");
+        TEST_SPECIFICATION_1.setDescription("desc");
+        TEST_SPECIFICATION_1.setNotes("notes");
+        TEST_SPECIFICATION_1.setPriority(lowPriority);
+    }
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,138 +64,124 @@ public class SpecificationTemplateFormControllerTest {
     @MockBean
     private PriorityRepository priorities;
 
-    private SpecificationTemplate testSpecification() {
-        PriorityType lowPriority = new PriorityType();
-        lowPriority.setName("Low");
-        lowPriority.setId(1);
-        lowPriority.setSequence(1);
-        SpecificationTemplate testSpec = new SpecificationTemplate();
-        testSpec.setId(TEST_SPECIFICATION_ID);
-        testSpec.setName("Test Spec");
-        testSpec.setDescription("desc");
-        testSpec.setNotes("notes");
-        testSpec.setPriority(lowPriority);
-        return testSpec;
-    }
 
     @BeforeEach
     void setup() {
-        SpecificationTemplate testSpec = testSpecification();
-        given( this.specificationTemplates.findByName("Test Spec")).willReturn(Optional.of(testSpec));
-        given( this.specificationTemplates.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(testSpec));
-        given( this.specificationTemplates.findById(TEST_SPECIFICATION_ID)).willReturn(Optional.of(testSpec));
+        given( this.specificationTemplates.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplates.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplates.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
     }
 
     @Test
     void testInitCreationForm() throws Exception {
-        mockMvc.perform(get("/specification/template/new")).andExpect(status().isOk())
+        mockMvc.perform(get(URL_NEW_TEMPLATE)).andExpect(status().isOk())
                 .andExpect(model().attributeExists("specificationTemplate"))
                 .andExpect(model().attributeExists("priorities"))
                 .andExpect(model().attributeExists("specificationTemplates"))
-                .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
+                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
 
     @Test
     void testProcessCreationFormSuccess() throws Exception {
-        mockMvc.perform(post("/specification/template/new").param("name", "New spec")
+        mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description"))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     void testProcessCreationFormHasErrors() throws Exception {
-        mockMvc.perform(post("/specification/template/new").param("name", "Test Spec")
+        mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_SPECIFICATION_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
                         .andExpect(model().attributeHasErrors("specificationTemplate"))
                           .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
+                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
-        mockMvc.perform(post("/specification/template/new").param("name", "New spec")
+        mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
                 .andExpect(model().attributeHasErrors("specificationTemplate"))
                 .andExpect(model().attributeHasFieldErrorCode("specificationTemplate", "description", "NotBlank"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
+                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
 
     @Test
     void testInitUpdateSpecificationForm() throws Exception {
-        Mockito.when(this.specificationTemplates.findById(TEST_SPECIFICATION_ID)).thenReturn(Optional.of(testSpecification()));
+        Mockito.when(this.specificationTemplates.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
 
-        mockMvc.perform(get("/specification/template/{specificationId}/edit", TEST_SPECIFICATION_ID)).andExpect(status().isOk())
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_1.getId())).andExpect(status().isOk())
                 .andExpect(model().attributeExists("specificationTemplate"))
-                .andExpect(model().attribute("specificationTemplate", hasProperty("name", is("Test Spec"))))
+                .andExpect(model().attribute("specificationTemplate", hasProperty("name", is(TEST_SPECIFICATION_1.getName()))))
                 .andExpect(model().attribute("specificationTemplate", hasProperty("description", is("desc"))))
                 .andExpect(model().attribute("specificationTemplate", hasProperty("notes", is("notes"))))
-                .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
+                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
-        mockMvc.perform(get("/specification/template/{specificationId}/edit", EMPTY_SPECIFICATION_ID))
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/template/list"));
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 
     @Test
     void testProcessUpdateSpecificationFormSuccess() throws Exception {
         Mockito.when(this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).thenReturn(Optional.empty());
-        mockMvc.perform(post("/specification/template/{specificationId}/edit", TEST_SPECIFICATION_ID)
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes here")
                         .param("description", "description there")
                         )
                     .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/template/list"));
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
 
 
-        mockMvc.perform(post("/specification/template/{specificationId}/edit", TEST_SPECIFICATION_ID)
-                                .param("name", "Test Spec")
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_1.getId())
+                                .param("name", TEST_SPECIFICATION_1.getName())
                                 .param("notes", "notes here")
                                 .param("description", "description there")
                 )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/template/list"));
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 
     @Test
     void testProcessUpdateOwnerFormHasErrors() throws Exception {
-        mockMvc.perform(post("/specification/template/{specificationId}/edit", TEST_SPECIFICATION_ID)
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors("specificationTemplate"))
                 .andExpect(model().attributeHasFieldErrors("specificationTemplate", "description"))
-                .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
+                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
-        mockMvc.perform(post("/specification/template/{specificationId}/edit", EMPTY_SPECIFICATION_ID)
-                        .param("name", "Test Spec")
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID)
+                        .param("name", TEST_SPECIFICATION_1.getName())
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors("specificationTemplate"))
                 .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
-                .andExpect(view().name("specification/template/addUpdateSpecificationTemplate"));
+                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
 
     @Test
     void testProcessDeleteSpecificationSuccess() throws Exception {
-        mockMvc.perform(post("/specification/template/{specificationId}/delete", TEST_SPECIFICATION_ID)
-                        .param("name", testSpecification().getName()))
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_1.getId())
+                        .param("name", TEST_SPECIFICATION_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name("redirect:/specification/template/list"));
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
 
     }
 
     @Test
     void testProcessDeleteSpecificationError() throws Exception {
-        mockMvc.perform(post("/specification/template/{specificationId}/delete", EMPTY_SPECIFICATION_ID)
-                        .param("name", testSpecification().getName()))
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_SPECIFICATION_ID)
+                        .param("name", TEST_SPECIFICATION_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect( flash().attributeExists(Util.DANGER))
-                .andExpect(view().name("redirect:/specification/template/list"));
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
 
     }
 }

@@ -20,6 +20,8 @@ import java.util.Optional;
 @Controller
 public class SpecificationFormController extends SoamFormController {
     private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
+    private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/";
+
     private final SpecificationRepository specifications;
     private final SpecificationTemplateRepository specificationTemplates;
     private final PriorityRepository priorities;
@@ -52,7 +54,7 @@ public class SpecificationFormController extends SoamFormController {
         }
 
         this.specifications.save(specification);
-        return "redirect:/specification/" + specification.getId();
+        return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
     }
 
     @GetMapping("/specification/{specificationId}/edit")
@@ -102,10 +104,8 @@ public class SpecificationFormController extends SoamFormController {
         if(maybeSpecification.isPresent()) {
             Specification specificationById = maybeSpecification.get();
             if(specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()){
-                redirectAttributes.addFlashAttribute(Util.DANGER,
-                        String.format("Please delete this specification's stakeholder%s first.",
-                                specificationById.getStakeholders().size() > 1 ? "s" : ""));
-                return "redirect:/specification/"+ specificationId;
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholders first.");
+                return REDIRECT_SPECIFICATION_DETAILS+ specificationId;
             }
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationById.getName()));
             specifications.delete(specificationById);

@@ -2,7 +2,6 @@ package com.soam.web.stakeholder;
 
 import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
-import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.SoamFormController;
@@ -23,12 +22,10 @@ public class StakeholderTemplateFormController extends SoamFormController {
     private static final String VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM = "stakeholder/template/addUpdateStakeholderTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/stakeholder/template/list";
 
-    private final StakeholderRepository stakeholders;
     private final StakeholderTemplateRepository stakeholderTemplates;
     private final PriorityRepository priorities;
 
-    public StakeholderTemplateFormController(StakeholderRepository stakeholders, StakeholderTemplateRepository stakeholderTemplates, PriorityRepository priorities) {
-        this.stakeholders = stakeholders;
+    public StakeholderTemplateFormController(StakeholderTemplateRepository stakeholderTemplates, PriorityRepository priorities) {
         this.stakeholderTemplates = stakeholderTemplates;
         this.priorities = priorities;
     }
@@ -109,7 +106,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
-        return "redirect:/stakeholder/template/list";
+        return REDIRECT_TEMPLATE_LIST;
 
     }
 

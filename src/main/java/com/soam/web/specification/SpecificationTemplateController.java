@@ -21,7 +21,7 @@ import java.util.Map;
 @Controller
 public class SpecificationTemplateController extends SoamFormController {
 
-
+	public static final String VIEW_FIND_SPECIFICATION_TEMPLATE =  "specification/template/findSpecificationTemplate";
 	private final SpecificationTemplateRepository specificationTemplates;
 
 	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository) {
@@ -33,7 +33,7 @@ public class SpecificationTemplateController extends SoamFormController {
 	@GetMapping("/specification/template/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put("specificationTemplate", new SpecificationTemplate());
-		return "specification/template/findSpecificationTemplate";
+		return VIEW_FIND_SPECIFICATION_TEMPLATE;
 	}
 
 	@GetMapping("/specification/templates")
@@ -44,14 +44,14 @@ public class SpecificationTemplateController extends SoamFormController {
 		if ( StringUtils.isEmpty(specificationTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute( "specificationTemplate", specificationTemplate);
-			return "specification/template/findSpecificationTemplate";
+			return VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
 		Page<SpecificationTemplate> specificationResults = findPaginatedForSpecificationTemplateName(page, specificationTemplate.getName());
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			model.addAttribute( "specificationTemplate", specificationTemplate);
-			return "specification/template/findSpecificationTemplate";
+			return VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
 		if ( specificationResults.getTotalElements() == 1) {

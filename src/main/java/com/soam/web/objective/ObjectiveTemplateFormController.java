@@ -106,7 +106,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
-        return "redirect:/objective/template/list";
+        return REDIRECT_TEMPLATE_LIST;
 
     }
 

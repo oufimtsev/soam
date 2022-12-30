@@ -22,6 +22,7 @@ import java.util.Map;
 public class ObjectiveTemplateController extends SoamFormController {
 
 
+	private static final String VIEW_FIND_OBJECTIVE_TEMPLATE = "objective/template/findObjectiveTemplate";
 	private final ObjectiveTemplateRepository objectiveTemplates;
 
 	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository) {
@@ -33,7 +34,7 @@ public class ObjectiveTemplateController extends SoamFormController {
 	@GetMapping("/objective/template/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put("objectiveTemplate", new ObjectiveTemplate());
-		return "objective/template/findObjectiveTemplate";
+		return VIEW_FIND_OBJECTIVE_TEMPLATE;
 	}
 
 	@GetMapping("/objective/templates")
@@ -44,14 +45,14 @@ public class ObjectiveTemplateController extends SoamFormController {
 		if ( StringUtils.isEmpty(objectiveTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute( "objectiveTemplate", objectiveTemplate);
-			return "objective/template/findObjectiveTemplate";
+			return VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
 		Page<ObjectiveTemplate> objectiveResults = findPaginatedForObjectiveTemplateName(page, objectiveTemplate.getName());
 		if (objectiveResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			model.addAttribute( "objectiveTemplate", objectiveTemplate);
-			return "objective/template/findObjectiveTemplate";
+			return VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
 		if ( objectiveResults.getTotalElements() == 1) {

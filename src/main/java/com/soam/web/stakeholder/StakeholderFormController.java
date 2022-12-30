@@ -22,6 +22,7 @@ import java.util.Optional;
 @RequestMapping("/specification/{specificationId}")
 public class StakeholderFormController extends SoamFormController {
     private static final String VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM = "stakeholder/addUpdateStakeholder";
+    private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
     private final StakeholderRepository stakeholders;
     private final StakeholderTemplateRepository stakeholderTemplates;
 
@@ -87,7 +88,7 @@ public class StakeholderFormController extends SoamFormController {
         }
 
         this.stakeholders.save(stakeholder);
-        return String.format("redirect:/specification/%s/stakeholder/%s", specificationId, stakeholder.getId() );
+        return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholder.getId() );
     }
 
     @GetMapping("/stakeholder/{stakeholderId}/edit")
@@ -126,7 +127,7 @@ public class StakeholderFormController extends SoamFormController {
 
 
         this.stakeholders.save(stakeholder);
-        return String.format("redirect:/specification/%s/stakeholder/%s",specificationId, stakeholderId);
+        return String.format(REDIRECT_STAKEHOLDER_DETAILS,specificationId, stakeholderId);
     }
 
     @PostMapping("/stakeholder/{stakeholderId}/delete")
@@ -141,17 +142,15 @@ public class StakeholderFormController extends SoamFormController {
         if(maybeStakeholder.isPresent()) {
             Stakeholder fetchedStakeholder = maybeStakeholder.get();
             if(fetchedStakeholder.getObjectives() != null && !fetchedStakeholder.getObjectives().isEmpty()){
-                redirectAttributes.addFlashAttribute(Util.DANGER,
-                        String.format("Please delete this stakeholder's objective%s first.",
-                                fetchedStakeholder.getObjectives().size() > 1 ? "s" : ""));
-                return String.format("redirect:/specification/%s/stakeholder/%s", stakeholder.getSpecification().getId(), stakeholderId);
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any objectives first.");
+                return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId);
             }
             stakeholders.delete(fetchedStakeholder);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholder.getName()));
             return "redirect:/specification/"+fetchedStakeholder.getSpecification().getId();
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
-            return String.format("redirect:/specification/%s/stakeholder/%s", specificationId, stakeholderId );
+            return String.format("redirect:/specification/%s", specificationId );
         }
     }
 

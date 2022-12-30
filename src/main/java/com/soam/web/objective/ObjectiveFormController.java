@@ -24,6 +24,8 @@ import java.util.Optional;
 @RequestMapping("/specification/{specificationId}/stakeholder/{stakeholderId}")
 public class ObjectiveFormController extends SoamFormController {
     private static final String VIEWS_OBJECTIVE_ADD_OR_UPDATE_FORM = "objective/addUpdateObjective";
+    
+    private static final String REDIRECT_STAKEHOLDER_DETAILS =  "redirect:/specification/%s/stakeholder/%s";
     private final ObjectiveRepository objectives;
     private final ObjectiveTemplateRepository objectiveTemplates;
 
@@ -58,7 +60,7 @@ public class ObjectiveFormController extends SoamFormController {
                                 @PathVariable("objectiveId") int objectiveId, Model model) {
         Optional<Objective> maybeObjective = this.objectives.findById(objectiveId);
         if(maybeObjective.isEmpty()){
-            return String.format("redirect:/specification/%s/stakeholder/%s", specification.getId(), stakeholder.getId());
+            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
         model.addAttribute(maybeObjective.get());
         return "objective/objectiveDetails";
@@ -69,7 +71,7 @@ public class ObjectiveFormController extends SoamFormController {
                                    @PathVariable("stakeholderId") int stakeholderId, Model model) {
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
         if( maybeStakeholder.isEmpty() ){
-            return String.format("redirect:/specification/%s/stakeholder/%s", specification.getId(), stakeholder.getId());
+            return String.format("redirect:/specification/%s", specification.getId());
         }
 
         Objective objective = new Objective();
@@ -106,7 +108,7 @@ public class ObjectiveFormController extends SoamFormController {
                                           @PathVariable("objectiveId") int objectiveId, Model model) {
         Optional<Objective> maybeObjective = this.objectives.findById(objectiveId);
         if(maybeObjective.isEmpty()){
-            return String.format( "redirect:/specification/%s/stakeholder/%s", specificationId, stakeholderId );
+            return String.format( REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId );
         }
         model.addAttribute(maybeObjective.get());
         populateFormModel(model);
@@ -154,11 +156,11 @@ public class ObjectiveFormController extends SoamFormController {
             Objective fetchedObjective = maybeObjective.get();
             objectives.delete(fetchedObjective);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedObjective.getName()));
-            return String.format("redirect:/specification/%s/stakeholder/%s",specificationId,stakeholderId);
+            return String.format(REDIRECT_STAKEHOLDER_DETAILS,specificationId,stakeholderId);
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
-            return String.format("redirect:/specification/%s/stakeholder/%s/objective/%s",
-                    specificationId, stakeholderId, objectiveId);
+            return String.format(REDIRECT_STAKEHOLDER_DETAILS,
+                    specificationId, stakeholderId);
         }
     }
 

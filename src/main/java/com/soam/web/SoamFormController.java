@@ -11,6 +11,10 @@ public abstract class SoamFormController {
         dataBinder.setDisallowedFields("id");
     }
 
+    /**
+     * Trim all incoming Strings
+     * @param dataBinder
+     */
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(false);

@@ -24,7 +24,6 @@ import jakarta.persistence.Table;
 import org.springframework.core.style.ToStringCreator;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Simple JavaBean domain object representing a specification.
@@ -43,58 +42,6 @@ public class Specification extends SoamEntity {
 
 	public void setStakeholders(List<Stakeholder> stakeholders) {
 		this.stakeholders = stakeholders;
-	}
-
-	public void addStakeholder(Stakeholder stakeholder) {
-		if (stakeholder.isNew()) {
-			getStakeholders().add(stakeholder);
-		}
-	}
-
-	/**
-	 * Return an Optional Stakeholder with the given name
-	 * @param name to test
-	 * @return an Optional Stakeholder if stakeholder name is already in use
-	 */
-	public Optional<Stakeholder> getStakeholder(String name) {
-		return getStakeholder(name, false);
-	}
-
-	/**
-	 * Return an Optional Stakeholder with the given id
-	 * @param id to test
-	 * @return an Optional Stakeholder if stakeholder id is already in use
-	 */
-	public Optional<Stakeholder> getStakeholder(Integer id) {
-		for (Stakeholder stakeholder : getStakeholders()) {
-			if (!stakeholder.isNew()) {
-				Integer compId = stakeholder.getId();
-				if (compId.equals(id)) {
-					return Optional.of(stakeholder);
-				}
-			}
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * Return an Stakeholder with the given name. If the id is blanks, skip
-	 * @param name to test
-	 * @param ignoreNew if set to true, do not return unsaved stakeholders
-	 * @return an optional pet if pet name is already in use
-	 */
-	public Optional<Stakeholder> getStakeholder(String name, boolean ignoreNew) {
-		name = name.toLowerCase();
-		for (Stakeholder stakeholder : getStakeholders()) {
-			if (!ignoreNew || !stakeholder.isNew()) {
-				String compName = stakeholder.getName();
-				compName = compName == null ? "" : compName.toLowerCase();
-				if (compName.equals(name)) {
-					return Optional.of(stakeholder);
-				}
-			}
-		}
-		return Optional.empty();
 	}
 
 	@Override

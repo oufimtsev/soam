@@ -22,6 +22,8 @@ import java.util.Optional;
 @Controller
 public class SpecificationController {
 	private final SpecificationRepository specifications;
+	
+	public static final String  VIEW_FIND_SPECIFICATION = "specification/findSpecification";
 
 	public SpecificationController(SpecificationRepository specificationRepository) {
 		this.specifications = specificationRepository;
@@ -31,7 +33,7 @@ public class SpecificationController {
 	@GetMapping("/specification/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put("specification", new Specification());
-		return "specification/findSpecification";
+		return VIEW_FIND_SPECIFICATION;
 	}
 
 	@GetMapping("/specifications")
@@ -41,7 +43,7 @@ public class SpecificationController {
 		if ( StringUtils.isEmpty(specification.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute( "specification", specification );
-			return "specification/findSpecification";
+			return VIEW_FIND_SPECIFICATION;
 		}
 
 
@@ -49,7 +51,7 @@ public class SpecificationController {
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			model.addAttribute( "specification", specification );
-			return "specification/findSpecification";
+			return VIEW_FIND_SPECIFICATION;
 		}
 
 		if ( specificationResults.getTotalElements() == 1) {

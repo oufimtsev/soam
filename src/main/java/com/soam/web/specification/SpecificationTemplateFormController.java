@@ -105,7 +105,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
-        return "redirect:/specification/template/list";
+        return REDIRECT_TEMPLATE_LIST;
 
     }
 

@@ -29,10 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(SpecificationTemplateController.class)
 public class SpecificationTemplateControllerTest {
 
-    private static final int TEST_SPECIFICATION_ID = 100;
-    private static final int EMPTY_SPECIFICATION_ID = 200;
-    //todo: define more constants!
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -45,26 +41,39 @@ public class SpecificationTemplateControllerTest {
     @MockBean
     private PriorityRepository priorities;
 
-    private SpecificationTemplate testSpecification() {
+    private static SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
+    private static final int EMPTY_SPECIFICATION_ID = 999;
+
+    private static String URL_NEW_SPECIFICATION = "/specification/new";
+    private static String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
+    private static String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
+    
+    private static String VIEW_FIND_SPECIFICATION_TEMPLATE = "specification/template/findSpecificationTemplate";
+
+
+    static {
+
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
         lowPriority.setId(1);
         lowPriority.setSequence(1);
-        SpecificationTemplate testSpec = new SpecificationTemplate();
-        testSpec.setId(TEST_SPECIFICATION_ID);
-        testSpec.setName("Test Spec");
-        testSpec.setDescription("desc");
-        testSpec.setNotes("notes");
-        testSpec.setPriority(lowPriority);
-        return testSpec;
+
+
+        TEST_SPECIFICATION_1.setId(100);
+        TEST_SPECIFICATION_1.setName("Test Spec 1");
+        TEST_SPECIFICATION_1.setDescription("desc");
+        TEST_SPECIFICATION_1.setNotes("notes");
+        TEST_SPECIFICATION_1.setPriority(lowPriority);
     }
+
+
 
     @BeforeEach
     void setup() {
-        SpecificationTemplate testSpec = testSpecification();
-        given( this.specificationTemplates.findByName("Test Spec")).willReturn(Optional.of(testSpec));
-        given( this.specificationTemplates.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(testSpec));
-        given( this.specificationTemplates.findById(TEST_SPECIFICATION_ID)).willReturn(Optional.of(testSpec));
+
+        given( this.specificationTemplates.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplates.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplates.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
     }
@@ -72,12 +81,12 @@ public class SpecificationTemplateControllerTest {
     @Test
     void tesInitFind() throws Exception {
         mockMvc.perform(get("/specification/template/find")).andExpect(status().isOk())
-                .andExpect(view().name("specification/template/findSpecificationTemplate"));
+                .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
     }
 
     @Test
     void testProcessFindFormSuccess() throws Exception {
-        Page<SpecificationTemplate> specificationTemplates = new PageImpl<>(Lists.newArrayList(testSpecification(), new SpecificationTemplate()));
+        Page<SpecificationTemplate> specificationTemplates = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1, new SpecificationTemplate()));
         Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specificationTemplates);
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
@@ -86,24 +95,30 @@ public class SpecificationTemplateControllerTest {
 
     @Test
     void testProcessFindFormByName() throws Exception {
-        Page<SpecificationTemplate> specifications = new PageImpl<>(Lists.newArrayList(testSpecification()));
+        Page<SpecificationTemplate> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
         //todo: Use constant for "Test"
         Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
         Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/template/" + TEST_SPECIFICATION_ID+"/edit"));
+                .andExpect(view().name("redirect:/specification/template/" + TEST_SPECIFICATION_1.getId()+"/edit"));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("specification/template/findSpecificationTemplate"));
+                .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
+
+        mockMvc.perform(get("/specification/templates?page=1").param("name", ""))
+                .andExpect(model().attributeHasErrors("specificationTemplate"))
+                .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
+                .andExpect(status().isOk())
+                .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
     }
 
 
     @Test
     void testListSpecificationTemplates() throws Exception{
-        Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(testSpecification()));
+        Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
         Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
         mockMvc.perform( get("/specification/template/list"))
