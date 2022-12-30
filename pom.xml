@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.soam</groupId>
 	<artifactId>SOAM</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	<name>SOAM</name>
 	<description>Stakeholder and Objective Analysis and Management</description>
 	<properties>

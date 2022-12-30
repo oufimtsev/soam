@@ -10,7 +10,7 @@ Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) applicatio
 ## Running the SOAM prototype locally
 > NOTE: SOAM has been updated to Spring Boot 3 and requires Java 17 to run.
 ```
-git clone https://github.com/alecode84/soam-prototype.git
+git clone https://github.com/AlanClifford/soam.git
 cd soam-prototype
 mvnw package
 java -jar target/SOAM-0.0.1-SNAPSHOT.jar
@@ -27,14 +27,6 @@ mvnw spring-boot:run
 
 > NOTE: Windows users should set `git config core.autocrlf true` to avoid format assertions failing the build (use `--global` to set that flag globally).
 
-
-## Building a Container
-
-There is no `Dockerfile` in this project. You can build a container image (if you have a docker daemon) using the Spring Boot build plugin:
-
-```
-mvnw spring-boot:build-image
-```
 
 
 ## Compiling the CSS
