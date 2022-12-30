@@ -7927,7 +7927,7 @@ strong {
 .navbar {
   border-top: 4px solid #6db33f;
   background-color: #34302d;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   border-bottom: 0;
   border-left: 0;
   border-right: 0; }
@@ -7943,7 +7943,7 @@ strong {
   text-shadow: none;
   font-size: 14px;
   /* line-height: 14px; */
-  padding: 28px 20px;
+  padding: 22px 20px;
   transition: all 0.15s;
   -webkit-transition: all 0.15s;
   -moz-transition: all 0.15s;
@@ -7968,6 +7968,9 @@ strong {
   .navbar-toggle .icon-bar {
     width: 19px;
     height: 3px; }
+
+.breadcrumb-nav {
+  background-color: rgba(0, 0, 0, 0.05); }
 
 @media (max-width: 768px) {
   .navbar-toggle {
