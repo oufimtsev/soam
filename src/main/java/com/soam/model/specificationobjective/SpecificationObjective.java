@@ -13,33 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.soam.model.objective;
+package com.soam.model.specificationobjective;
 
 import com.soam.model.SoamEntity;
-import com.soam.model.stakeholder.Stakeholder;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.soam.model.specification.Specification;
+import com.soam.model.stakeholderobjective.StakeholderObjective;
+import jakarta.persistence.*;
 import org.springframework.core.style.ToStringCreator;
 
+import java.util.List;
+
 /**
- * Simple JavaBean domain object representing a Objectives.
+ * Simple JavaBean domain object representing a Specification Objectives.
  */
 @Entity
-@Table(name = "objectives")
-public class Objective extends SoamEntity {
+@Table(name = "specification_objectives")
+public class SpecificationObjective extends SoamEntity {
 
 	@ManyToOne
-	@JoinColumn(name = "stakeholder_id")
-	private Stakeholder stakeholder;
+	@JoinColumn(name = "specification_id")
+	private Specification specification;
 
-	public Stakeholder getStakeholder() {
-		return stakeholder;
+	@OneToMany( mappedBy = "specificationObjective")
+	private List<StakeholderObjective> stakeholderObjectives;
+
+	public Specification getSpecification() {
+		return specification;
 	}
 
-	public void setStakeholder(Stakeholder stakeholder) {
-		this.stakeholder = stakeholder;
+	public void setSpecification(Specification specification) {
+		this.specification = specification;
+	}
+
+	public List<StakeholderObjective> getStakeholderObjectives() {
+		return stakeholderObjectives;
+	}
+
+	public void setStakeholderObjectives(List<StakeholderObjective> stakeholderObjectives) {
+		this.stakeholderObjectives = stakeholderObjectives;
 	}
 
 	@Override

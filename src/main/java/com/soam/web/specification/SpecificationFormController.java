@@ -103,8 +103,9 @@ public class SpecificationFormController extends SoamFormController {
 
         if(maybeSpecification.isPresent()) {
             Specification specificationById = maybeSpecification.get();
-            if(specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()){
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholders first.");
+            if((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
+                (specificationById.getSpecificationObjectives() != null && !specificationById.getSpecificationObjectives().isEmpty())) {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholders and specification objectives first.");
                 return REDIRECT_SPECIFICATION_DETAILS+ specificationId;
             }
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationById.getName()));

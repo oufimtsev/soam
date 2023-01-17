@@ -141,8 +141,8 @@ public class StakeholderFormController extends SoamFormController {
 
         if(maybeStakeholder.isPresent()) {
             Stakeholder fetchedStakeholder = maybeStakeholder.get();
-            if(fetchedStakeholder.getObjectives() != null && !fetchedStakeholder.getObjectives().isEmpty()){
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any objectives first.");
+            if(fetchedStakeholder.getStakeholderObjectives() != null && !fetchedStakeholder.getStakeholderObjectives().isEmpty()) {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
                 return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId);
             }
             stakeholders.delete(fetchedStakeholder);

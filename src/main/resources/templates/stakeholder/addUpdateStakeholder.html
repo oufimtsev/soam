@@ -8,7 +8,6 @@
 
   <form th:object="${stakeholder}" class="form-horizontal" id="add-stakeholder-form" method="post">
     <input type="hidden" th:field="*{specification}"/>
-    <input type="hidden" th:field="*{objectives}"/>
     <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
       <div th:if="${!#lists.isEmpty(stakeholderTemplates)}" th:replace="~{fragments/soamTemplateButton :: templateButton(${stakeholderTemplates})}" />
       <a th:if="${!stakeholder['new']}" class="btn btn-sm btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this stakeholder?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>
