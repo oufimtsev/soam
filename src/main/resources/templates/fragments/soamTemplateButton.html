@@ -1,9 +1,9 @@
 <html>
 <body>
-<th:block th:fragment="templateButton (templates)">
+<th:block th:fragment="templateButton (templates)" th:with="caption = ${caption} ?: 'Use Template'">
 <div class="dropdown" >
     <button class="btn btn-sm btn-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fa fa-object-ungroup me-2" aria-hidden="true"></i>Use Template
+        <i class="fa fa-object-ungroup me-2" aria-hidden="true"></i><span th:text="${caption}">Use Template</span>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
         <li class="dropdown-item disabled" th:if="${#lists.isEmpty(templates)}">
@@ -14,7 +14,8 @@
                th:attr="data-temp-name=${tempTemplate.name},
                  data-temp-notes=${tempTemplate.notes},
                  data-temp-description=${tempTemplate.description},
-                 data-temp-priority=${tempTemplate.priority.id}"></a>
+                 data-temp-priority=${tempTemplate.priority.id},
+                 data-temp-id=${tempTemplate.id}"></a>
         </li>
     </ul>
 </div>

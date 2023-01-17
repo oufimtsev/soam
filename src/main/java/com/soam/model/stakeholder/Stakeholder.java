@@ -16,12 +16,14 @@
 package com.soam.model.stakeholder;
 
 import com.soam.model.SoamEntity;
-import com.soam.model.objective.Objective;
 import com.soam.model.specification.Specification;
+import com.soam.model.stakeholderobjective.StakeholderObjective;
+import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SortComparator;
 import org.springframework.core.style.ToStringCreator;
 
-import java.util.List;
+import java.util.SortedSet;
 
 /**
  * Simple JavaBean domain object representing a Stakeholder.
@@ -34,15 +36,15 @@ public class Stakeholder extends SoamEntity {
 	private Specification specification;
 
 	@OneToMany( mappedBy = "stakeholder" )
-	@OrderBy("name")
-	private List<Objective> objectives;
+	@SortComparator(StakeholderObjectiveComparator.class)
+	private SortedSet<StakeholderObjective> stakeholderObjectives;
 
-	public List<Objective> getObjectives() {
-		return this.objectives;
+	public SortedSet<StakeholderObjective> getStakeholderObjectives() {
+		return stakeholderObjectives;
 	}
 
-	public void setObjectives(List<Objective> objectives) {
-		this.objectives = objectives;
+	public void setStakeholderObjectives(SortedSet<StakeholderObjective> stakeholderObjectives) {
+		this.stakeholderObjectives = stakeholderObjectives;
 	}
 
 	public Specification getSpecification() {

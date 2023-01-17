@@ -1,14 +1,16 @@
 package com.soam.stakeholder;
 
 import com.soam.Util;
-import com.soam.model.objective.Objective;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
+import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
+import com.soam.model.stakeholderobjective.StakeholderObjective;
+import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.web.stakeholder.StakeholderFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,8 +23,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -37,9 +40,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StakeholderFormControllerTest {
 
     private static Specification TEST_SPECIFICATION = new Specification();
+    private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
     private static Stakeholder TEST_STAKEHOLDER_1 = new Stakeholder();
     private static Stakeholder TEST_STAKEHOLDER_2 = new Stakeholder();
     private static Stakeholder TEST_STAKEHOLDER_3 = new Stakeholder();
+    private static StakeholderObjective TEST_STAKEHOLDER_2_OBJECTIVE = new StakeholderObjective();
 
     private static final int EMPTY_STAKEHOLDER_ID = 999;
     
@@ -67,6 +72,12 @@ public class StakeholderFormControllerTest {
         TEST_SPECIFICATION.setId(1);
         TEST_SPECIFICATION.setName("Test Specification");
 
+        TEST_SPECIFICATION_OBJECTIVE.setId(10);
+        TEST_SPECIFICATION_OBJECTIVE.setName("Test Specification Objective");
+        TEST_SPECIFICATION_OBJECTIVE.setDescription("desc");
+        TEST_SPECIFICATION_OBJECTIVE.setNotes("notes");
+        TEST_SPECIFICATION_OBJECTIVE.setPriority(lowPriority);
+        TEST_SPECIFICATION_OBJECTIVE.setSpecification(TEST_SPECIFICATION);
 
         TEST_STAKEHOLDER_1.setId(100);
         TEST_STAKEHOLDER_1.setSpecification( TEST_SPECIFICATION );
@@ -74,7 +85,7 @@ public class StakeholderFormControllerTest {
         TEST_STAKEHOLDER_1.setDescription("desc");
         TEST_STAKEHOLDER_1.setNotes("notes");
         TEST_STAKEHOLDER_1.setPriority(lowPriority);
-        TEST_STAKEHOLDER_1.setObjectives(new ArrayList<>());
+        TEST_STAKEHOLDER_1.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
 
 
 
@@ -86,8 +97,12 @@ public class StakeholderFormControllerTest {
         TEST_STAKEHOLDER_2.setNotes("notes");
         TEST_STAKEHOLDER_2.setPriority(highPriority);
 
-        Objective testObjective = new Objective();
-        TEST_STAKEHOLDER_2.setObjectives(Lists.newArrayList(testObjective));
+        TEST_STAKEHOLDER_2_OBJECTIVE.setId(1000);
+        TEST_STAKEHOLDER_2_OBJECTIVE.setStakeholder(TEST_STAKEHOLDER_2);
+        TEST_STAKEHOLDER_2_OBJECTIVE.setSpecificationObjective(TEST_SPECIFICATION_OBJECTIVE);
+        SortedSet<StakeholderObjective> stakeholderObjectives = new TreeSet<>(new StakeholderObjectiveComparator());
+        stakeholderObjectives.add(TEST_STAKEHOLDER_2_OBJECTIVE);
+        TEST_STAKEHOLDER_2.setStakeholderObjectives(stakeholderObjectives);
 
         TEST_STAKEHOLDER_3.setId(300);
         TEST_STAKEHOLDER_3.setSpecification( TEST_SPECIFICATION );

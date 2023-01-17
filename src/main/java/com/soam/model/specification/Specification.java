@@ -16,6 +16,7 @@
 package com.soam.model.specification;
 
 import com.soam.model.SoamEntity;
+import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.stakeholder.Stakeholder;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -36,12 +37,24 @@ public class Specification extends SoamEntity {
 	@OrderBy("name")
 	private List<Stakeholder> stakeholders;
 
+	@OneToMany( mappedBy = "specification")
+	@OrderBy("name")
+	private List<SpecificationObjective> specificationObjectives;
+
 	public List<Stakeholder> getStakeholders() {
 		return this.stakeholders;
 	}
 
 	public void setStakeholders(List<Stakeholder> stakeholders) {
 		this.stakeholders = stakeholders;
+	}
+
+	public List<SpecificationObjective> getSpecificationObjectives() {
+		return this.specificationObjectives;
+	}
+
+	public void setSpecificationObjectives(List<SpecificationObjective> specificationObjectives) {
+		this.specificationObjectives = specificationObjectives;
 	}
 
 	@Override

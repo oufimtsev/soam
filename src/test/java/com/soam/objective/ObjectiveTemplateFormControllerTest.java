@@ -1,7 +1,6 @@
 package com.soam.objective;
 
 import com.soam.Util;
-import com.soam.model.objective.ObjectiveRepository;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
@@ -54,9 +53,6 @@ public class ObjectiveTemplateFormControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private ObjectiveRepository objectives;
 
     @MockBean
     private ObjectiveTemplateRepository objectiveTemplates;
