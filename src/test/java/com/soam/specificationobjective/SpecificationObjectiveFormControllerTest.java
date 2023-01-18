@@ -38,12 +38,14 @@ public class SpecificationObjectiveFormControllerTest {
 
     private static final int EMPTY_SPECIFICATION_OBJECTIVE_ID = 999;
     
-    private static String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
     private static String URL_NEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/new";
     private static String URL_EDIT_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/edit";
     private static String URL_DELETE_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/delete";
 
     private static String VIEW_EDIT_SPECIFICATION_OBJECTIVE =  "specificationObjective/addUpdateSpecificationObjective";
+
+    private static String REDIRECT_SPECIFICATION_OBJECTIVE_LIST = "redirect:/specification/%s/specificationObjective/list";
+    private static String REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS = "redirect:/specification/%s/specificationObjective/%s";
 
     static {
         PriorityType lowPriority = new PriorityType();
@@ -120,20 +122,6 @@ public class SpecificationObjectiveFormControllerTest {
     }
 
     @Test
-    void testViewSpecificationObjectiveDetails() throws Exception {
-        mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),  TEST_SPECIFICATION_OBJECTIVE_1.getId()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists("specificationObjective"))
-                .andExpect(model().attribute("specificationObjective", hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE_1.getName()))))
-                .andExpect(view().name("specificationObjective/specificationObjectiveDetails"));
-
-        mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),
-                        EMPTY_SPECIFICATION_OBJECTIVE_ID))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s", TEST_SPECIFICATION.getId())));
-    }
-
-    @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId())).andExpect(status().isOk())
                 .andExpect(model().attributeExists("specificationObjective"))
@@ -186,7 +174,7 @@ public class SpecificationObjectiveFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s",TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
     }
 
     @Test
@@ -197,7 +185,7 @@ public class SpecificationObjectiveFormControllerTest {
                         .param("description", "description there")
                         )
                     .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s/specificationObjective/%s",
+                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS,
                         TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())));
     }
 
@@ -237,13 +225,13 @@ public class SpecificationObjectiveFormControllerTest {
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(String.format("redirect:/specification/%s", TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
 
         mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_3.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_3.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(String.format("redirect:/specification/%s", TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
     }
 
     @Test
@@ -252,6 +240,6 @@ public class SpecificationObjectiveFormControllerTest {
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(String.format("redirect:/specification/%s", TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
     }
 }

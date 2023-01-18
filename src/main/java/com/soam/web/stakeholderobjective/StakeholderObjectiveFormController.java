@@ -85,7 +85,8 @@ public class StakeholderObjectiveFormController extends SoamFormController {
             return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
 
-        SpecificationObjective specificationObjective = specification.getSpecificationObjectives().get(0);
+        SpecificationObjective specificationObjective = new SpecificationObjective();
+        specificationObjective.setId(-1);
 
         StakeholderObjective stakeholderObjective = new StakeholderObjective();
         stakeholderObjective.setStakeholder(stakeholder);
@@ -107,15 +108,18 @@ public class StakeholderObjectiveFormController extends SoamFormController {
 
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
         if (testSpecificationObjective.isEmpty()) {
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
-        }
+            SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
+            emptySeSpecificationObjective.setId(-1);
+            stakeholderObjective.setSpecificationObjective(emptySeSpecificationObjective);
+            result.rejectValue("specificationObjective", "required", "Specification Objective should not be empty");
+        } else {
+            stakeholderObjective.setSpecificationObjective(testSpecificationObjective.get());
 
-        stakeholderObjective.setSpecificationObjective(testSpecificationObjective.get());
-
-        Optional<StakeholderObjective> testStakeholderObjective = stakeholderObjectives.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId);
-        if (testStakeholderObjective.isPresent()) {
-            testStakeholderObjective.get().setSpecificationObjective(testSpecificationObjective.get());
-            result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists");
+            Optional<StakeholderObjective> testStakeholderObjective = stakeholderObjectives.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId);
+            if (testStakeholderObjective.isPresent()) {
+                testStakeholderObjective.get().setSpecificationObjective(testSpecificationObjective.get());
+                result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists");
+            }
         }
 
         if (result.hasErrors()) {

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'specificationObjectives')}">
+<head></head>
+<body>
+
+<h2>Specification Objectives</h2>
+<div class="alert alert-warning" th:if="${#lists.isEmpty(specificationObjectives)}">
+  No Specification Objectives have been added to this specification.
+</div>
+<table id="specificationObjectives" class="table table-striped" th:if="${!#lists.isEmpty(specificationObjectives)}">
+  <thead>
+  <tr>
+    <th style="width: 200px;">Name</th>
+    <th>Priority</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="specificationObjective : ${specificationObjectives}">
+    <td>
+      <a th:href="@{/specification/__${specificationObjective.specification.id}__/specificationObjective/__${specificationObjective.id}__}" th:text="${specificationObjective.name}"/></a>
+    </td>
+    <td th:text="${specificationObjective.priority}"/>
+  </tr>
+  </tbody>
+</table>
+
+<div>
+  <div th:replace="~{fragments/flash :: subFlashMessage}"></div>
+  <a th:href="@{/specification/__${specification.id}__/specificationObjective/new}" class="btn btn-primary"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add
+        Specification Objective</a>
+</div>
+</body>
+</html>
+
