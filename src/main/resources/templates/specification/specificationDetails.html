@@ -24,11 +24,13 @@
         <td th:text="*{priority}"></td>
       </tr>
     </table>
-    <div th:replace="~{fragments/flash :: subFlashMessage}"></div>
     <div class="row">
       <div class="col">
         <a th:href="@{__${specification.id}__/edit}" class="btn btn-primary">
           <i class="fa fa-pencil me-1" aria-hidden="true"></i> Edit Specification
+        </a>
+        <a th:href="@{__${specification.id}__/specificationObjective/list}" class="btn btn-primary ms-2">
+          <i class="fa fa-pencil me-1" aria-hidden="true"></i> Maintain Specification Objectives
         </a>
         <a class="btn btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this specification?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>
       </div>
@@ -56,30 +58,8 @@
         </tr>
         </tbody>
     </table>
+    <div th:replace="~{fragments/flash :: subFlashMessage}"></div>
     <a th:href="@{__${specification.id}__/stakeholder/new}" class="btn btn-primary"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add Stakeholder</a>
-    </div>
-    <hr/>
-    <h2>Specification Objectives</h2>
-    <div class="col-md-10">
-      <div th:if="${#lists.isEmpty(specification.specificationObjectives)}" class="alert alert-warning">No Specification Objectives have been added to this specification.</div>
-      <table class="table table-striped" th:if="${!#lists.isEmpty(specification.specificationObjectives)}">
-        <thead>
-        <tr>
-          <th style="width: 350px;">Name</th>
-          <th>Priority</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="specificationObjective : ${specification.specificationObjectives}">
-          <td>
-            <a th:href="@{/specification/__${specification.id}__/specificationObjective/__${specificationObjective.id}__}" th:text="${specificationObjective.name}"/></a>
-          </td>
-          <td th:text="${specificationObjective.priority}"/>
-        </tr>
-        </tbody>
-      </table>
-      <a th:href="@{/specification/__${specification.id}__/specificationObjective/new}" class="btn btn-primary"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add
-        Specification Objective</a>
     </div>
 
     <form id="deleteForm" th:object="${specification}" th:action="@{/specification/__${specification.id}__/delete}" method="post">

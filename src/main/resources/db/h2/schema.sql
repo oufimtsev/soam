@@ -3,6 +3,9 @@ DROP TABLE stakeholder_objectives IF EXISTS;
 DROP TABLE specification_objectives IF EXISTS;
 DROP TABLE stakeholders IF EXISTS;
 DROP TABLE specifications IF EXISTS;
+DROP TABLE specification_templates IF EXISTS;
+DROP TABLE stakeholder_templates IF EXISTS;
+DROP TABLE objective_templates IF EXISTS;
 
 
 CREATE TABLE priority_types (

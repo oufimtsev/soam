@@ -78,7 +78,7 @@
         <li class="breadcrumb-item" th:classappend="${specification == null ? 'active' : ''}">
           <a th:href="@{/}">Home</a>
         </li>
-        <li class="breadcrumb-item" th:with="specificationActive=${stakeholder == null && specificationObjective == null}" th:classappend="${specificationActive ? 'active' : ''}" >
+        <li class="breadcrumb-item" th:with="specificationActive=${stakeholder == null && specificationObjective == null && specificationObjectives == null}" th:classappend="${specificationActive ? 'active' : ''}" >
           <a th:if="${specification['new']}">Specifications</a>
 
           <a th:if="${!specificationActive && !specification['new']}" th:text="${specification.name}"
@@ -90,6 +90,9 @@
           <a th:if="${!stakeholderActive && stakeholder.name != null }" th:text="${stakeholder.name}"
              th:href="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__}">Stakeholder Name</a>
           <span th:if="${stakeholderActive && stakeholder.name != null }" th:text="${stakeholder.name}">StakeholderName</span>
+        </li>
+        <li class="breadcrumb-item active" th:if="${specificationObjectives != null}">
+          <span>Specification Objectives</span>
         </li>
         <li class="breadcrumb-item active" th:if="${specificationObjective != null}">
           <a th:if="${specificationObjective.name == null}">Specification Objective</a>

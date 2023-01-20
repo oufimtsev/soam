@@ -163,7 +163,9 @@ public class StakeholderObjectiveFormControllerTest {
                         .param("stakeholder", String.valueOf(TEST_STAKEHOLDER.getId()))
                         .param("specificationObjective", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID))
                         .param("templateId", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(model().hasErrors())
+                .andExpect(model().attributeHasFieldErrors("stakeholderObjective", "specificationObjective"))
+                .andExpect(status().isOk());
 
         mockMvc.perform(post(URL_NEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER.getId())
                         .param("stakeholder", String.valueOf(TEST_STAKEHOLDER.getId()))

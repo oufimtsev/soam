@@ -22,16 +22,13 @@ import java.util.Optional;
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveFormController extends SoamFormController {
     private static final String VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM = "specificationObjective/addUpdateSpecificationObjective";
-    private static final String VIEWS_SPECIFICATION_OBJECTIVE_DETAILS = "specificationObjective/specificationObjectiveDetails";
     private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
-    private static final String REDIRECT_SPECIFICATION_DETAILS =  "redirect:/specification/%s";
+    private static final String REDIRECT_SPECIFICATION_OBJECTIVE_LIST = "redirect:/specification/%s/specificationObjective/list";
     private static final String REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS = "redirect:/specification/%s/specificationObjective/%s";
 
     private final SpecificationObjectiveRepository specificationObjectives;
     private final ObjectiveTemplateRepository objectiveTemplates;
-
     private final SpecificationRepository specificationRepository;
-
     private final PriorityRepository priorities;
 
     public SpecificationObjectiveFormController(
@@ -47,18 +44,6 @@ public class SpecificationObjectiveFormController extends SoamFormController {
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
         return oSpecification.orElse(null);
-    }
-
-    @GetMapping("/specificationObjective/{specificationObjectiveId}")
-    public String showSpecificationObjective(
-            Specification specification,
-            @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectives.findById(specificationObjectiveId);
-        if (maybeSpecificationObjective.isEmpty()) {
-            return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-        }
-        model.addAttribute(maybeSpecificationObjective.get());
-        return VIEWS_SPECIFICATION_OBJECTIVE_DETAILS;
     }
 
     @GetMapping("/specificationObjective/new")
@@ -98,8 +83,8 @@ public class SpecificationObjectiveFormController extends SoamFormController {
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
         Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectives.findById(specificationObjectiveId);
-        if(maybeSpecificationObjective.isEmpty()) {
-            return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+        if (maybeSpecificationObjective.isEmpty()) {
+            return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
         model.addAttribute(maybeSpecificationObjective.get());
         populateFormModel(model);
@@ -141,18 +126,17 @@ public class SpecificationObjectiveFormController extends SoamFormController {
 
         if (maybeSpecificationObjective.isPresent()) {
             SpecificationObjective fetchedSpecificationObjective = maybeSpecificationObjective.get();
-            if(fetchedSpecificationObjective.getStakeholderObjectives() != null && !fetchedSpecificationObjective.getStakeholderObjectives().isEmpty()) {
+            if (fetchedSpecificationObjective.getStakeholderObjectives() != null && !fetchedSpecificationObjective.getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
-                return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+                return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
             }
 
             specificationObjectives.delete(fetchedSpecificationObjective);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedSpecificationObjective.getName()));
-            return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification objective");
-            return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
+        return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
     }
 
     private void populateFormModel(Model model) {
