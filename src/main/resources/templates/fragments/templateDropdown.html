@@ -1,0 +1,7 @@
+<html>
+<body>
+<th:block th:fragment="templateDropdown (templates)">
+    <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${templates}, 'Use Template', 'No templates defined', 'template')}" />
+</th:block>
+</body>
+</html>

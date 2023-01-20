@@ -152,7 +152,7 @@ public class StakeholderObjectiveFormControllerTest {
         mockMvc.perform(post(URL_NEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER.getId())
                         .param("stakeholder", String.valueOf(TEST_STAKEHOLDER.getId()))
                         .param("specificationObjective", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_2.getId()))
-                        .param("templateId", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_2.getId()))
+                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_2.getId()))
                         .param("notes", "Stakeholder Objective notes"))
                 .andExpect(status().is3xxRedirection());
     }
@@ -162,7 +162,7 @@ public class StakeholderObjectiveFormControllerTest {
         mockMvc.perform(post(URL_NEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER.getId())
                         .param("stakeholder", String.valueOf(TEST_STAKEHOLDER.getId()))
                         .param("specificationObjective", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID))
-                        .param("templateId", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))
+                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrors("stakeholderObjective", "specificationObjective"))
                 .andExpect(status().isOk());
@@ -170,7 +170,7 @@ public class StakeholderObjectiveFormControllerTest {
         mockMvc.perform(post(URL_NEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER.getId())
                         .param("stakeholder", String.valueOf(TEST_STAKEHOLDER.getId()))
                         .param("specificationObjective", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_1.getId()))
-                        .param("templateId", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_1.getId())))
+                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_1.getId())))
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrors("stakeholderObjective", "specificationObjective"))
                 .andExpect(status().isOk());

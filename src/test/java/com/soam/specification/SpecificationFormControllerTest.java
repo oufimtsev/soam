@@ -6,7 +6,12 @@ import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.model.specificationobjective.SpecificationObjective;
+import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.model.stakeholder.Stakeholder;
+import com.soam.model.stakeholder.StakeholderRepository;
+import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
+import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.web.specification.SpecificationFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.TreeSet;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -76,6 +82,9 @@ public class SpecificationFormControllerTest {
 
         Stakeholder testStakeholder = new Stakeholder();
         TEST_SPECIFICATION_2.setStakeholders(Lists.newArrayList(testStakeholder));
+        SpecificationObjective testSpecificationObjective = new SpecificationObjective();
+        TEST_SPECIFICATION_2.setSpecificationObjectives(Lists.newArrayList(testSpecificationObjective));
+        testStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
 
         TEST_SPECIFICATION_3.setId(300);
         TEST_SPECIFICATION_3.setName("Spec 3");
@@ -89,6 +98,15 @@ public class SpecificationFormControllerTest {
 
     @MockBean
     private SpecificationRepository specifications;
+
+    @MockBean
+    private StakeholderRepository stakeholderRepository;
+
+    @MockBean
+    private SpecificationObjectiveRepository specificationObjectiveRepository;
+
+    @MockBean
+    private StakeholderObjectiveRepository stakeholderObjectiveRepository;
 
     @MockBean
     private SpecificationTemplateRepository specificationTemplates;
@@ -135,25 +153,53 @@ public class SpecificationFormControllerTest {
     @Test
     void testProcessCreationFormSuccess() throws Exception {
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
-                        .param("notes", "spec notes").param("description", "Description"))
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "")
+                        .param("collectionItemId", "-1"))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "srcSpecification")
+                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     void testProcessCreationFormHasErrors() throws Exception {
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", TEST_SPECIFICATION_1.getName())
-                        .param("notes", "spec notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors("specification"))
-                          .andExpect(model().attributeHasFieldErrors("specification", "name"))
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "")
+                        .param("collectionItemId", "-1"))
+                .andExpect(model().attributeHasErrors("specification"))
+                .andExpect(model().attributeHasFieldErrors("specification", "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
 
-        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
-                        .param("notes", "spec notes").param("description", ""))
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
+                        .param("notes", "spec notes").param("description", "")
+                        .param("collectionType", "")
+                        .param("collectionItemId", "-1"))
                 .andExpect(model().attributeHasErrors("specification"))
                 .andExpect(model().attributeHasFieldErrorCode("specification", "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", TEST_SPECIFICATION_2.getName())
+                        .param("notes", "spec notes").param("description", "desc")
+                        .param("collectionType", "srcSpecification")
+                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
+                .andExpect(model().attributeHasErrors("specification"))
+                .andExpect(model().attributeHasFieldErrors("specification", "name"))
+                .andExpect(status().isOk())
+                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
+                        .param("notes", "spec notes").param("description", "desc")
+                        .param("collectionType", "srcSpecification")
+                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/specification/list"));
     }
     @Test
     void testInitUpdateSpecificationForm() throws Exception {

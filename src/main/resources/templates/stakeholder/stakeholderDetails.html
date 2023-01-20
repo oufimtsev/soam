@@ -39,7 +39,7 @@
     <h2>Stakeholder Objectives</h2>
     <div class="col-md-10">
       <div th:if="${#lists.isEmpty(stakeholder.stakeholderObjectives)}" class="alert alert-warning">No Stakeholder Objectives have been added to this stakeholder.</div>
-      <table class="table table-striped" th:if="${!#lists.isEmpty(stakeholder.stakeholderObjectives)}">
+      <table id="stakeholderObjectives" class="table table-striped" th:if="${!#lists.isEmpty(stakeholder.stakeholderObjectives)}">
         <thead>
         <tr>
           <th style="width: 350px;">Name</th>
