@@ -42,7 +42,7 @@
     <div class="alert alert-warning" th:if="${#lists.isEmpty(specification.stakeholders)}">
       No Stakeholders have been added to this specification.
     </div>
-    <table id="stakeholdersTable" class="table table-striped" th:if="${!#lists.isEmpty(specification.stakeholders)}">
+    <table id="stakeholders" class="table table-striped" th:if="${!#lists.isEmpty(specification.stakeholders)}">
         <thead>
         <tr>
           <th style="width: 350px;">Name</th>

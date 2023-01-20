@@ -103,7 +103,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder,
-            @RequestParam("templateId") int specificationObjectiveId,
+            @RequestParam("collectionItemId") int specificationObjectiveId,
             @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model) {
 
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);

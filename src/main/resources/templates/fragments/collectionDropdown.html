@@ -1,0 +1,27 @@
+<html>
+<body>
+<th:block th:fragment="collectionDropdown(collection, caption, emptyCollectionMessage, collectionType)"
+          th:with="id = ${#strings.randomAlphanumeric(10)}, dropdownMenuButtonId = 'dropdownMenuButton_' + ${id}, idFieldName = ${collectionType} + 'Id'">
+<div class="dropdown" >
+    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+            th:attr="id = ${dropdownMenuButtonId}">
+        <i class="fa fa-object-ungroup me-2" aria-hidden="true"></i><span th:text="${caption}">Use Item</span>
+    </button>
+    <ul class="dropdown-menu" th:attr="aria-labelledby = ${dropdownMenuButtonId}, data-collection-type = ${collectionType}">
+        <li class="dropdown-item disabled" th:if="${#lists.isEmpty(collection)}">
+            <span class="text-danger" th:text="${emptyCollectionMessage}">No items defined.</span>
+        </li>
+        <li th:each="item : ${collection}">
+            <a class="dropdown-item collection-item" href="javascript:void(0)" th:text="${item.name}"
+               th:attr="data-item-name=${item.name},
+                 data-item-notes=${item.notes},
+                 data-item-description=${item.description},
+                 data-item-priority=${item.priority.id},
+                 data-item-id=${item.id}"
+            ></a>
+        </li>
+    </ul>
+</div>
+</th:block>
+</body>
+</html>
