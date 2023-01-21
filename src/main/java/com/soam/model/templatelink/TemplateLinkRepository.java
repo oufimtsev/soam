@@ -8,7 +8,12 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface TemplateLinkRepository extends CrudRepository<TemplateLink, Integer> {
+    Iterable<TemplateLink> findBySpecificationTemplate(SpecificationTemplate specificationTemplate);
+    Iterable<TemplateLink> findByStakeholderTemplate(StakeholderTemplate stakeholderTemplate);
+    Iterable<TemplateLink> findBySpecificationTemplateAndStakeholderTemplate(
+            SpecificationTemplate specificationTemplate, StakeholderTemplate stakeholderTemplate);
     Optional<TemplateLink> findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
             SpecificationTemplate specificationTemplate, StakeholderTemplate stakeholderTemplate,
             ObjectiveTemplate objectiveTemplate);
+
 }

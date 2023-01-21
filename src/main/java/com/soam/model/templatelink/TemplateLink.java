@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.core.style.ToStringCreator;
 
 /**
@@ -18,14 +19,17 @@ import org.springframework.core.style.ToStringCreator;
 public class TemplateLink extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "specification_template_id")
+    @NotNull
     private SpecificationTemplate specificationTemplate;
 
     @ManyToOne
     @JoinColumn(name = "stakeholder_template_id")
+    @NotNull
     private StakeholderTemplate stakeholderTemplate;
 
     @ManyToOne
     @JoinColumn(name = "objective_template_id")
+    @NotNull
     private ObjectiveTemplate objectiveTemplate;
 
     public SpecificationTemplate getSpecificationTemplate() {

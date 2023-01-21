@@ -144,6 +144,14 @@ public class TemplateLinkControllerTest {
                         .param("objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(post(URL_NEW_TEMPLATE_LINK)
+                        .param("specificationTemplate", "-1")
+                        .param("stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
+                        .param("objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
+                .andExpect(flash().attributeExists("newTemplateLink"))
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test

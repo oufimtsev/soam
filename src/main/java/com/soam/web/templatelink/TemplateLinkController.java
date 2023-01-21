@@ -11,12 +11,8 @@ import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -61,13 +57,31 @@ public class TemplateLinkController {
     }
 
     @ModelAttribute("newTemplateLink")
-    public TemplateLink populateNewTemplateLink() {
-        return new TemplateLink();
+    public TemplateLink populateNewTemplateLink(TemplateLink newTemplateLink) {
+        return newTemplateLink;
     }
 
-    @GetMapping("/templateLink/list")
-    public String listTemplateLinks(Model model) {
-        model.addAttribute("templateLinks", templateLinkRepository.findAll());
+    @ModelAttribute("templateLinks")
+    public Iterable<TemplateLink> populateTemplateLinks(TemplateLink newTemplateLink) {
+        if (newTemplateLink.getSpecificationTemplate() != null && newTemplateLink.getStakeholderTemplate() != null) {
+            return templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplate(
+                    newTemplateLink.getSpecificationTemplate(), newTemplateLink.getStakeholderTemplate());
+        } else if (newTemplateLink.getSpecificationTemplate() != null && newTemplateLink.getStakeholderTemplate() == null) {
+            return templateLinkRepository.findBySpecificationTemplate(newTemplateLink.getSpecificationTemplate());
+        } else if (newTemplateLink.getSpecificationTemplate() == null && newTemplateLink.getStakeholderTemplate() != null) {
+            return templateLinkRepository.findByStakeholderTemplate(newTemplateLink.getStakeholderTemplate());
+        } else {
+            return templateLinkRepository.findAll();
+        }
+    }
+
+    @ModelAttribute("isFiltered")
+    public boolean populatedIsFiltered(TemplateLink newTemplateLink) {
+        return newTemplateLink.getSpecificationTemplate() != null || newTemplateLink.getStakeholderTemplate() != null;
+    }
+
+    @RequestMapping(value = "/templateLink/list", method = {RequestMethod.GET, RequestMethod.POST})
+    public String listTemplateLinks() {
         return VIEWS_TEMPLATE_LINK_LIST;
     }
 
@@ -79,8 +93,13 @@ public class TemplateLinkController {
                         templateLink.getSpecificationTemplate(), templateLink.getStakeholderTemplate(),
                         templateLink.getObjectiveTemplate());
         if (maybeExistingTemplateLink.isEmpty()) {
-            templateLinkRepository.save(templateLink);
-            redirectAttributes.addFlashAttribute(Util.SUCCESS, String.format("Successfully created %s.", getTemplateLinkTitle(templateLink)));
+            if (bindingResult.hasErrors()) {
+                redirectAttributes.addFlashAttribute("newTemplateLink", templateLink);
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Specify all fields for the new template link.");
+            } else {
+                templateLinkRepository.save(templateLink);
+                redirectAttributes.addFlashAttribute(Util.SUCCESS, String.format("Successfully created %s.", getTemplateLinkTitle(templateLink)));
+            }
         } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, String.format("Template link %s already exists.", getTemplateLinkTitle(templateLink)));
         }

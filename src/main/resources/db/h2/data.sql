@@ -49,3 +49,4 @@ INSERT INTO objective_templates VALUES (default, 'Major Objective', 'Describe Ma
 INSERT INTO objective_templates VALUES (default, 'Minor Objective', 'Describe Minor Objective', 'Notes on Minor Objective', 1);
 
 INSERT INTO template_links VALUES (default, 1, 1, 1);
+INSERT INTO template_links VALUES (default, 2, 1, 1);

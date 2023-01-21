@@ -5,10 +5,13 @@
 <body>
 
 <h2>Template Links</h2>
-<div class="alert alert-warning" th:if="${#lists.isEmpty(templateLinks)}">
+<div class="alert alert-warning" th:if="${#lists.isEmpty(templateLinks) && !isFiltered}">
     No Template Links have been defined.
 </div>
-<table th:if="${!#lists.isEmpty(templateLinks)}" id="templateLinks" class="table table-striped">
+<div class="alert alert-warning" th:if="${#lists.isEmpty(templateLinks) && isFiltered}">
+    No Template Links found for selected filters.
+</div>
+<table id="templateLinks" class="table table-striped">
     <thead>
     <tr>
         <th>Specification Template</th>
@@ -32,19 +35,21 @@
             </a>
         </td>
     </tr>
-    <form th:object="${newTemplateLink}" th:action="@{/templateLink/new}" method="post">
+    <form th:object="${newTemplateLink}" th:action="@{/templateLink/list}" method="post">
+        <input type="hidden" th:name="createNewAction" th:value="@{/templateLink/new}"/>
         <tr>
             <td>
-                <input th:replace="~{fragments/templateLinkItemSelectField :: select ('specificationTemplate', ${specificationTemplates})}" />
+                <input th:replace="~{fragments/templateLinkItemSelectField :: select ('specificationTemplate', ${specificationTemplates}, true, true)}" />
             </td>
             <td>
-                <input th:replace="~{fragments/templateLinkItemSelectField :: select ('stakeholderTemplate', ${stakeholderTemplates})}" />
+                <input th:replace="~{fragments/templateLinkItemSelectField :: select ('stakeholderTemplate', ${stakeholderTemplates}, true, true)}" />
             </td>
             <td>
-                <input th:replace="~{fragments/templateLinkItemSelectField :: select ('objectiveTemplate', ${objectiveTemplates})}" />
+                <input th:replace="~{fragments/templateLinkItemSelectField :: select ('objectiveTemplate', ${objectiveTemplates}, false, false)}" />
             </td>
             <td>
-                <button type="submit" class="btn btn-sm btn-primary mt-0"><i class="fa fa-plus me-1" aria-hidden="true"></i>Add</button>
+                <button type="button" class="btn btn-sm btn-primary mt-0"
+                        onclick="this.form.action=this.form.createNewAction.value;this.form.submit()"><i class="fa fa-plus me-1" aria-hidden="true"></i>Add</button>
             </td>
         </tr>
     </form>
