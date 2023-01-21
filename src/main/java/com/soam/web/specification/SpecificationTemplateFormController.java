@@ -93,14 +93,18 @@ public class SpecificationTemplateFormController  extends SoamFormController {
     @PostMapping("/specification/template/{specificationTemplateId}/delete")
     public String processDeleteSpecification(
             @PathVariable("specificationTemplateId") int specificationTemplateId, SpecificationTemplate specificationTemplate,
-            RedirectAttributes redirectAttributes ){
+            RedirectAttributes redirectAttributes) {
 
         Optional<SpecificationTemplate> specificationTemplateById = specificationTemplates.findById(specificationTemplateId);
         //todo: validate specificationById's name matches the passed in Specification's name.
 
         if( specificationTemplateById.isPresent()) {
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationTemplateById.get().getName()));
-            specificationTemplates.delete(specificationTemplateById.get());
+            if (specificationTemplateById.get().getTemplateLinks() != null && !specificationTemplateById.get().getTemplateLinks().isEmpty()) {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+            } else {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationTemplateById.get().getName()));
+                specificationTemplates.delete(specificationTemplateById.get());
+            }
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }

@@ -1,12 +1,16 @@
 package com.soam.specification;
 
 import com.soam.Util;
+import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.model.stakeholder.StakeholderTemplate;
+import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.specification.SpecificationTemplateFormController;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SpecificationTemplateFormControllerTest {
 
     private static final SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
+    private static final SpecificationTemplate TEST_SPECIFICATION_2 = new SpecificationTemplate();
     private static final int EMPTY_SPECIFICATION_ID = 200;
 
     private static final String URL_NEW_TEMPLATE =  "/specification/template/new";
@@ -50,6 +55,33 @@ public class SpecificationTemplateFormControllerTest {
         TEST_SPECIFICATION_1.setDescription("desc");
         TEST_SPECIFICATION_1.setNotes("notes");
         TEST_SPECIFICATION_1.setPriority(lowPriority);
+        
+        TEST_SPECIFICATION_2.setId(101);
+        TEST_SPECIFICATION_2.setName("Test Spec 2");
+        TEST_SPECIFICATION_2.setDescription("desc");
+        TEST_SPECIFICATION_2.setNotes("notes");
+        TEST_SPECIFICATION_2.setPriority(lowPriority);
+
+        StakeholderTemplate testStakeholderTemplate = new StakeholderTemplate();
+        testStakeholderTemplate.setId(1000);
+        testStakeholderTemplate.setName("Test Stakeholder Template");
+        testStakeholderTemplate.setDescription("Test description");
+        testStakeholderTemplate.setNotes("Test notes");
+        testStakeholderTemplate.setPriority(lowPriority);
+
+        ObjectiveTemplate testObjectiveTemplate = new ObjectiveTemplate();
+        testObjectiveTemplate.setId(10000);
+        testObjectiveTemplate.setName("Test Objective Template");
+        testObjectiveTemplate.setDescription("Test description");
+        testObjectiveTemplate.setNotes("Test notes");
+        testObjectiveTemplate.setPriority(lowPriority);
+
+        TemplateLink testTemplateLink = new TemplateLink();
+        testTemplateLink.setSpecificationTemplate(TEST_SPECIFICATION_2);
+        testTemplateLink.setStakeholderTemplate(testStakeholderTemplate);
+        testTemplateLink.setObjectiveTemplate(testObjectiveTemplate);
+
+        TEST_SPECIFICATION_2.setTemplateLinks(Lists.newArrayList(testTemplateLink));
     }
 
     @Autowired
@@ -183,5 +215,10 @@ public class SpecificationTemplateFormControllerTest {
                 .andExpect( flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
 
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_2.getId())
+                        .param("name", TEST_SPECIFICATION_2.getName()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 }

@@ -5,7 +5,11 @@ import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
+import com.soam.model.specification.SpecificationTemplate;
+import com.soam.model.stakeholder.StakeholderTemplate;
+import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.objective.ObjectiveTemplateFormController;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ObjectiveTemplateFormControllerTest {
 
     private static final ObjectiveTemplate TEST_OBJECTIVE_1 = new ObjectiveTemplate();
+    private static final ObjectiveTemplate TEST_OBJECTIVE_2 = new ObjectiveTemplate();
     private static final int EMPTY_OBJECTIVE_ID = 200;
 
     private static final String URL_NEW_TEMPLATE =  "/objective/template/new";
@@ -49,6 +54,33 @@ public class ObjectiveTemplateFormControllerTest {
         TEST_OBJECTIVE_1.setDescription("desc");
         TEST_OBJECTIVE_1.setNotes("notes");
         TEST_OBJECTIVE_1.setPriority(lowPriority);
+
+        TEST_OBJECTIVE_2.setId(101);
+        TEST_OBJECTIVE_2.setName("Test Spec 2");
+        TEST_OBJECTIVE_2.setDescription("desc");
+        TEST_OBJECTIVE_2.setNotes("notes");
+        TEST_OBJECTIVE_2.setPriority(lowPriority);
+
+        SpecificationTemplate testSpecificationTemplate = new SpecificationTemplate();
+        testSpecificationTemplate.setId(1000);
+        testSpecificationTemplate.setName("Test Specification Template");
+        testSpecificationTemplate.setDescription("Test description");
+        testSpecificationTemplate.setNotes("Test notes");
+        testSpecificationTemplate.setPriority(lowPriority);
+
+        StakeholderTemplate testStakeholderTemplate = new StakeholderTemplate();
+        testStakeholderTemplate.setId(10000);
+        testStakeholderTemplate.setName("Test Stakeholder Template");
+        testStakeholderTemplate.setDescription("Test description");
+        testStakeholderTemplate.setNotes("Test notes");
+        testStakeholderTemplate.setPriority(lowPriority);
+
+        TemplateLink testTemplateLink = new TemplateLink();
+        testTemplateLink.setSpecificationTemplate(testSpecificationTemplate);
+        testTemplateLink.setStakeholderTemplate(testStakeholderTemplate);
+        testTemplateLink.setObjectiveTemplate(TEST_OBJECTIVE_2);
+
+        TEST_OBJECTIVE_2.setTemplateLinks(Lists.newArrayList(testTemplateLink));
     }
 
     @Autowired
@@ -179,5 +211,10 @@ public class ObjectiveTemplateFormControllerTest {
                 .andExpect( flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
 
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_2.getId())
+                        .param("name", TEST_OBJECTIVE_2.getName()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 }

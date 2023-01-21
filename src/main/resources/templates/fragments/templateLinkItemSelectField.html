@@ -1,0 +1,18 @@
+<html>
+<body>
+  <form>
+    <th:block th:fragment="select (name, items, useAllOption, submitOnChange)">
+      <div class="form-group">
+        <div class="col-sm-10">
+          <select th:field="*{__${name}__}" class="w-100" th:attrappend="onchange = ${submitOnChange}?'this.form.submit()'">
+            <th:block th:if="${useAllOption}">
+              <option value="-1">All</option>
+            </th:block>
+            <option th:each="item : ${items}" th:value="${item.id}" th:text="${item.name}">template</option>
+          </select>
+        </div>
+      </div>
+    </th:block>
+  </form>
+</body>
+</html>
