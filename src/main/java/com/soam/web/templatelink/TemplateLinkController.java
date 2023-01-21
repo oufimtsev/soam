@@ -10,6 +10,7 @@ import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,12 @@ public class TemplateLinkController {
     private static final String REDIRECT_TEMPLATE_LINK_LIST = "redirect:/templateLink/list";
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
     private static final String TEMPLATE_LINK_TITLE = "%s / %s / %s";
+
+    private static final Sort TEMPLATE_LINK_SORT = Sort.by(List.of(
+            Sort.Order.by("specificationTemplate.name"),
+            Sort.Order.by("stakeholderTemplate.name"),
+            Sort.Order.by("objectiveTemplate.name")
+    ));
 
     private final TemplateLinkRepository templateLinkRepository;
     private final SpecificationTemplateRepository specificationTemplateRepository;
@@ -43,17 +50,17 @@ public class TemplateLinkController {
 
     @ModelAttribute("specificationTemplates")
     public List<SpecificationTemplate> populateSpecificationTemplates() {
-        return specificationTemplateRepository.findAll();
+        return specificationTemplateRepository.findAllByOrderByName();
     }
 
     @ModelAttribute("stakeholderTemplates")
     public List<StakeholderTemplate> populateStakeholderTemplates() {
-        return stakeholderTemplateRepository.findAll();
+        return stakeholderTemplateRepository.findAllByOrderByName();
     }
 
     @ModelAttribute("objectiveTemplates")
     public List<ObjectiveTemplate> populateObjectiveTemplates() {
-        return objectiveTemplateRepository.findAll();
+        return objectiveTemplateRepository.findAllByOrderByName();
     }
 
     @ModelAttribute("newTemplateLink")
@@ -65,13 +72,13 @@ public class TemplateLinkController {
     public Iterable<TemplateLink> populateTemplateLinks(TemplateLink newTemplateLink) {
         if (newTemplateLink.getSpecificationTemplate() != null && newTemplateLink.getStakeholderTemplate() != null) {
             return templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplate(
-                    newTemplateLink.getSpecificationTemplate(), newTemplateLink.getStakeholderTemplate());
+                    newTemplateLink.getSpecificationTemplate(), newTemplateLink.getStakeholderTemplate(), TEMPLATE_LINK_SORT);
         } else if (newTemplateLink.getSpecificationTemplate() != null && newTemplateLink.getStakeholderTemplate() == null) {
-            return templateLinkRepository.findBySpecificationTemplate(newTemplateLink.getSpecificationTemplate());
+            return templateLinkRepository.findBySpecificationTemplate(newTemplateLink.getSpecificationTemplate(), TEMPLATE_LINK_SORT);
         } else if (newTemplateLink.getSpecificationTemplate() == null && newTemplateLink.getStakeholderTemplate() != null) {
-            return templateLinkRepository.findByStakeholderTemplate(newTemplateLink.getStakeholderTemplate());
+            return templateLinkRepository.findByStakeholderTemplate(newTemplateLink.getStakeholderTemplate(), TEMPLATE_LINK_SORT);
         } else {
-            return templateLinkRepository.findAll();
+            return templateLinkRepository.findAll(TEMPLATE_LINK_SORT);
         }
     }
 

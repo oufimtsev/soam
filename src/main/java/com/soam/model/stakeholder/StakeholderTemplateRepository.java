@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface StakeholderTemplateRepository extends CrudRepository<StakeholderTemplate, Integer> {
 
-    List<StakeholderTemplate> findAll();
+    List<StakeholderTemplate> findAllByOrderByName();
     Page<StakeholderTemplate> findAll(Pageable pageable);
     Optional<StakeholderTemplate> findByName(String name );
     Optional<StakeholderTemplate> findByNameIgnoreCase(String name);

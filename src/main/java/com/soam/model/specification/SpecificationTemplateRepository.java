@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface SpecificationTemplateRepository extends CrudRepository<SpecificationTemplate, Integer> {
 
-    List<SpecificationTemplate> findAll();
+    List<SpecificationTemplate> findAllByOrderByName();
     Page<SpecificationTemplate> findAll(Pageable pageable);
     Optional<SpecificationTemplate> findByName(String name);
     Optional<SpecificationTemplate> findByNameIgnoreCase(String name);
