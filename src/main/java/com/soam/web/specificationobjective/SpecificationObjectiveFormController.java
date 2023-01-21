@@ -125,14 +125,12 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         //todo: validate objectiveById's name matches the passed in Stakeholder's name.
 
         if (maybeSpecificationObjective.isPresent()) {
-            SpecificationObjective fetchedSpecificationObjective = maybeSpecificationObjective.get();
-            if (fetchedSpecificationObjective.getStakeholderObjectives() != null && !fetchedSpecificationObjective.getStakeholderObjectives().isEmpty()) {
+            if (maybeSpecificationObjective.get().getStakeholderObjectives() != null && !maybeSpecificationObjective.get().getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
-                return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+            } else {
+                specificationObjectives.delete(maybeSpecificationObjective.get());
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", maybeSpecificationObjective.get().getName()));
             }
-
-            specificationObjectives.delete(fetchedSpecificationObjective);
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedSpecificationObjective.getName()));
         } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification objective");
         }

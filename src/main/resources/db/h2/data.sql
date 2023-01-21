@@ -41,3 +41,11 @@ INSERT INTO stakeholder_objectives VALUES (default, 4, 10, 'Additional notes', 1
 
 INSERT INTO specification_templates VALUES ( default, 'Major Product', 'Describe product here', 'Notes on major product', 1);
 INSERT INTO specification_templates VALUES ( default, 'Minor Product', 'Describe product here', 'Notes on minor product', 1);
+
+INSERT INTO stakeholder_templates VALUES (default, 'Major Stakeholder', 'Describe Major Stakeholder', 'Notes on Major Stakeholder', 1);
+INSERT INTO stakeholder_templates VALUES (default, 'Minor Stakeholder', 'Describe Minor Stakeholder', 'Notes on Minor Stakeholder', 1);
+
+INSERT INTO objective_templates VALUES (default, 'Major Objective', 'Describe Major Objective', 'Notes on Major Objective', 1);
+INSERT INTO objective_templates VALUES (default, 'Minor Objective', 'Describe Minor Objective', 'Notes on Minor Objective', 1);
+
+INSERT INTO template_links VALUES (default, 1, 1, 1);

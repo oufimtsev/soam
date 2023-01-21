@@ -99,9 +99,13 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         Optional<ObjectiveTemplate> objectiveTemplateById = objectiveTemplates.findById(objectiveTemplateId);
         //todo: validate objectiveById's name matches the passed in Objective's name.
 
-        if( objectiveTemplateById.isPresent()) {
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", objectiveTemplateById.get().getName()));
-            objectiveTemplates.delete(objectiveTemplateById.get());
+        if (objectiveTemplateById.isPresent()) {
+            if (objectiveTemplateById.get().getTemplateLinks() != null && !objectiveTemplateById.get().getTemplateLinks().isEmpty()) {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+            } else {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", objectiveTemplateById.get().getName()));
+                objectiveTemplates.delete(objectiveTemplateById.get());
+            }
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }

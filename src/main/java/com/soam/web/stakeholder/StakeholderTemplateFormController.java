@@ -99,9 +99,13 @@ public class StakeholderTemplateFormController extends SoamFormController {
         Optional<StakeholderTemplate> stakeholderTemplateById = stakeholderTemplates.findById(stakeholderTemplateId);
         //todo: validate stakeholderById's name matches the passed in Stakeholder's name.
 
-        if( stakeholderTemplateById.isPresent()) {
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholderTemplateById.get().getName()));
-            stakeholderTemplates.delete(stakeholderTemplateById.get());
+        if (stakeholderTemplateById.isPresent()) {
+            if (stakeholderTemplateById.get().getTemplateLinks() != null && !stakeholderTemplateById.get().getTemplateLinks().isEmpty()) {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+            } else {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholderTemplateById.get().getName()));
+                stakeholderTemplates.delete(stakeholderTemplateById.get());
+            }
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
