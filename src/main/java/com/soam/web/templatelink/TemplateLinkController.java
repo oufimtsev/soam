@@ -69,7 +69,7 @@ public class TemplateLinkController {
     }
 
     @ModelAttribute("templateLinks")
-    public Iterable<TemplateLink> populateTemplateLinks(TemplateLink newTemplateLink) {
+    public Iterable<TemplateLink> populateTemplateLinks(@ModelAttribute("newTemplateLink") TemplateLink newTemplateLink) {
         if (newTemplateLink.getSpecificationTemplate() != null && newTemplateLink.getStakeholderTemplate() != null) {
             return templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplate(
                     newTemplateLink.getSpecificationTemplate(), newTemplateLink.getStakeholderTemplate(), TEMPLATE_LINK_SORT);
@@ -99,9 +99,9 @@ public class TemplateLinkController {
                 templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
                         templateLink.getSpecificationTemplate(), templateLink.getStakeholderTemplate(),
                         templateLink.getObjectiveTemplate());
+        redirectAttributes.addFlashAttribute("newTemplateLink", templateLink);
         if (maybeExistingTemplateLink.isEmpty()) {
             if (bindingResult.hasErrors()) {
-                redirectAttributes.addFlashAttribute("newTemplateLink", templateLink);
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Specify all fields for the new template link.");
             } else {
                 templateLinkRepository.save(templateLink);

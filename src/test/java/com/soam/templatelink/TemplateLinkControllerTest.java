@@ -142,6 +142,7 @@ public class TemplateLinkControllerTest {
                         .param("specificationTemplate", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId()))
                         .param("stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
                         .param("objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
+                .andExpect(flash().attributeExists("newTemplateLink"))
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection());
 
