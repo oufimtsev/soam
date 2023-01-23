@@ -42,11 +42,16 @@ INSERT INTO stakeholder_objectives VALUES (default, 4, 10, 'Additional notes', 1
 INSERT INTO specification_templates VALUES ( default, 'Major Product', 'Describe product here', 'Notes on major product', 1);
 INSERT INTO specification_templates VALUES ( default, 'Minor Product', 'Describe product here', 'Notes on minor product', 1);
 
-INSERT INTO stakeholder_templates VALUES (default, 'Major Stakeholder', 'Describe Major Stakeholder', 'Notes on Major Stakeholder', 1);
-INSERT INTO stakeholder_templates VALUES (default, 'Minor Stakeholder', 'Describe Minor Stakeholder', 'Notes on Minor Stakeholder', 1);
+INSERT INTO stakeholder_templates VALUES (default, 'Clerk', 'Describe Clerk', 'Notes on Clerk', 1);
+INSERT INTO stakeholder_templates VALUES (default, 'Customer', 'Describe Customer', 'Notes on Customer', 1);
+INSERT INTO stakeholder_templates VALUES (default, 'Manager', 'Describe Manager', 'Notes on Manager', 1);
+INSERT INTO stakeholder_templates VALUES (default, 'Supplier', 'Describe Supplier', 'Notes on Supplier', 1);
 
-INSERT INTO objective_templates VALUES (default, 'Major Objective', 'Describe Major Objective', 'Notes on Major Objective', 1);
-INSERT INTO objective_templates VALUES (default, 'Minor Objective', 'Describe Minor Objective', 'Notes on Minor Objective', 1);
+INSERT INTO objective_templates VALUES (default, 'Objective-1', 'Describe Objective-1', 'Notes on Objective-1', 1);
+INSERT INTO objective_templates VALUES (default, 'Objective-2', 'Describe Objective-2', 'Notes on Objective-2', 1);
+INSERT INTO objective_templates VALUES (default, 'Objective-3', 'Describe Objective-3', 'Notes on Objective-3', 1);
 
-INSERT INTO template_links VALUES (default, 1, 1, 1);
-INSERT INTO template_links VALUES (default, 2, 1, 1);
+INSERT INTO template_links VALUES (default, 1, 2, 1);
+INSERT INTO template_links VALUES (default, 1, 2, 2);
+INSERT INTO template_links VALUES (default, 2, 3, 1);
+INSERT INTO template_links VALUES (default, 2, 3, 2);
