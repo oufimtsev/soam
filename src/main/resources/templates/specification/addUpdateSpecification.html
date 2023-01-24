@@ -13,6 +13,9 @@
       <span th:if="${specification['new']}">
         <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${specifications}, 'Copy Existing Specification', 'No Specifications defined', 'srcSpecification')}" />
       </span>
+      <span th:if="${specification['new']}" class="ms-2">
+        <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${specificationTemplates}, 'Create from Template', 'No Specification Templates defined', 'srcTemplate')}" />
+      </span>
       <span th:if="${!#lists.isEmpty(specificationTemplates)}" class="ms-2">
           <div th:replace="~{fragments/templateDropdown :: templateDropdown(${specificationTemplates})}" />
       </span>

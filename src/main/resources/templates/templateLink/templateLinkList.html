@@ -5,8 +5,7 @@
 <body>
 
 <h2>Template Links</h2>
-<form id="filterForm" th:object="${templateLinkForm}" th:action="@{/templateLink/list}" method="post">
-<input type="hidden" th:name="createNewAction" th:value="@{/templateLink/new}"/>
+<form id="templateLinksForm" th:object="${templateLinkForm}" th:action="@{/templateLink/list}" method="post">
 <input type="hidden" th:name="deleteAction" th:value="@{/templateLink/delete}"/>
 <input type="hidden" th:field="*{deleteTemplateLinkId}"/>
 <table id="templateLinks" class="table table-striped">
@@ -59,9 +58,8 @@
             <input th:replace="~{fragments/templateLinkItemSelectField :: selectNewItem ('newTemplateLink.objectiveTemplate', ${objectiveTemplates}, 'fa-chain')}" />
         </td>
         <td>
-            <button type="button" class="btn btn-sm btn-primary mt-0"
-                    onclick="this.form.action=this.form.createNewAction.value;this.form.submit()"
-                ><i class="fa fa-plus me-1" aria-hidden="true"></i>Add
+            <button type="submit" class="btn btn-sm btn-primary mt-0" th:formaction="@{/templateLink/new}">
+                <i class="fa fa-plus me-1" aria-hidden="true"></i>Add
             </button>
         </td>
     </tr>
