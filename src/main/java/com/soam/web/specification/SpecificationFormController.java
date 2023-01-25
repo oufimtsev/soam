@@ -1,16 +1,20 @@
 package com.soam.web.specification;
 
 import com.soam.Util;
+import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
+import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
+import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
+import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -19,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +68,7 @@ public class SpecificationFormController extends SoamFormController {
     @PostMapping("/specification/new")
     public String processCreationForm(@Valid Specification specification, BindingResult result,
                                       @ModelAttribute("collectionType") String collectionType,
-                                      @ModelAttribute("collectionItemId") int srcSpecificationId,
+                                      @ModelAttribute("collectionItemId") int collectionItemId,
                                       Model model, RedirectAttributes redirectAttributes) {
         Optional<Specification> testSpecification = specifications.findByNameIgnoreCase(specification.getName());
         if (testSpecification.isPresent()) {
@@ -77,15 +82,27 @@ public class SpecificationFormController extends SoamFormController {
 
         if ("srcSpecification".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification
-            Optional<Specification> srcSpecification = specifications.findById(srcSpecificationId);
+            Optional<Specification> srcSpecification = specifications.findById(collectionItemId);
             if (srcSpecification.isPresent()) {
                 this.specifications.save(specification);
-                deepCopy(srcSpecification.get(), specification);
+                deepSpecificationCopy(srcSpecification.get(), specification);
                 return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist");
                 return "redirect:/specification/list";
             }
+        } else if ("srcTemplate".equals(collectionType)) {
+            //creating new Specification as a deep copy of source Specification Template
+            Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplates.findById(collectionItemId);
+            if (srcSpecificationTemplate.isPresent()) {
+                this.specifications.save(specification);
+                deepTemplateCopy(srcSpecificationTemplate.get(), specification);
+                return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
+            } else {
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist");
+                return "redirect:/specification/list";
+            }
+
         } else {
             //creating new Specification manually or as a shall copy of existing Specification Template
             this.specifications.save(specification);
@@ -153,7 +170,7 @@ public class SpecificationFormController extends SoamFormController {
 
     }
 
-    private void deepCopy(Specification srcSpecification, Specification dstSpecification) {
+    private void deepSpecificationCopy(Specification srcSpecification, Specification dstSpecification) {
         srcSpecification.getSpecificationObjectives().forEach(srcSpecificationObjective -> {
             SpecificationObjective dstSpecificationObjective = new SpecificationObjective();
             dstSpecificationObjective.setName(srcSpecificationObjective.getName());
@@ -184,6 +201,50 @@ public class SpecificationFormController extends SoamFormController {
                     stakeholderObjectiveRepository.save(dstStakeholderObjective);
                 }
             });
+        });
+    }
+
+    private void deepTemplateCopy(SpecificationTemplate srcSpecificationTemplate, Specification dstSpecification) {
+        Collection<TemplateLink> templateLinks = srcSpecificationTemplate.getTemplateLinks();
+
+        //in the loop below we sacrifice the performance somewhat in favour of predictable memory consumption.
+        templateLinks.forEach(templateLink -> {
+            Stakeholder stakeholder = stakeholderRepository.findBySpecificationAndNameIgnoreCase(
+                    dstSpecification,
+                    templateLink.getStakeholderTemplate().getName()
+            ).orElseGet(() -> {
+                StakeholderTemplate stakeholderTemplate = templateLink.getStakeholderTemplate();
+                Stakeholder newStakeholder = new Stakeholder();
+                newStakeholder.setName(stakeholderTemplate.getName());
+                newStakeholder.setDescription(stakeholderTemplate.getDescription());
+                newStakeholder.setNotes(stakeholderTemplate.getNotes());
+                newStakeholder.setPriority(stakeholderTemplate.getPriority());
+                newStakeholder.setSpecification(dstSpecification);
+                stakeholderRepository.save(newStakeholder);
+                return newStakeholder;
+            });
+
+            SpecificationObjective specificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(
+                    dstSpecification,
+                    templateLink.getObjectiveTemplate().getName()
+            ).orElseGet(() -> {
+                ObjectiveTemplate objectiveTemplate = templateLink.getObjectiveTemplate();
+                SpecificationObjective newSpecificationObjective = new SpecificationObjective();
+                newSpecificationObjective.setName(objectiveTemplate.getName());
+                newSpecificationObjective.setDescription(objectiveTemplate.getDescription());
+                newSpecificationObjective.setNotes(objectiveTemplate.getNotes());
+                newSpecificationObjective.setPriority(objectiveTemplate.getPriority());
+                newSpecificationObjective.setSpecification(dstSpecification);
+                specificationObjectiveRepository.save(newSpecificationObjective);
+                return newSpecificationObjective;
+            });
+
+            StakeholderObjective stakeholderObjective = new StakeholderObjective();
+            stakeholderObjective.setStakeholder(stakeholder);
+            stakeholderObjective.setSpecificationObjective(specificationObjective);
+            stakeholderObjective.setNotes(specificationObjective.getNotes());
+            stakeholderObjective.setPriority(specificationObjective.getPriority());
+            stakeholderObjectiveRepository.save(stakeholderObjective);
         });
     }
 

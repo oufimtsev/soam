@@ -5,6 +5,7 @@ import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
+import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.TreeSet;
 
@@ -43,6 +45,7 @@ public class SpecificationFormControllerTest {
     private static Specification TEST_SPECIFICATION_1 = new Specification();
     private static Specification TEST_SPECIFICATION_2 = new Specification();
     private static Specification TEST_SPECIFICATION_3 = new Specification();
+    private static SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
 
     private static final int EMPTY_SPECIFICATION_ID = 999;
     
@@ -91,6 +94,13 @@ public class SpecificationFormControllerTest {
         TEST_SPECIFICATION_3.setDescription("desc");
         TEST_SPECIFICATION_3.setNotes("notes");
         TEST_SPECIFICATION_3.setPriority(lowPriority);
+
+        TEST_SPECIFICATION_TEMPLATE.setId(1000);
+        TEST_SPECIFICATION_TEMPLATE.setName("Test Specification Template");
+        TEST_SPECIFICATION_TEMPLATE.setDescription("desc");
+        TEST_SPECIFICATION_TEMPLATE.setNotes("Test Specification Template");
+        TEST_SPECIFICATION_TEMPLATE.setPriority(lowPriority);
+        TEST_SPECIFICATION_TEMPLATE.setTemplateLinks(new LinkedList<>());
     }
 
     @Autowired
@@ -139,6 +149,7 @@ public class SpecificationFormControllerTest {
         given( this.specifications.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_3)));
 
+        given( specificationTemplates.findById(TEST_SPECIFICATION_TEMPLATE.getId()) ).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
     }
 
     @Test
@@ -156,12 +167,21 @@ public class SpecificationFormControllerTest {
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
+                .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection());
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "srcSpecification")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
+                .andExpect(flash().attributeCount(0))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "srcTemplate")
+                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
+                .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -200,7 +220,24 @@ public class SpecificationFormControllerTest {
                         .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/list"));
+
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", TEST_SPECIFICATION_2.getName())
+                        .param("notes", "spec notes").param("description", "desc")
+                        .param("collectionType", "srcTemplate")
+                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
+                .andExpect(model().attributeHasErrors("specification"))
+                .andExpect(model().attributeHasFieldErrors("specification", "name"))
+                .andExpect(status().isOk())
+                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
+                        .param("notes", "spec notes").param("description", "desc")
+                        .param("collectionType", "srcTemplate")
+                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/specification/list"));
     }
+
     @Test
     void testInitUpdateSpecificationForm() throws Exception {
         Mockito.when(this.specifications.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
@@ -226,7 +263,6 @@ public class SpecificationFormControllerTest {
                         )
                     .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/{specificationId}"));
-        
     }
 
     @Test
