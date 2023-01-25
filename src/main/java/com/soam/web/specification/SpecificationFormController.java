@@ -226,7 +226,7 @@ public class SpecificationFormController extends SoamFormController {
 
             SpecificationObjective specificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(
                     dstSpecification,
-                    templateLink.getStakeholderTemplate().getName()
+                    templateLink.getObjectiveTemplate().getName()
             ).orElseGet(() -> {
                 ObjectiveTemplate objectiveTemplate = templateLink.getObjectiveTemplate();
                 SpecificationObjective newSpecificationObjective = new SpecificationObjective();

@@ -99,11 +99,14 @@ public class SpecificationTest {
         //prepare test data
         int specificationTemplateId = addSpecificationTemplate("Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes");
-        int stakeholderTemplateId = addStakeholderTemplate("Test Stakeholder Template",
-                "Test Stakeholder Template Description", "Test Stakeholder Template Notes");
+        int stakeholderTemplate1Id = addStakeholderTemplate("Test Stakeholder Template 1",
+                "Test Stakeholder Template 1 Description", "Test Stakeholder Template 1 Notes");
+        int stakeholderTemplate2Id = addStakeholderTemplate("Test Stakeholder Template 2",
+                "Test Stakeholder Template 2 Description", "Test Stakeholder Template 2 Notes");
         int objectiveTemplateId = addObjectiveTemplate("Test Objective Template",
                 "Test Objective Template Description", "Test Objective Template Notes");
-        addTemplateLink(specificationTemplateId, stakeholderTemplateId, objectiveTemplateId);
+        addTemplateLink(specificationTemplateId, stakeholderTemplate1Id, objectiveTemplateId);
+        addTemplateLink(specificationTemplateId, stakeholderTemplate2Id, objectiveTemplateId);
 
         //execute "create from template"
         int specificationId = addSpecification("Copy of Test Specification Template",
@@ -112,7 +115,8 @@ public class SpecificationTest {
 
         HtmlPage specificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, specificationId));
         validateSpecificationDetails(specificationDetailsPage, "Copy of Test Specification Template",
-                "Test Specification Template Description", "Test Specification Template Notes", List.of("Test Stakeholder Template"));
+                "Test Specification Template Description", "Test Specification Template Notes",
+                List.of("Test Stakeholder Template 1", "Test Stakeholder Template 2"));
 
         //verify Specification Objectives list
         HtmlPage specificationObjectiveListPage = webClient.getPage(String.format(URL_SPECIFICATION_OBJECTIVE_LIST, specificationId));
@@ -121,8 +125,9 @@ public class SpecificationTest {
         //verify Stakeholder Objectives list
         HtmlAnchor stakeholderAnchor = specificationDetailsPage.querySelector("#stakeholders tbody tr:nth-of-type(1) td a");
         HtmlPage stakeholderDetailsPage = (HtmlPage) stakeholderAnchor.openLinkInNewWindow();
-        validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder Template",
-                "Test Stakeholder Template Description", "Test Stakeholder Template Notes", List.of("Test Objective Template"));
+        validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder Template 1",
+                "Test Stakeholder Template 1 Description", "Test Stakeholder Template 1 Notes",
+                List.of("Test Objective Template"));
     }
 
     private void validateSpecificationDetails(HtmlPage specificationDetailsPage, String name, String description, String notes, List<String> stakeholderNames) throws IOException {
