@@ -245,7 +245,7 @@ public class SpecificationTemplateFormControllerTest {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_2.getId())
                         .param("name", TEST_SPECIFICATION_2.getName()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 }
