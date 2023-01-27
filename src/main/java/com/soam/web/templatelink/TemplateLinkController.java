@@ -79,7 +79,12 @@ public class TemplateLinkController {
         }
     }
 
-    @RequestMapping(value = "/templateLink/list", method = {RequestMethod.GET, RequestMethod.POST})
+    @GetMapping("/templateLink/list")
+    public String listTemplateLinks() {
+        return VIEWS_TEMPLATE_LINK_LIST;
+    }
+
+    @PostMapping("/templateLink/list")
     public String listTemplateLinks(@ModelAttribute("templateLinkForm") TemplateLinkFormDto templateLinkForm, Model model) {
         if (templateLinkForm.getNewTemplateLink() != null) {
             if (templateLinkForm.getFilterSpecificationTemplate() != null) {
