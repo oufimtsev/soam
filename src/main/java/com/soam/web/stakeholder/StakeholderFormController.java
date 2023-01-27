@@ -10,6 +10,7 @@ import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.SoamFormController;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,9 @@ import java.util.Optional;
 public class StakeholderFormController extends SoamFormController {
     private static final String VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM = "stakeholder/addUpdateStakeholder";
     private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
+
+    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
+
     private final StakeholderRepository stakeholders;
     private final StakeholderTemplateRepository stakeholderTemplates;
 
@@ -156,6 +160,6 @@ public class StakeholderFormController extends SoamFormController {
 
     private void populateFormModel( Model model ){
         model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("stakeholderTemplates", stakeholderTemplates.findAll());
+        model.addAttribute("stakeholderTemplates", stakeholderTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }
