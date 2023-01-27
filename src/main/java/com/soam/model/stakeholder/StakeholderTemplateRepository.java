@@ -2,6 +2,7 @@ package com.soam.model.stakeholder;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 public interface StakeholderTemplateRepository extends CrudRepository<StakeholderTemplate, Integer> {
 
-    List<StakeholderTemplate> findAllByOrderByName();
+    List<StakeholderTemplate> findAll(Sort sort);
     Page<StakeholderTemplate> findAll(Pageable pageable);
     Optional<StakeholderTemplate> findByName(String name );
     Optional<StakeholderTemplate> findByNameIgnoreCase(String name);

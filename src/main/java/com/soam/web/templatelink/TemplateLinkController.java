@@ -27,10 +27,11 @@ public class TemplateLinkController {
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
     private static final String TEMPLATE_LINK_TITLE = "%s / %s / %s";
 
+    private static final Sort TEMPLATE_OBJECT_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
     private static final Sort TEMPLATE_LINK_SORT = Sort.by(List.of(
-            Sort.Order.by("specificationTemplate.name"),
-            Sort.Order.by("stakeholderTemplate.name"),
-            Sort.Order.by("objectiveTemplate.name")
+            Sort.Order.by("specificationTemplate.name").ignoreCase(),
+            Sort.Order.by("stakeholderTemplate.name").ignoreCase(),
+            Sort.Order.by("objectiveTemplate.name").ignoreCase()
     ));
 
     private final TemplateLinkRepository templateLinkRepository;
@@ -51,17 +52,17 @@ public class TemplateLinkController {
 
     @ModelAttribute("specificationTemplates")
     public List<SpecificationTemplate> populateSpecificationTemplates() {
-        return specificationTemplateRepository.findAllByOrderByName();
+        return specificationTemplateRepository.findAll(TEMPLATE_OBJECT_SORT);
     }
 
     @ModelAttribute("stakeholderTemplates")
     public List<StakeholderTemplate> populateStakeholderTemplates() {
-        return stakeholderTemplateRepository.findAllByOrderByName();
+        return stakeholderTemplateRepository.findAll(TEMPLATE_OBJECT_SORT);
     }
 
     @ModelAttribute("objectiveTemplates")
     public List<ObjectiveTemplate> populateObjectiveTemplates() {
-        return objectiveTemplateRepository.findAllByOrderByName();
+        return objectiveTemplateRepository.findAll(TEMPLATE_OBJECT_SORT);
     }
 
     @ModelAttribute("templateLinks")
