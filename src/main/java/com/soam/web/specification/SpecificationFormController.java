@@ -91,7 +91,7 @@ public class SpecificationFormController extends SoamFormController {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist");
                 return "redirect:/specification/list";
             }
-        } else if ("srcTemplate".equals(collectionType)) {
+        } else if ("templateDeepCopy".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification Template
             Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplates.findById(collectionItemId);
             if (srcSpecificationTemplate.isPresent()) {

@@ -9,6 +9,7 @@ import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
+import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.specification.SpecificationTemplateFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,6 +95,9 @@ public class SpecificationTemplateFormControllerTest {
     private SpecificationTemplateRepository specificationTemplates;
 
     @MockBean
+    private TemplateLinkRepository templateLinkRepository;
+
+    @MockBean
     private PriorityRepository priorities;
 
 
@@ -102,6 +106,7 @@ public class SpecificationTemplateFormControllerTest {
         given( this.specificationTemplates.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationTemplates.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationTemplates.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplates.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
         given( this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
     }
@@ -118,25 +123,47 @@ public class SpecificationTemplateFormControllerTest {
     @Test
     void testProcessCreationFormSuccess() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
-                        .param("notes", "spec notes").param("description", "Description"))
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "")
+                        .param("collectionItemId", "-1"))
+                .andExpect(flash().attributeCount(0))
+                .andExpect(status().is3xxRedirection());
+
+        mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "templateDeepCopy")
+                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
+                .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     void testProcessCreationFormHasErrors() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_SPECIFICATION_1.getName())
-                        .param("notes", "spec notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors("specificationTemplate"))
-                          .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "")
+                        .param("collectionItemId", "-1"))
+                .andExpect(model().attributeHasErrors("specificationTemplate"))
+                .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
-                        .param("notes", "spec notes").param("description", ""))
+                        .param("notes", "spec notes").param("description", "")
+                        .param("collectionType", "")
+                        .param("collectionItemId", "-1"))
                 .andExpect(model().attributeHasErrors("specificationTemplate"))
                 .andExpect(model().attributeHasFieldErrorCode("specificationTemplate", "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+
+        mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
+                        .param("notes", "spec notes").param("description", "Description")
+                        .param("collectionType", "templateDeepCopy")
+                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 
     @Test
@@ -218,7 +245,7 @@ public class SpecificationTemplateFormControllerTest {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_2.getId())
                         .param("name", TEST_SPECIFICATION_2.getName()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 }

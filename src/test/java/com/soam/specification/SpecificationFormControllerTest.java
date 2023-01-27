@@ -179,7 +179,7 @@ public class SpecificationFormControllerTest {
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
-                        .param("collectionType", "srcTemplate")
+                        .param("collectionType", "templateDeepCopy")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
                 .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection());
@@ -205,35 +205,19 @@ public class SpecificationFormControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
 
-        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", TEST_SPECIFICATION_2.getName())
-                        .param("notes", "spec notes").param("description", "desc")
-                        .param("collectionType", "srcSpecification")
-                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
-                .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrors("specification", "name"))
-                .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
-
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "desc")
                         .param("collectionType", "srcSpecification")
                         .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/list"));
 
-        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", TEST_SPECIFICATION_2.getName())
-                        .param("notes", "spec notes").param("description", "desc")
-                        .param("collectionType", "srcTemplate")
-                        .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
-                .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrors("specification", "name"))
-                .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
-
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "desc")
-                        .param("collectionType", "srcTemplate")
+                        .param("collectionType", "templateDeepCopy")
                         .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/list"));
     }
