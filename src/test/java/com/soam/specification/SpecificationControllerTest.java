@@ -67,11 +67,9 @@ class SpecificationControllerTest {
         given( this.specificationRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationRepository.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
         given( this.specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
                 .willReturn(new PageImpl<Specification>(Lists.newArrayList(TEST_SPECIFICATION_1)));
-
     }
 
     @Test

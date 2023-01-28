@@ -103,7 +103,6 @@ class SpecificationTemplateFormControllerTest {
         given( this.specificationTemplateRepository.findByNameIgnoreCase(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
         given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
         given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_2));
-        given( this.specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
     }
 
     @Test

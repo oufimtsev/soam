@@ -139,10 +139,6 @@ class StakeholderFormControllerTest {
         given( this.stakeholderRepository.findByNameIgnoreCase(TEST_STAKEHOLDER_3.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
         given( this.stakeholderRepository.findById(TEST_STAKEHOLDER_3.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
 
-
-        given( this.stakeholderRepository.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
-        
-
         given( this.stakeholderRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_2, TEST_STAKEHOLDER_2)));
 

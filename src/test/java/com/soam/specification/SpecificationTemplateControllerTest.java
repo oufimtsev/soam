@@ -66,12 +66,9 @@ class SpecificationTemplateControllerTest {
 
     @BeforeEach
     void setup() {
-
         given( this.specificationTemplateRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_SPECIFICATION_1));
         given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
-
     }
 
     @Test

@@ -115,8 +115,6 @@ class SpecificationObjectiveFormControllerTest {
         given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
         given( this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
 
-        given( this.specificationObjectiveRepository.findById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willReturn(Optional.empty());
-
         given(specificationObjectiveRepository.save(any())).will(invocation -> {
             SpecificationObjective specificationObjective = invocation.getArgument(0);
             specificationObjective.setId(400);

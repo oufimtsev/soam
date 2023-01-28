@@ -64,7 +64,6 @@ class ObjectiveTemplateControllerTest {
         given( this.objectiveTemplateRepository.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
         given( this.objectiveTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_OBJECTIVE_1));
         given( this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplateRepository.findById(EMPTY_OBJECTIVE_ID)).willReturn(Optional.empty());
     }
 
     @Test

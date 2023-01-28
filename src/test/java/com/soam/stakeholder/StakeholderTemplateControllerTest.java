@@ -61,12 +61,9 @@ class StakeholderTemplateControllerTest {
 
     @BeforeEach
     void setup() {
-
         given( this.stakeholderTemplateRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
         given( this.stakeholderTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_STAKEHOLDER_1));
         given( this.stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplateRepository.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
-
     }
 
     @Test
