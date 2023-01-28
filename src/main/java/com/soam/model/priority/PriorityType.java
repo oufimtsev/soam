@@ -1,6 +1,7 @@
 package com.soam.model.priority;
 
 import com.soam.model.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import org.springframework.util.comparator.Comparators;
@@ -10,8 +11,10 @@ import java.util.Objects;
 @Entity
 @Table(name = "priority_types")
 public class PriorityType extends BaseEntity implements Comparable<PriorityType> {
+    @Column(unique = true)
     private String name;
-    private Integer sequence; // todo: make unique? use as a weight?
+    @Column(unique = true)
+    private Integer sequence;
 
     public String getName() {
         return name;
