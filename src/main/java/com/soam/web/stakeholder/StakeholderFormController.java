@@ -7,6 +7,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -22,11 +23,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class StakeholderFormController extends SoamFormController {
-    private static final String ATTR_SPECIFICATION = "specification";
-    private static final String ATTR_STAKEHOLDER = "stakeholder";
-    private static final String ATTR_STAKEHOLDER_TEMPLATES = "stakeholderTemplates";
-    private static final String ATTR_PRIORITIES = "priorities";
-
     private static final String VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM = "stakeholder/addUpdateStakeholder";
     private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
 
@@ -46,7 +42,7 @@ public class StakeholderFormController extends SoamFormController {
         this.priorityRepository = priorityRepository;
     }
 
-    @ModelAttribute(ATTR_SPECIFICATION)
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
         return oSpecification.orElse(null);
@@ -75,7 +71,7 @@ public class StakeholderFormController extends SoamFormController {
         Stakeholder stakeholder = new Stakeholder();
         stakeholder.setSpecification( maybeSpecification.get() );
 
-        model.addAttribute(ATTR_STAKEHOLDER, stakeholder);
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
         this.populateFormModel( model );
         return VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
@@ -129,7 +125,7 @@ public class StakeholderFormController extends SoamFormController {
         stakeholder.setId( stakeholderId );
 
         if (result.hasErrors()) {
-            model.addAttribute(ATTR_STAKEHOLDER, stakeholder );
+            model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder );
             this.populateFormModel( model );
             return VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM;
         }
@@ -164,7 +160,7 @@ public class StakeholderFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute(ATTR_PRIORITIES, priorityRepository.findAll());
-        model.addAttribute(ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

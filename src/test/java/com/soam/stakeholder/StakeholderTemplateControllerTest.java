@@ -4,6 +4,7 @@ import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.stakeholder.StakeholderTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,8 +106,8 @@ public class StakeholderTemplateControllerTest {
                 .andExpect(view().name(VIEW_FIND_STAKEHOLDER_TEMPLATE));
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", ""))
-                .andExpect(model().attributeHasErrors("stakeholderTemplate"))
-                .andExpect(model().attributeHasFieldErrors("stakeholderTemplate", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_FIND_STAKEHOLDER_TEMPLATE));
     }
@@ -118,7 +119,7 @@ public class StakeholderTemplateControllerTest {
         Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 
         mockMvc.perform( get("/stakeholder/template/list"))
-                .andExpect(model().attributeExists("stakeholderTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(status().isOk())
                 .andExpect(view().name("stakeholder/template/stakeholderTemplateList"));
     }

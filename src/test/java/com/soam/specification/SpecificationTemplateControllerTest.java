@@ -5,6 +5,7 @@ import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.specification.SpecificationTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -109,8 +110,8 @@ public class SpecificationTemplateControllerTest {
                 .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", ""))
-                .andExpect(model().attributeHasErrors("specificationTemplate"))
-                .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
     }
@@ -122,7 +123,7 @@ public class SpecificationTemplateControllerTest {
         Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
         mockMvc.perform( get("/specification/template/list"))
-                .andExpect(model().attributeExists("specificationTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(status().isOk())
                 .andExpect(view().name("specification/template/specificationTemplateList"));
     }

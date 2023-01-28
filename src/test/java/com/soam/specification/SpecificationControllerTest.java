@@ -5,6 +5,7 @@ import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.specification.SpecificationController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -106,7 +107,7 @@ public class SpecificationControllerTest {
 
         mockMvc.perform(get("/specifications?page=1").param("name", ""))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeHasFieldErrors("specification", "name"))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
                 .andExpect(view().name("specification/findSpecification"));
     }
 
@@ -116,8 +117,8 @@ public class SpecificationControllerTest {
         Mockito.when(this.specificationRepository.findByNameStartsWithIgnoreCase(eq(""), any(Pageable.class))).thenReturn(specifications);
         mockMvc.perform(get("/specification/list").param("page", "1"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("specification"))
-                .andExpect(model().attributeExists("paginated"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_PAGINATED))
                 .andExpect(view().name("specification/specificationList"));
 
     }
@@ -126,8 +127,8 @@ public class SpecificationControllerTest {
     void testViewSpecificationDetails() throws Exception {
         mockMvc.perform(get("/specification/{specificationId}", TEST_SPECIFICATION_1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("specification"))
-                .andExpect(model().attribute("specification", hasProperty("name", is("Test Spec 1"))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("name", is("Test Spec 1"))))
                 .andExpect(view().name("specification/specificationDetails"));
 
         mockMvc.perform(get("/specification/{specificationId}", EMPTY_SPECIFICATION_ID))

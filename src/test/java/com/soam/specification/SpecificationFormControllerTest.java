@@ -13,6 +13,7 @@ import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.specification.SpecificationFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,9 +154,9 @@ public class SpecificationFormControllerTest {
     @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_SPECIFICATION)).andExpect(status().isOk())
-                .andExpect(model().attributeExists("specification"))
-                .andExpect(model().attributeExists("priorities"))
-                .andExpect(model().attributeExists("specificationTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
     }
 
@@ -189,8 +190,8 @@ public class SpecificationFormControllerTest {
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
-                .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrors("specification", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
 
@@ -198,8 +199,8 @@ public class SpecificationFormControllerTest {
                         .param("notes", "spec notes").param("description", "")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
-                .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrorCode("specification", "description", "NotBlank"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION, "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
 
@@ -225,10 +226,10 @@ public class SpecificationFormControllerTest {
         Mockito.when(this.specificationRepository.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION, TEST_SPECIFICATION_1.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("specification"))
-                .andExpect(model().attribute("specification", hasProperty("name", is(TEST_SPECIFICATION_1.getName()))))
-                .andExpect(model().attribute("specification", hasProperty("description", is(TEST_SPECIFICATION_1.getDescription()))))
-                .andExpect(model().attribute("specification", hasProperty("notes", is(TEST_SPECIFICATION_1.getNotes()))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("name", is(TEST_SPECIFICATION_1.getName()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("description", is(TEST_SPECIFICATION_1.getDescription()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("notes", is(TEST_SPECIFICATION_1.getNotes()))))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION, EMPTY_SPECIFICATION_ID))
@@ -254,8 +255,8 @@ public class SpecificationFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrors("specification", "description"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "description"))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION, TEST_SPECIFICATION_1.getId())
@@ -263,8 +264,8 @@ public class SpecificationFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrors("specification", "description"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "description"))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION, EMPTY_SPECIFICATION_ID)
@@ -272,8 +273,8 @@ public class SpecificationFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "descr")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specification"))
-                .andExpect(model().attributeHasFieldErrors("specification", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
     }
 

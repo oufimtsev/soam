@@ -4,6 +4,7 @@ import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
+import com.soam.web.ModelConstants;
 import com.soam.web.objective.ObjectiveTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,8 +106,8 @@ public class ObjectiveTemplateControllerTest {
                 .andExpect(view().name(VIEW_FIND_OBJECTIVE_TEMPLATE));
 
         mockMvc.perform(get("/objective/templates?page=1").param("name", ""))
-                .andExpect(model().attributeHasErrors("objectiveTemplate"))
-                .andExpect(model().attributeHasFieldErrors("objectiveTemplate", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_FIND_OBJECTIVE_TEMPLATE));
     }
@@ -118,7 +119,7 @@ public class ObjectiveTemplateControllerTest {
         Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(objectiveTemplatesPage);
 
         mockMvc.perform( get("/objective/template/list"))
-                .andExpect(model().attributeExists("objectiveTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(status().isOk())
                 .andExpect(view().name("objective/template/objectiveTemplateList"));
     }

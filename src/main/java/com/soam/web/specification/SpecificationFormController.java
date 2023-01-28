@@ -15,6 +15,7 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
+import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
@@ -30,8 +31,6 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationFormController extends SoamFormController {
-    private static final String ATTR_SPECIFICATIONS = "specifications";
-
     private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
     private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/";
 
@@ -57,7 +56,7 @@ public class SpecificationFormController extends SoamFormController {
         this.priorityRepository = priorityRepository;
     }
 
-    @ModelAttribute(ATTR_SPECIFICATIONS)
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATIONS)
     public List<Specification> populateSpecifications() {
         return specificationRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
@@ -65,7 +64,7 @@ public class SpecificationFormController extends SoamFormController {
     @GetMapping("/specification/new")
     public String initCreationForm(Model model) {
         Specification specification = new Specification();
-        model.addAttribute("specification", specification);
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
         this.populateFormModel( model );
         return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
@@ -142,7 +141,7 @@ public class SpecificationFormController extends SoamFormController {
         specification.setId( specificationId );
         if (result.hasErrors()) {
 
-            model.addAttribute("specification", specification );
+            model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification );
             this.populateFormModel( model );
             return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
@@ -254,7 +253,7 @@ public class SpecificationFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute("priorities", priorityRepository.findAll());
-        model.addAttribute("specificationTemplates", specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

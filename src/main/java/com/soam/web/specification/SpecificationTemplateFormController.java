@@ -6,6 +6,7 @@ import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
@@ -23,12 +24,6 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationTemplateFormController  extends SoamFormController {
-    private static final String ATTR_SPECIFICATION_TEMPLATE = "specificationTemplate";
-    private static final String ATTR_SPECIFICATION_TEMPLATES = "specificationTemplates";
-    private static final String ATTR_COLLECTION_TYPE = "collectionType";
-    private static final String ATTR_COLLECTION_ITEM_ID = "collectionItemId";
-    private static final String ATTR_PRIORITIES = "priorities";
-
     private static final String VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM = "specification/template/addUpdateSpecificationTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/specification/template/list";
 
@@ -50,7 +45,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
     public String initCreationForm(Model model ) {
 
         SpecificationTemplate specificationTemplate = new SpecificationTemplate();
-        model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
         this.populateFormModel( model );
 
         return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
@@ -59,8 +54,8 @@ public class SpecificationTemplateFormController  extends SoamFormController {
     @PostMapping("/specification/template/new")
     public String processCreationForm(
             @Valid SpecificationTemplate specificationTemplate, BindingResult result,
-            @ModelAttribute(ATTR_COLLECTION_TYPE) String collectionType,
-            @ModelAttribute(ATTR_COLLECTION_ITEM_ID) int collectionItemId,
+            @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,
+            @ModelAttribute(ModelConstants.ATTR_COLLECTION_ITEM_ID) int collectionItemId,
             Model model, RedirectAttributes redirectAttributes) {
 
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
@@ -111,7 +106,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
 
         if (result.hasErrors()) {
             specificationTemplate.setId( specificationTemplateId );
-            model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
+            model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
             this.populateFormModel( model );
             return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
@@ -146,8 +141,8 @@ public class SpecificationTemplateFormController  extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute(ATTR_PRIORITIES, priorityRepository.findAll());
-        model.addAttribute(ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
     private void deepTemplateCopy(SpecificationTemplate srcSpecificationTemplate, SpecificationTemplate dstSpecificationTemplate) {

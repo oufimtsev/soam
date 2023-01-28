@@ -4,6 +4,7 @@ import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
@@ -19,10 +20,6 @@ import java.util.Optional;
 
 @Controller
 public class ObjectiveTemplateFormController extends SoamFormController {
-    private static final String ATTR_OBJECTIVE_TEMPLATE = "objectiveTemplate";
-    private static final String ATTR_OBJECTIVE_TEMPLATES = "objectiveTemplates";
-    private static final String ATTR_PRIORITIES = "priorities";
-
     private static final String VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM = "objective/template/addUpdateObjectiveTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/objective/template/list";
 
@@ -40,7 +37,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
     public String initCreationForm(Model model ) {
 
         ObjectiveTemplate objectiveTemplate = new ObjectiveTemplate();
-        model.addAttribute(ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
+        model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
         this.populateFormModel( model );
 
         return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
@@ -56,7 +53,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel( model );
-            model.addAttribute(ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate );
+            model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate );
             return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -122,8 +119,8 @@ public class ObjectiveTemplateFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute(ATTR_PRIORITIES, priorityRepository.findAll());
-        model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
 

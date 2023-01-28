@@ -7,6 +7,7 @@ import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -22,11 +23,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveFormController extends SoamFormController {
-    private static final String ATTR_SPECIFICATION = "specification";
-    private static final String ATTR_SPECIFICATION_OBJECTIVE = "specificationObjective";
-    private static final String ATTR_OBJECTIVE_TEMPLATES = "objectiveTemplates";
-    private static final String ATTR_PRIORITIES = "priorities";
-
     private static final String VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM = "specificationObjective/addUpdateSpecificationObjective";
     private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
     private static final String REDIRECT_SPECIFICATION_OBJECTIVE_LIST = "redirect:/specification/%s/specificationObjective/list";
@@ -48,7 +44,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         this.priorityRepository = priorityRepository;
     }
 
-    @ModelAttribute(ATTR_SPECIFICATION)
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
         return oSpecification.orElse(null);
@@ -63,7 +59,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         SpecificationObjective specificationObjective = new SpecificationObjective();
         specificationObjective.setSpecification(specification);
 
-        model.addAttribute(ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
         this.populateFormModel(model);
         return VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
@@ -113,7 +109,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         });
         if (result.hasErrors()) {
             specificationObjective.setId(specificationObjectiveId);
-            model.addAttribute(ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
+            model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
             this.populateFormModel(model);
             return VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
@@ -146,7 +142,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ATTR_PRIORITIES, priorityRepository.findAll());
-        model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

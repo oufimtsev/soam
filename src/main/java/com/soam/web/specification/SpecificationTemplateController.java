@@ -2,6 +2,7 @@ package com.soam.web.specification;
 
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,16 +18,11 @@ import org.thymeleaf.util.StringUtils;
 import java.util.List;
 import java.util.Map;
 
+import static com.soam.web.ModelConstants.ATTR_SPECIFICATION_TEMPLATE;
+
 
 @Controller
 public class SpecificationTemplateController extends SoamFormController {
-	private static final String ATTR_SPECIFICATION_TEMPLATE = "specificationTemplate";
-	private static final String ATTR_SPECIFICATION_TEMPLATES = "specificationTemplates";
-	private static final String ATTR_PAGINATED = "paginated";
-	private static final String ATTR_CURRENT_PAGE = "currentPage";
-	private static final String ATTR_TOTAL_PAGES = "totalPages";
-	private static final String ATTR_TOTAL_ITEMS = "totalItems";
-
 	public static final String VIEW_FIND_SPECIFICATION_TEMPLATE =  "specification/template/findSpecificationTemplate";
 
 	private final SpecificationTemplateRepository specificationTemplateRepository;
@@ -37,7 +33,7 @@ public class SpecificationTemplateController extends SoamFormController {
 
 	@GetMapping("/specification/template/find")
 	public String initFindForm(Map<String, Object> model) {
-		model.put(ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
+		model.put(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
 		return VIEW_FIND_SPECIFICATION_TEMPLATE;
 	}
 
@@ -79,12 +75,12 @@ public class SpecificationTemplateController extends SoamFormController {
 	}
 
 	private String addPaginationModel(int page, Model model, Page<SpecificationTemplate> paginated) {
-		model.addAttribute(ATTR_PAGINATED, paginated);
+		model.addAttribute(ModelConstants.ATTR_PAGINATED, paginated);
 		List<SpecificationTemplate> specificationTemplates = paginated.getContent();
-		model.addAttribute(ATTR_CURRENT_PAGE, page);
-		model.addAttribute(ATTR_TOTAL_PAGES, paginated.getTotalPages());
-		model.addAttribute(ATTR_TOTAL_ITEMS, paginated.getTotalElements());
-		model.addAttribute(ATTR_SPECIFICATION_TEMPLATES, specificationTemplates);
+		model.addAttribute(ModelConstants.ATTR_CURRENT_PAGE, page);
+		model.addAttribute(ModelConstants.ATTR_TOTAL_PAGES, paginated.getTotalPages());
+		model.addAttribute(ModelConstants.ATTR_TOTAL_ITEMS, paginated.getTotalElements());
+		model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplates);
 		return "specification/template/specificationTemplateList";
 	}
 

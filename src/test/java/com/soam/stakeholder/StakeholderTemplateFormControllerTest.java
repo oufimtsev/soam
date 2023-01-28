@@ -8,6 +8,7 @@ import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
+import com.soam.web.ModelConstants;
 import com.soam.web.stakeholder.StakeholderTemplateFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,9 +106,9 @@ public class StakeholderTemplateFormControllerTest {
     @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_TEMPLATE)).andExpect(status().isOk())
-                .andExpect(model().attributeExists("stakeholderTemplate"))
-                .andExpect(model().attributeExists("priorities"))
-                .andExpect(model().attributeExists("stakeholderTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
 
@@ -122,15 +123,15 @@ public class StakeholderTemplateFormControllerTest {
     void testProcessCreationFormHasErrors() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_STAKEHOLDER_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors("stakeholderTemplate"))
-                          .andExpect(model().attributeHasFieldErrors("stakeholderTemplate", "name"))
+                        .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
+                          .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
-                .andExpect(model().attributeHasErrors("stakeholderTemplate"))
-                .andExpect(model().attributeHasFieldErrorCode("stakeholderTemplate", "description", "NotBlank"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
@@ -140,10 +141,10 @@ public class StakeholderTemplateFormControllerTest {
         Mockito.when(this.stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("stakeholderTemplate"))
-                .andExpect(model().attribute("stakeholderTemplate", hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
-                .andExpect(model().attribute("stakeholderTemplate", hasProperty("description", is("desc"))))
-                .andExpect(model().attribute("stakeholderTemplate", hasProperty("notes", is("notes"))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, hasProperty("description", is("desc"))))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, hasProperty("notes", is("notes"))))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_STAKEHOLDER_ID))
@@ -179,8 +180,8 @@ public class StakeholderTemplateFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("stakeholderTemplate"))
-                .andExpect(model().attributeHasFieldErrors("stakeholderTemplate", "description"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "description"))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_STAKEHOLDER_ID)
@@ -188,8 +189,8 @@ public class StakeholderTemplateFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("stakeholderTemplate"))
-                .andExpect(model().attributeHasFieldErrors("stakeholderTemplate", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "name"))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
 

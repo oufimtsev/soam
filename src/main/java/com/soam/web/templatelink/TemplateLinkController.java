@@ -9,6 +9,7 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.web.ModelConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -22,11 +23,6 @@ import java.util.Optional;
 
 @Controller
 public class TemplateLinkController {
-    private static final String ATTR_SPECIFICATION_TEMPLATES = "specificationTemplates";
-    private static final String ATTR_STAKEHOLDER_TEMPLATES = "stakeholderTemplates";
-    private static final String ATTR_OBJECTIVE_TEMPLATES = "objectiveTemplates";
-    private static final String ATTR_TEMPLATE_LINKS = "templateLinks";
-
     private static final String VIEWS_TEMPLATE_LINK_LIST = "templateLink/templateLinkList";
     private static final String REDIRECT_TEMPLATE_LINK_LIST = "redirect:/templateLink/list";
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
@@ -55,22 +51,22 @@ public class TemplateLinkController {
         this.objectiveTemplateRepository = objectiveTemplateRepository;
     }
 
-    @ModelAttribute(ATTR_SPECIFICATION_TEMPLATES)
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES)
     public List<SpecificationTemplate> populateSpecificationTemplates() {
         return specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
-    @ModelAttribute(ATTR_STAKEHOLDER_TEMPLATES)
+    @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES)
     public List<StakeholderTemplate> populateStakeholderTemplates() {
         return stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
-    @ModelAttribute(ATTR_OBJECTIVE_TEMPLATES)
+    @ModelAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES)
     public List<ObjectiveTemplate> populateObjectiveTemplates() {
         return objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
-    @ModelAttribute(ATTR_TEMPLATE_LINKS)
+    @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINKS)
     public Iterable<TemplateLink> populateTemplateLinks(@ModelAttribute("templateLinkForm") TemplateLinkFormDto templateLinkForm) {
         if (templateLinkForm.getFilterSpecificationTemplate() != null && templateLinkForm.getFilterStakeholderTemplate() != null) {
             return templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplate(

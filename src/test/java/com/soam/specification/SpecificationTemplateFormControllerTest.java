@@ -10,6 +10,7 @@ import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.specification.SpecificationTemplateFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,9 +115,9 @@ public class SpecificationTemplateFormControllerTest {
     @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_TEMPLATE)).andExpect(status().isOk())
-                .andExpect(model().attributeExists("specificationTemplate"))
-                .andExpect(model().attributeExists("priorities"))
-                .andExpect(model().attributeExists("specificationTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
 
@@ -143,8 +144,8 @@ public class SpecificationTemplateFormControllerTest {
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
-                .andExpect(model().attributeHasErrors("specificationTemplate"))
-                .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
@@ -152,8 +153,8 @@ public class SpecificationTemplateFormControllerTest {
                         .param("notes", "spec notes").param("description", "")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
-                .andExpect(model().attributeHasErrors("specificationTemplate"))
-                .andExpect(model().attributeHasFieldErrorCode("specificationTemplate", "description", "NotBlank"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
@@ -171,10 +172,10 @@ public class SpecificationTemplateFormControllerTest {
         Mockito.when(this.specificationTemplateRepository.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_1.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("specificationTemplate"))
-                .andExpect(model().attribute("specificationTemplate", hasProperty("name", is(TEST_SPECIFICATION_1.getName()))))
-                .andExpect(model().attribute("specificationTemplate", hasProperty("description", is("desc"))))
-                .andExpect(model().attribute("specificationTemplate", hasProperty("notes", is("notes"))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, hasProperty("name", is(TEST_SPECIFICATION_1.getName()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, hasProperty("description", is("desc"))))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, hasProperty("notes", is("notes"))))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID))
@@ -210,8 +211,8 @@ public class SpecificationTemplateFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specificationTemplate"))
-                .andExpect(model().attributeHasFieldErrors("specificationTemplate", "description"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "description"))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID)
@@ -219,8 +220,8 @@ public class SpecificationTemplateFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specificationTemplate"))
-                .andExpect(model().attributeHasFieldErrors("specificationTemplate", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
                 .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
     }
 

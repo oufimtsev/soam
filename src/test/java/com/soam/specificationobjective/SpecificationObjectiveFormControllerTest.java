@@ -8,6 +8,7 @@ import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.specificationobjective.SpecificationObjectiveFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,9 +125,9 @@ public class SpecificationObjectiveFormControllerTest {
     @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("specificationObjective"))
-                .andExpect(model().attributeExists("priorities"))
-                .andExpect(model().attributeExists("objectiveTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
 
         mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, 42))
@@ -147,15 +148,15 @@ public class SpecificationObjectiveFormControllerTest {
     void testProcessCreationFormHasErrors() throws Exception {
         mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId()).param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
                         .param("notes", "Specification Objective notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors("specificationObjective"))
-                          .andExpect(model().attributeHasFieldErrors("specificationObjective", "name"))
+                        .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                          .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId()).param("name", "New Test Specification Objective")
                         .param("notes", "Specification Objective notes").param("description", ""))
-                .andExpect(model().attributeHasErrors("specificationObjective"))
-                .andExpect(model().attributeHasFieldErrorCode("specificationObjective", "description", "NotBlank"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
     }
@@ -165,11 +166,11 @@ public class SpecificationObjectiveFormControllerTest {
         Mockito.when(this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("specificationObjective"))
-                .andExpect(model().attribute("specificationObjective", hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE_1.getName()))))
-                .andExpect(model().attribute("specificationObjective", hasProperty("description", is(TEST_SPECIFICATION_OBJECTIVE_1.getDescription()))))
-                .andExpect(model().attribute("specificationObjective", hasProperty("notes", is(TEST_SPECIFICATION_OBJECTIVE_1.getNotes()))))
-                .andExpect(model().attribute("specificationObjective", hasProperty("priority", is(TEST_SPECIFICATION_OBJECTIVE_1.getPriority()))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE_1.getName()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("description", is(TEST_SPECIFICATION_OBJECTIVE_1.getDescription()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("notes", is(TEST_SPECIFICATION_OBJECTIVE_1.getNotes()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("priority", is(TEST_SPECIFICATION_OBJECTIVE_1.getPriority()))))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
@@ -196,8 +197,8 @@ public class SpecificationObjectiveFormControllerTest {
                         .param("notes", "")
                         .param("description", "descr")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specificationObjective"))
-                .andExpect(model().attributeHasFieldErrors("specificationObjective", "notes"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "notes"))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
@@ -205,8 +206,8 @@ public class SpecificationObjectiveFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specificationObjective"))
-                .andExpect(model().attributeHasFieldErrors("specificationObjective", "description"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "description"))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
@@ -214,8 +215,8 @@ public class SpecificationObjectiveFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "descr")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("specificationObjective"))
-                .andExpect(model().attributeHasFieldErrors("specificationObjective", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "name"))
                 .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
     }
 

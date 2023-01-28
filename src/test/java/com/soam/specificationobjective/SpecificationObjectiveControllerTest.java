@@ -5,6 +5,7 @@ import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.specificationobjective.SpecificationObjectiveController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,8 +78,8 @@ public class SpecificationObjectiveControllerTest {
     void testListAllSpecificationObjectives() throws Exception {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("specification"))
-                .andExpect(model().attributeExists("specificationObjectives"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVES))
                 .andExpect(view().name(VIEW_SPECIFICATION_OBJECTIVE_LIST));
     }
 
@@ -86,8 +87,8 @@ public class SpecificationObjectiveControllerTest {
     void testViewSpecificationObjectiveDetails() throws Exception {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),  TEST_SPECIFICATION_OBJECTIVE.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("specificationObjective"))
-                .andExpect(model().attribute("specificationObjective", hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE.getName()))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE.getName()))))
                 .andExpect(view().name(VIEW_SPECIFICATION_OBJECTIVE_DETAILS));
 
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),

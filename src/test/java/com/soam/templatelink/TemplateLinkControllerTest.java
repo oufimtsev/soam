@@ -10,6 +10,7 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.web.ModelConstants;
 import com.soam.web.templatelink.TemplateLinkController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -118,10 +119,10 @@ public class TemplateLinkControllerTest {
     void testListAllTemplateLinks() throws Exception {
         mockMvc.perform(get(URL_VIEW_TEMPLATE_LINK_LIST))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("templateLinks"))
-                .andExpect(model().attributeExists("specificationTemplates"))
-                .andExpect(model().attributeExists("stakeholderTemplates"))
-                .andExpect(model().attributeExists("objectiveTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_TEMPLATE_LINKS))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(model().attributeExists("templateLinkForm"))
                 .andExpect(view().name(VIEW_TEMPLATE_LINK_LIST));
     }

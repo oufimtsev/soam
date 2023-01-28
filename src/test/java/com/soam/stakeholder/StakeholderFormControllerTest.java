@@ -11,6 +11,7 @@ import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
+import com.soam.web.ModelConstants;
 import com.soam.web.stakeholder.StakeholderFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -161,8 +162,8 @@ public class StakeholderFormControllerTest {
         mockMvc.perform(get("/specification/{specificationId}/stakeholder/{stakeholderId}",
                         TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_1.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("stakeholder"))
-                .andExpect(model().attribute("stakeholder", hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER, hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
                 .andExpect(view().name("stakeholder/stakeholderDetails"));
 
         mockMvc.perform(get("/specification/{specificationId}/stakeholder/{stakeholderId}", TEST_SPECIFICATION.getId(),
@@ -174,9 +175,9 @@ public class StakeholderFormControllerTest {
     @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_STAKEHOLDER, TEST_SPECIFICATION.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("stakeholder"))
-                .andExpect(model().attributeExists("priorities"))
-                .andExpect(model().attributeExists("stakeholderTemplates"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(view().name(VIEW_EDIT_STAKEHOLDER));
 
         mockMvc.perform(get(URL_NEW_STAKEHOLDER, 42))
@@ -194,15 +195,15 @@ public class StakeholderFormControllerTest {
     void testProcessCreationFormHasErrors() throws Exception {
         mockMvc.perform(post(URL_NEW_STAKEHOLDER, TEST_SPECIFICATION.getId()).param("name", TEST_STAKEHOLDER_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors("stakeholder"))
-                          .andExpect(model().attributeHasFieldErrors("stakeholder", "name"))
+                        .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER))
+                          .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_STAKEHOLDER));
 
         mockMvc.perform(post(URL_NEW_STAKEHOLDER, TEST_SPECIFICATION.getId()).param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
-                .andExpect(model().attributeHasErrors("stakeholder"))
-                .andExpect(model().attributeHasFieldErrorCode("stakeholder", "description", "NotBlank"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER))
+                .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_STAKEHOLDER, "description", "NotBlank"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(VIEW_EDIT_STAKEHOLDER));
     }
@@ -211,10 +212,10 @@ public class StakeholderFormControllerTest {
         Mockito.when(this.stakeholderRepository.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
 
         mockMvc.perform(get(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_1.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("stakeholder"))
-                .andExpect(model().attribute("stakeholder", hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
-                .andExpect(model().attribute("stakeholder", hasProperty("description", is(TEST_STAKEHOLDER_1.getDescription()))))
-                .andExpect(model().attribute("stakeholder", hasProperty("notes", is(TEST_STAKEHOLDER_1.getNotes()))))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER, hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER, hasProperty("description", is(TEST_STAKEHOLDER_1.getDescription()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER, hasProperty("notes", is(TEST_STAKEHOLDER_1.getNotes()))))
                 .andExpect(view().name(VIEW_EDIT_STAKEHOLDER));
 
         mockMvc.perform(get(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION.getId(), EMPTY_STAKEHOLDER_ID))
@@ -244,8 +245,8 @@ public class StakeholderFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("stakeholder"))
-                .andExpect(model().attributeHasFieldErrors("stakeholder", "description"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER, "description"))
                 .andExpect(view().name(VIEW_EDIT_STAKEHOLDER));
 
         mockMvc.perform(post(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_1.getId())
@@ -253,8 +254,8 @@ public class StakeholderFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("stakeholder"))
-                .andExpect(model().attributeHasFieldErrors("stakeholder", "description"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER, "description"))
                 .andExpect(view().name(VIEW_EDIT_STAKEHOLDER));
 
         mockMvc.perform(post(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION.getId(), EMPTY_STAKEHOLDER_ID)
@@ -262,8 +263,8 @@ public class StakeholderFormControllerTest {
                         .param("notes", "notes")
                         .param("description", "descr")
                 ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("stakeholder"))
-                .andExpect(model().attributeHasFieldErrors("stakeholder", "name"))
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER, "name"))
                 .andExpect(view().name(VIEW_EDIT_STAKEHOLDER));
     }
 
