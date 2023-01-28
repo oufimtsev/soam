@@ -3,6 +3,7 @@ package com.soam.web.objective;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.springframework.data.domain.Page;
@@ -53,7 +54,7 @@ public class ObjectiveTemplateController extends SoamFormController {
 
 		if ( objectiveResults.getTotalElements() == 1) {
 			objectiveTemplate = objectiveResults.iterator().next();
-			return String.format( "redirect:/objective/template/%s/edit", objectiveTemplate.getId());
+			return String.format(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_EDIT, objectiveTemplate.getId());
 		}
 
 		return addPaginationModel(page, model, objectiveResults);
@@ -85,7 +86,4 @@ public class ObjectiveTemplateController extends SoamFormController {
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return objectiveTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
-
-
-
 }

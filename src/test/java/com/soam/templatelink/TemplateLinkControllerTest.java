@@ -11,6 +11,7 @@ import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.templatelink.TemplateLinkController;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +42,6 @@ public class TemplateLinkControllerTest {
     private static String URL_VIEW_TEMPLATE_LINK_LIST = "/templateLink/list";
     private static String URL_NEW_TEMPLATE_LINK = "/templateLink/new";
     private static String URL_DELETE_TEMPLATE_LINK = "/templateLink/delete";
-
-    private static String REDIRECT_TEMPLATE_LINK_LIST = "redirect:/templateLink/list";
 
     static {
         PriorityType lowPriority = new PriorityType();
@@ -135,7 +134,7 @@ public class TemplateLinkControllerTest {
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 
     @Test
@@ -147,7 +146,7 @@ public class TemplateLinkControllerTest {
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE_LINK)
                         .param("newTemplateLink.specificationTemplate", "-1")
@@ -156,7 +155,7 @@ public class TemplateLinkControllerTest {
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 
     @Test
@@ -166,7 +165,7 @@ public class TemplateLinkControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 
     @Test
@@ -175,6 +174,6 @@ public class TemplateLinkControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 }

@@ -8,6 +8,7 @@ import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.transaction.Transactional;
@@ -24,8 +25,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class StakeholderFormController extends SoamFormController {
-    private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
-
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final StakeholderRepository stakeholderRepository;
@@ -48,13 +47,12 @@ public class StakeholderFormController extends SoamFormController {
         return oSpecification.orElse(null);
     }
 
-
     @GetMapping("/stakeholder/{stakeholderId}")
     public String showStakeholder( @PathVariable("specificationId") int specificationId,
                                    @PathVariable("stakeholderId") int stakeholderId, Model model) {
         Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
-        if(maybeStakeholder.isEmpty()){
-            return "redirect:/specification/"+specificationId;
+        if(maybeStakeholder.isEmpty()) {
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
         }
         model.addAttribute(maybeStakeholder.get());
         return ViewConstants.VIEW_STAKEHOLDER_DETAILS;
@@ -65,7 +63,7 @@ public class StakeholderFormController extends SoamFormController {
         Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
         if( maybeSpecification.isEmpty() ){
             //todo: throw error!
-            return "redirect:/specification/list";
+            return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
         }
 
         Stakeholder stakeholder = new Stakeholder();
@@ -93,22 +91,20 @@ public class StakeholderFormController extends SoamFormController {
         }
 
         this.stakeholderRepository.save(stakeholder);
-        return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholder.getId() );
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholder.getId() );
     }
 
     @GetMapping("/stakeholder/{stakeholderId}/edit")
     public String initUpdateStakeholderForm(
             @PathVariable("stakeholderId") int stakeholderId, @PathVariable("specificationId") int specificationId, Model model) {
         Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
-        if(maybeStakeholder.isEmpty()){
-            return "redirect:/specification/"+specificationId;
+        if(maybeStakeholder.isEmpty()) {
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
         }
         model.addAttribute(maybeStakeholder.get());
         populateFormModel(model);
         return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
-
-
 
     @PostMapping("/stakeholder/{stakeholderId}/edit")
     public String processUpdateStakeholderForm(@Valid Stakeholder stakeholder, BindingResult result,
@@ -131,7 +127,7 @@ public class StakeholderFormController extends SoamFormController {
         }
 
         this.stakeholderRepository.save(stakeholder);
-        return String.format(REDIRECT_STAKEHOLDER_DETAILS,specificationId, stakeholderId);
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId);
     }
 
     @PostMapping("/stakeholder/{stakeholderId}/delete")
@@ -147,14 +143,14 @@ public class StakeholderFormController extends SoamFormController {
             Stakeholder fetchedStakeholder = maybeStakeholder.get();
             if(fetchedStakeholder.getStakeholderObjectives() != null && !fetchedStakeholder.getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
-                return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId);
+                return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId);
             }
             stakeholderRepository.delete(fetchedStakeholder);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholder.getName()));
-            return "redirect:/specification/"+fetchedStakeholder.getSpecification().getId();
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, fetchedStakeholder.getSpecification().getId());
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
-            return String.format("redirect:/specification/%s", specificationId );
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
         }
     }
 

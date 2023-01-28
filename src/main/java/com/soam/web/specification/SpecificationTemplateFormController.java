@@ -7,6 +7,7 @@ import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
@@ -25,8 +26,6 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationTemplateFormController  extends SoamFormController {
-    private static final String REDIRECT_TEMPLATE_LIST = "redirect:/specification/template/list";
-
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationTemplateRepository specificationTemplateRepository;
@@ -80,7 +79,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
         } else {
             this.specificationTemplateRepository.save(specificationTemplate);
         }
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
     }
 
     @GetMapping("/specification/template/{specificationTemplateId}/edit")
@@ -88,7 +87,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
         Optional<SpecificationTemplate> maybeSpecificationTemplate = this.specificationTemplateRepository.findById(specificationId);
         if(maybeSpecificationTemplate.isEmpty()){
             //todo: pass error message
-            return REDIRECT_TEMPLATE_LIST;
+            return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
         }
         model.addAttribute(maybeSpecificationTemplate.get());
         this.populateFormModel( model );
@@ -113,7 +112,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
 
         specificationTemplate.setId(specificationTemplateId);
         this.specificationTemplateRepository.save(specificationTemplate);
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
     }
 
     @PostMapping("/specification/template/{specificationTemplateId}/delete")
@@ -135,7 +134,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
     }
 
     private void populateFormModel( Model model ){

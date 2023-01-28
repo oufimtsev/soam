@@ -8,6 +8,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.transaction.Transactional;
@@ -24,10 +25,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveFormController extends SoamFormController {
-    private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
-    private static final String REDIRECT_SPECIFICATION_OBJECTIVE_LIST = "redirect:/specification/%s/specificationObjective/list";
-    private static final String REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS = "redirect:/specification/%s/specificationObjective/%s";
-
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
@@ -54,7 +51,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
     public String initCreationForm(Specification specification, Model model) {
         if (specification == null) {
             //todo: throw error!
-            return REDIRECT_SPECIFICATION_LIST;
+            return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
         }
         SpecificationObjective specificationObjective = new SpecificationObjective();
         specificationObjective.setSpecification(specification);
@@ -79,7 +76,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         }
 
         this.specificationObjectiveRepository.save(specificationObjective);
-        return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
     }
 
     @GetMapping("/specificationObjective/{specificationObjectiveId}/edit")
@@ -88,7 +85,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
         Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
-            return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
         model.addAttribute(maybeSpecificationObjective.get());
         populateFormModel(model);
@@ -116,7 +113,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
 
         specificationObjective.setId(specificationObjectiveId);
         this.specificationObjectiveRepository.save(specificationObjective);
-        return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjectiveId);
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjectiveId);
     }
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/delete")
@@ -138,7 +135,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification objective");
         }
-        return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
     }
 
     private void populateFormModel(Model model) {

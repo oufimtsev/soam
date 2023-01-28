@@ -5,6 +5,7 @@ import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.objective.ObjectiveTemplateController;
 import org.assertj.core.util.Lists;
@@ -47,7 +48,6 @@ public class ObjectiveTemplateControllerTest {
     private static String URL_DELETE_OBJECTIVE = "/objective/{objectiveId}/delete";
     
     static {
-
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
         lowPriority.setId(1);
@@ -60,8 +60,6 @@ public class ObjectiveTemplateControllerTest {
         TEST_OBJECTIVE_1.setNotes("notes");
         TEST_OBJECTIVE_1.setPriority(lowPriority);
     }
-
-
 
     @BeforeEach
     void setup() {
@@ -97,7 +95,7 @@ public class ObjectiveTemplateControllerTest {
 
         mockMvc.perform(get("/objective/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/objective/template/" + TEST_OBJECTIVE_1.getId()+"/edit"));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_EDIT, TEST_OBJECTIVE_1.getId())));
 
         mockMvc.perform(get("/objective/templates?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())

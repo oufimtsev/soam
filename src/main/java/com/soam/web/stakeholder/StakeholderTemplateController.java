@@ -3,6 +3,7 @@ package com.soam.web.stakeholder;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,6 @@ import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-
 
 @Controller
 public class StakeholderTemplateController extends SoamFormController {
@@ -54,7 +54,7 @@ public class StakeholderTemplateController extends SoamFormController {
 
 		if ( stakeholderResults.getTotalElements() == 1) {
 			stakeholderTemplate = stakeholderResults.iterator().next();
-			return String.format( "redirect:/stakeholder/template/%s/edit", stakeholderTemplate.getId());
+			return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_EDIT, stakeholderTemplate.getId());
 		}
 
 		return addPaginationModel(page, model, stakeholderResults);

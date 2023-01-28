@@ -5,6 +5,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +19,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveController {
-    private static final String REDIRECT_SPECIFICATION_DETAILS =  "redirect:/specification/%s";
-
     private final SpecificationRepository specificationRepository;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
 
@@ -46,7 +45,7 @@ public class SpecificationObjectiveController {
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
         Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
-            return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
         model.addAttribute(maybeSpecificationObjective.get());
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;

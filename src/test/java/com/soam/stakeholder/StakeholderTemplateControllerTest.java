@@ -5,6 +5,7 @@ import com.soam.model.priority.PriorityType;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.stakeholder.StakeholderTemplateController;
 import org.assertj.core.util.Lists;
@@ -92,7 +93,7 @@ public class StakeholderTemplateControllerTest {
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/stakeholder/template/" + TEST_STAKEHOLDER_1.getId()+"/edit"));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_EDIT, TEST_STAKEHOLDER_1.getId())));
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())

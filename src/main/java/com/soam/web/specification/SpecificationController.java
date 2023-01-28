@@ -3,6 +3,7 @@ package com.soam.web.specification;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,6 @@ import org.thymeleaf.util.StringUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 
 @Controller
 public class SpecificationController {
@@ -54,7 +54,7 @@ public class SpecificationController {
 
 		if ( specificationResults.getTotalElements() == 1) {
 			specification = specificationResults.iterator().next();
-			return "redirect:/specification/" + specification.getId();
+			return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
 		}
 
 		return addPaginationModel(page, model, specificationResults);
@@ -91,7 +91,7 @@ public class SpecificationController {
 	public String showSpecification(@PathVariable("specificationId") int specificationId, Model model) {
 		Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
 		if(maybeSpecification.isEmpty()){
-			return "redirect:/specification/find";
+			return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
 		}
 		model.addAttribute(maybeSpecification.get());
 		return ViewConstants.VIEW_SPECIFICATION_DETAILS;

@@ -10,6 +10,7 @@ import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,6 @@ import java.util.Optional;
 
 @Controller
 public class TemplateLinkController {
-    private static final String REDIRECT_TEMPLATE_LINK_LIST = "redirect:/templateLink/list";
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
     private static final String TEMPLATE_LINK_TITLE = "%s / %s / %s";
 
@@ -120,7 +120,7 @@ public class TemplateLinkController {
         } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, String.format("Template link %s already exists.", getTemplateLinkTitle(templateLink)));
         }
-        return REDIRECT_TEMPLATE_LINK_LIST;
+        return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }
 
     @PostMapping("/templateLink/delete")
@@ -140,7 +140,7 @@ public class TemplateLinkController {
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template link.");
         }
-        return REDIRECT_TEMPLATE_LINK_LIST;
+        return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }
 
     private static String getTemplateLinkTitle(TemplateLink templateLink) {

@@ -3,6 +3,7 @@ package com.soam.web.specification;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.springframework.data.domain.Page;
@@ -56,12 +57,11 @@ public class SpecificationTemplateController extends SoamFormController {
 
 		if ( specificationResults.getTotalElements() == 1) {
 			specificationTemplate = specificationResults.iterator().next();
-			return String.format( "redirect:/specification/template/%s/edit", specificationTemplate.getId());
+			return String.format(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_EDIT, specificationTemplate.getId());
 		}
 
 		return addPaginationModel(page, model, specificationResults);
 	}
-
 
 	@GetMapping("/specification/template/list")
 	public String listSpecificationTemplates( @RequestParam(defaultValue = "1") int page, Model model ){

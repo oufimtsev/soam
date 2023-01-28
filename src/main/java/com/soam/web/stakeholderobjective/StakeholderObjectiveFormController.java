@@ -11,6 +11,7 @@ import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.transaction.Transactional;
@@ -26,11 +27,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}/stakeholder/{stakeholderId}")
 public class StakeholderObjectiveFormController extends SoamFormController {
-    private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
-    private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
-    private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
-    private static final String REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS = "redirect:/specification/%s/stakeholder/%s/stakeholderObjective/%s";
-
     private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
     private final SpecificationRepository specificationRepository;
     private final StakeholderRepository stakeholderRepository;
@@ -66,7 +62,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
         Optional<StakeholderObjective> maybeStakeholderObjective = this.stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
         if(maybeStakeholderObjective.isEmpty()) {
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
         model.addAttribute(maybeStakeholderObjective.get());
         return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
@@ -76,14 +72,14 @@ public class StakeholderObjectiveFormController extends SoamFormController {
     public String initCreationForm(
             Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
         if (specification == null) {
-            return REDIRECT_SPECIFICATION_LIST;
+            return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
         }
         if (stakeholder == null) {
-            return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
         if (specification.getSpecificationObjectives().isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Specification does not have any Specification Objectives");
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
 
         SpecificationObjective specificationObjective = new SpecificationObjective();
@@ -130,7 +126,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
 
         stakeholderObjectiveRepository.save(stakeholderObjective);
 
-        return String.format(REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
@@ -139,7 +135,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
         Optional<StakeholderObjective> maybeStakeholderObjective = this.stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
         if(maybeStakeholderObjective.isEmpty()) {
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
         model.addAttribute(maybeStakeholderObjective.get());
         populateFormModel(model);
@@ -161,7 +157,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
         }
         stakeholderObjective.setId(stakeholderObjectiveId);
         this.stakeholderObjectiveRepository.save(stakeholderObjective);
-        return String.format(REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjectiveId);
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjectiveId);
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/delete")
@@ -179,10 +175,10 @@ public class StakeholderObjectiveFormController extends SoamFormController {
             StakeholderObjective fetchedStakeholderObjective = maybeStakeholderObjective.get();
             stakeholderObjectiveRepository.delete(fetchedStakeholderObjective);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholderObjective.getSpecificationObjective().getName()));
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder objective");
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
     }
 

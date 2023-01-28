@@ -6,6 +6,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.specification.SpecificationTemplateController;
 import org.assertj.core.util.Lists;
@@ -97,7 +98,7 @@ public class SpecificationTemplateControllerTest {
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/template/" + TEST_SPECIFICATION_1.getId()+"/edit"));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_EDIT, TEST_SPECIFICATION_1.getId())));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())

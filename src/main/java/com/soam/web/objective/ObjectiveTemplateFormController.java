@@ -5,6 +5,7 @@ import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
@@ -21,8 +22,6 @@ import java.util.Optional;
 
 @Controller
 public class ObjectiveTemplateFormController extends SoamFormController {
-    private static final String REDIRECT_TEMPLATE_LIST = "redirect:/objective/template/list";
-
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final ObjectiveTemplateRepository objectiveTemplateRepository;
@@ -58,7 +57,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         }
 
         this.objectiveTemplateRepository.save(objectiveTemplate);
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
     }
 
     @GetMapping("/objective/template/{objectiveTemplateId}/edit")
@@ -66,7 +65,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         Optional<ObjectiveTemplate> maybeObjectiveTemplate = this.objectiveTemplateRepository.findById(objectiveId);
         if(maybeObjectiveTemplate.isEmpty()){
             //todo: pass error message
-            return REDIRECT_TEMPLATE_LIST;
+            return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
         }
         model.addAttribute(maybeObjectiveTemplate.get());
         this.populateFormModel( model );
@@ -89,10 +88,9 @@ public class ObjectiveTemplateFormController extends SoamFormController {
             return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-
         objectiveTemplate.setId(objectiveTemplateId);
         this.objectiveTemplateRepository.save(objectiveTemplate);
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
     }
 
     @PostMapping("/objective/template/{objectiveTemplateId}/delete")
@@ -114,7 +112,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
     }
 
     private void populateFormModel( Model model ){

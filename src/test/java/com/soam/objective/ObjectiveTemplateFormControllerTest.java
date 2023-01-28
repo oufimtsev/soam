@@ -9,6 +9,7 @@ import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.objective.ObjectiveTemplateFormController;
 import org.assertj.core.util.Lists;
@@ -31,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ObjectiveTemplateFormController.class)
 public class ObjectiveTemplateFormControllerTest {
-
     private static final ObjectiveTemplate TEST_OBJECTIVE_1 = new ObjectiveTemplate();
     private static final ObjectiveTemplate TEST_OBJECTIVE_2 = new ObjectiveTemplate();
     private static final int EMPTY_OBJECTIVE_ID = 200;
@@ -40,15 +40,11 @@ public class ObjectiveTemplateFormControllerTest {
     private static final String URL_EDIT_TEMPLATE =  "/objective/template/{objectiveId}/edit";
     private static final String URL_DELETE_TEMPLATE =  "/objective/template/{objectiveId}/delete";
 
-    private static final String VIEW_REDIRECT_LIST_TEMPLATE = "redirect:/objective/template/list";
-
     static {
-
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
         lowPriority.setId(1);
         lowPriority.setSequence(1);
-
 
         TEST_OBJECTIVE_1.setId(100);
         TEST_OBJECTIVE_1.setName("Test Spec 1");
@@ -115,7 +111,7 @@ public class ObjectiveTemplateFormControllerTest {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
@@ -148,7 +144,7 @@ public class ObjectiveTemplateFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
@@ -160,7 +156,7 @@ public class ObjectiveTemplateFormControllerTest {
                         .param("description", "description there")
                         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                                 .param("name", TEST_OBJECTIVE_1.getName())
@@ -168,7 +164,7 @@ public class ObjectiveTemplateFormControllerTest {
                                 .param("description", "description there")
                 )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
@@ -198,8 +194,7 @@ public class ObjectiveTemplateFormControllerTest {
                         .param("name", TEST_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
-
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
@@ -208,12 +203,12 @@ public class ObjectiveTemplateFormControllerTest {
                         .param("name", TEST_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect( flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_2.getId())
                         .param("name", TEST_OBJECTIVE_2.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 }

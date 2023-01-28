@@ -16,6 +16,7 @@ import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
@@ -32,8 +33,6 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationFormController extends SoamFormController {
-    private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/";
-
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationRepository specificationRepository;
@@ -90,10 +89,10 @@ public class SpecificationFormController extends SoamFormController {
             if (srcSpecification.isPresent()) {
                 this.specificationRepository.save(specification);
                 deepSpecificationCopy(srcSpecification.get(), specification);
-                return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
+                return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist");
-                return "redirect:/specification/list";
+                return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
         } else if ("templateDeepCopy".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification Template
@@ -101,16 +100,15 @@ public class SpecificationFormController extends SoamFormController {
             if (srcSpecificationTemplate.isPresent()) {
                 this.specificationRepository.save(specification);
                 deepTemplateCopy(srcSpecificationTemplate.get(), specification);
-                return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
+                return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist");
-                return "redirect:/specification/list";
+                return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
-
         } else {
             //creating new Specification manually or as a shall copy of existing Specification Template
             this.specificationRepository.save(specification);
-            return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
     }
 
@@ -118,14 +116,12 @@ public class SpecificationFormController extends SoamFormController {
     public String initUpdateSpecificationForm(@PathVariable("specificationId") int specificationId, Model model) {
         Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
         if(maybeSpecification.isEmpty()){
-            return "redirect:/specification/find";
+            return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
         }
         model.addAttribute(maybeSpecification.get());
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
-
-
 
     @PostMapping("/specification/{specificationId}/edit")
     public String processUpdateSpecificationForm(@Valid Specification specification, BindingResult result,
@@ -146,7 +142,7 @@ public class SpecificationFormController extends SoamFormController {
         }
 
         this.specificationRepository.save(specification);
-        return "redirect:/specification/{specificationId}";
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
     }
 
     @PostMapping("/specification/{specificationId}/delete")
@@ -162,15 +158,14 @@ public class SpecificationFormController extends SoamFormController {
             if((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
                 (specificationById.getSpecificationObjectives() != null && !specificationById.getSpecificationObjectives().isEmpty())) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholders and specification objectives first.");
-                return REDIRECT_SPECIFICATION_DETAILS+ specificationId;
+                return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
             }
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationById.getName()));
             specificationRepository.delete(specificationById);
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification");
         }
-        return "redirect:/specification/list";
-
+        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
     private void deepSpecificationCopy(Specification srcSpecification, Specification dstSpecification) {

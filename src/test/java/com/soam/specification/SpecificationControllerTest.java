@@ -6,6 +6,7 @@ import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.specification.SpecificationController;
 import org.assertj.core.util.Lists;
@@ -97,7 +98,7 @@ public class SpecificationControllerTest {
 
         mockMvc.perform(get("/specifications?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/" + TEST_SPECIFICATION_1.getId()));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
 
         mockMvc.perform(get("/specifications?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())
@@ -130,6 +131,6 @@ public class SpecificationControllerTest {
 
         mockMvc.perform(get("/specification/{specificationId}", EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/find"));
+                .andExpect(view().name(RedirectConstants.REDIRECT_FIND_SPECIFICATION));
     }
 }

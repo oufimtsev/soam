@@ -12,6 +12,7 @@ import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.stakeholder.StakeholderFormController;
 import org.assertj.core.util.Lists;
@@ -166,7 +167,7 @@ public class StakeholderFormControllerTest {
         mockMvc.perform(get("/specification/{specificationId}/stakeholder/{stakeholderId}", TEST_SPECIFICATION.getId(),
                         EMPTY_STAKEHOLDER_ID ))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s",TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
     }
 
     @Test
@@ -179,7 +180,7 @@ public class StakeholderFormControllerTest {
 
         mockMvc.perform(get(URL_NEW_STAKEHOLDER, 42))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/list"));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
     @Test
@@ -187,7 +188,7 @@ public class StakeholderFormControllerTest {
         mockMvc.perform(post(URL_NEW_STAKEHOLDER, TEST_SPECIFICATION.getId()).param("name", "New stake")
                         .param("notes", "stake notes").param("description", "Description"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s/stakeholder/%s", TEST_SPECIFICATION.getId(), 400)));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, TEST_SPECIFICATION.getId(), 400)));
     }
 
     @Test
@@ -219,7 +220,7 @@ public class StakeholderFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION.getId(), EMPTY_STAKEHOLDER_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s",TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
     }
 
     @Test
@@ -230,7 +231,7 @@ public class StakeholderFormControllerTest {
                         .param("description", "description there")
                         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s/stakeholder/%s",
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS,
                         TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_1.getId())));
     }
 
@@ -273,13 +274,13 @@ public class StakeholderFormControllerTest {
                         .param("name",TEST_STAKEHOLDER_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(String.format("redirect:/specification/%s",TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
 
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_3.getId())
                         .param("name",TEST_STAKEHOLDER_3.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(String.format("redirect:/specification/%s",TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
     }
 
     @Test
@@ -288,12 +289,12 @@ public class StakeholderFormControllerTest {
                         .param("name",TEST_STAKEHOLDER_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect( flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(String.format("redirect:/specification/%s", TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
 
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_2.getId())
                         .param("name",TEST_STAKEHOLDER_2.getName()))
                 .andExpect( flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format("redirect:/specification/%s/stakeholder/%s", TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_2.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_2.getId())));
     }
 }

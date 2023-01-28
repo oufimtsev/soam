@@ -5,6 +5,7 @@ import com.soam.model.priority.PriorityRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
@@ -21,8 +22,6 @@ import java.util.Optional;
 
 @Controller
 public class StakeholderTemplateFormController extends SoamFormController {
-    private static final String REDIRECT_TEMPLATE_LIST = "redirect:/stakeholder/template/list";
-
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final StakeholderTemplateRepository stakeholderTemplateRepository;
@@ -57,7 +56,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
         }
 
         this.stakeholderTemplateRepository.save(stakeholderTemplate);
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
     @GetMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
@@ -65,7 +64,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
         Optional<StakeholderTemplate> maybeStakeholderTemplate = this.stakeholderTemplateRepository.findById(stakeholderId);
         if(maybeStakeholderTemplate.isEmpty()){
             //todo: pass error message
-            return REDIRECT_TEMPLATE_LIST;
+            return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
         }
         model.addAttribute(maybeStakeholderTemplate.get());
         this.populateFormModel( model );
@@ -88,10 +87,9 @@ public class StakeholderTemplateFormController extends SoamFormController {
             return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-
         stakeholderTemplate.setId(stakeholderTemplateId);
         this.stakeholderTemplateRepository.save(stakeholderTemplate);
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/delete")
@@ -113,7 +111,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
-        return REDIRECT_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
     private void populateFormModel( Model model ){

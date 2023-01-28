@@ -6,6 +6,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.specificationobjective.SpecificationObjectiveController;
 import org.assertj.core.util.Lists;
@@ -33,8 +34,6 @@ public class SpecificationObjectiveControllerTest {
 
     private static String URL_VIEW_SPECIFICATION_OBJECTIVE_LIST = "/specification/{specificationId}/specificationObjective/list";
     private static String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
-
-    private static String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
 
     static {
         PriorityType lowPriority = new PriorityType();
@@ -92,6 +91,6 @@ public class SpecificationObjectiveControllerTest {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),
                         EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
     }
 }

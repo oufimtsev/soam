@@ -11,6 +11,7 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import com.soam.web.specification.SpecificationTemplateFormController;
 import org.assertj.core.util.Lists;
@@ -40,11 +41,8 @@ public class SpecificationTemplateFormControllerTest {
     private static final String URL_NEW_TEMPLATE =  "/specification/template/new";
     private static final String URL_EDIT_TEMPLATE =  "/specification/template/{specificationId}/edit";
     private static final String URL_DELETE_TEMPLATE =  "/specification/template/{specificationId}/delete";
-    
-    private static final String VIEW_REDIRECT_LIST_TEMPLATE = "redirect:/specification/template/list";
 
     static {
-
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
         lowPriority.setId(1);
@@ -125,7 +123,7 @@ public class SpecificationTemplateFormControllerTest {
                         .param("collectionItemId", "-1"))
                 .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/template/list"));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
@@ -133,7 +131,7 @@ public class SpecificationTemplateFormControllerTest {
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE_2.getId())))
                 .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/specification/template/list"));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
     @Test
@@ -162,7 +160,7 @@ public class SpecificationTemplateFormControllerTest {
                         .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
     @Test
@@ -178,7 +176,7 @@ public class SpecificationTemplateFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
     @Test
@@ -190,7 +188,7 @@ public class SpecificationTemplateFormControllerTest {
                         .param("description", "description there")
                         )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                                 .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName())
@@ -198,7 +196,7 @@ public class SpecificationTemplateFormControllerTest {
                                 .param("description", "description there")
                 )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
     @Test
@@ -228,7 +226,7 @@ public class SpecificationTemplateFormControllerTest {
                         .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
     @Test
@@ -237,12 +235,12 @@ public class SpecificationTemplateFormControllerTest {
                         .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect( flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_2.getId())
                         .param("name", TEST_SPECIFICATION_TEMPLATE_2.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 }
