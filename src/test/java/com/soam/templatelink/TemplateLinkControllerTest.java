@@ -122,7 +122,7 @@ public class TemplateLinkControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
-                .andExpect(model().attributeExists("templateLinkForm"))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(view().name(ViewConstants.VIEW_TEMPLATE_LINK_LIST));
     }
 
@@ -132,7 +132,7 @@ public class TemplateLinkControllerTest {
                         .param("newTemplateLink.specificationTemplate", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId()))
                         .param("newTemplateLink.stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
                         .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_2.getId())))
-                .andExpect(flash().attributeExists("templateLinkForm"))
+                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
@@ -144,7 +144,7 @@ public class TemplateLinkControllerTest {
                         .param("newTemplateLink.specificationTemplate", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId()))
                         .param("newTemplateLink.stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
                         .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
-                .andExpect(flash().attributeExists("templateLinkForm"))
+                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
@@ -153,7 +153,7 @@ public class TemplateLinkControllerTest {
                         .param("newTemplateLink.specificationTemplate", "-1")
                         .param("newTemplateLink.stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
                         .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
-                .andExpect(flash().attributeExists("templateLinkForm"))
+                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
@@ -165,7 +165,7 @@ public class TemplateLinkControllerTest {
                         .param("deleteTemplateLinkId", String.valueOf(TEST_TEMPLATE_LINK.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(flash().attributeExists("templateLinkForm"))
+                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
     }
 
@@ -174,7 +174,7 @@ public class TemplateLinkControllerTest {
         mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK, EMPTY_TEMPLATE_LINK_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
-                .andExpect(flash().attributeExists("templateLinkForm"))
+                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(view().name(REDIRECT_TEMPLATE_LINK_LIST));
     }
 }

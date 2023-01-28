@@ -14,6 +14,7 @@ public final class ModelConstants {
     public static final String ATTR_OBJECTIVE_TEMPLATES = "objectiveTemplates";
     public static final String ATTR_STAKEHOLDER_OBJECTIVE = "stakeholderObjective";
     public static final String ATTR_TEMPLATE_LINKS = "templateLinks";
+    public static final String ATTR_TEMPLATE_LINK_FORM = "templateLinkForm";
     public static final String ATTR_CURRENT_PAGE = "currentPage";
     public static final String ATTR_TOTAL_PAGES = "totalPages";
     public static final String ATTR_TOTAL_ITEMS = "totalItems";

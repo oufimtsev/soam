@@ -67,7 +67,7 @@ public class TemplateLinkController {
     }
 
     @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINKS)
-    public Iterable<TemplateLink> populateTemplateLinks(@ModelAttribute("templateLinkForm") TemplateLinkFormDto templateLinkForm) {
+    public Iterable<TemplateLink> populateTemplateLinks(@ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm) {
         if (templateLinkForm.getFilterSpecificationTemplate() != null && templateLinkForm.getFilterStakeholderTemplate() != null) {
             return templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplate(
                     templateLinkForm.getFilterSpecificationTemplate(), templateLinkForm.getFilterStakeholderTemplate(), TEMPLATE_LINK_SORT);
@@ -86,7 +86,7 @@ public class TemplateLinkController {
     }
 
     @PostMapping("/templateLink/list")
-    public String listTemplateLinks(@ModelAttribute("templateLinkForm") TemplateLinkFormDto templateLinkForm, Model model) {
+    public String listTemplateLinks(@ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
         if (templateLinkForm.getNewTemplateLink() != null) {
             if (templateLinkForm.getFilterSpecificationTemplate() != null) {
                 templateLinkForm.getNewTemplateLink().setSpecificationTemplate(
