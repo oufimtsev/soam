@@ -47,13 +47,13 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElseThrow(IllegalArgumentException::new);
+        return oSpecification.orElseThrow(IllegalSpecificationIdException::new);
     }
 
     @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER)
-    public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId) {
+    public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId, Specification specification) {
         Optional<Stakeholder> oStakeholder = stakeholderRepository.findById(stakeholderId);
-        return oStakeholder.orElseThrow(IllegalArgumentException::new);
+        return oStakeholder.orElseThrow(() -> new IllegalStakeholderIdException(specification));
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}")
@@ -178,13 +178,30 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         }
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String errorHandler(RedirectAttributes redirectAttributes) {
+    @ExceptionHandler(IllegalSpecificationIdException.class)
+    public String errorHandlerSpecification(RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
+    @ExceptionHandler(IllegalStakeholderIdException.class)
+    public String errorHandlerStakeholder(RedirectAttributes redirectAttributes, IllegalStakeholderIdException e) {
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, e.specification.getId());
+    }
+
     private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+    }
+
+    static class IllegalSpecificationIdException extends IllegalArgumentException {
+    }
+
+    static class IllegalStakeholderIdException extends IllegalArgumentException {
+        private final Specification specification;
+
+        IllegalStakeholderIdException(Specification specification) {
+            this.specification = specification;
+        }
     }
 }

@@ -135,7 +135,7 @@ class SpecificationObjectiveFormControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, 42))
+        mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
@@ -197,9 +197,8 @@ class SpecificationObjectiveFormControllerTest {
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", "New Test Specification Objective")
                         .param("notes", "notes here")
-                        .param("description", "description there")
-                        )
-                    .andExpect(status().is3xxRedirection())
+                        .param("description", "description there"))
+                .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS,
                         TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())));
     }

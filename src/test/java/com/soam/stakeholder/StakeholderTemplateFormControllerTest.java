@@ -203,7 +203,7 @@ class StakeholderTemplateFormControllerTest {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_STAKEHOLDER_ID)
                         .param("name", TEST_STAKEHOLDER_1.getName()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect( flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_2.getId())

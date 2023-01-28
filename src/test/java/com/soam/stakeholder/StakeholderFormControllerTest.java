@@ -186,7 +186,7 @@ class StakeholderFormControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(get(URL_NEW_STAKEHOLDER, 42))
+        mockMvc.perform(get(URL_NEW_STAKEHOLDER, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
