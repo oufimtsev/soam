@@ -6,6 +6,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.specificationobjective.SpecificationObjectiveController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,9 +33,6 @@ public class SpecificationObjectiveControllerTest {
 
     private static String URL_VIEW_SPECIFICATION_OBJECTIVE_LIST = "/specification/{specificationId}/specificationObjective/list";
     private static String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
-
-    private static String VIEW_SPECIFICATION_OBJECTIVE_LIST = "specificationObjective/specificationObjectiveList";
-    private static String VIEW_SPECIFICATION_OBJECTIVE_DETAILS = "specificationObjective/specificationObjectiveDetails";
 
     private static String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
 
@@ -80,7 +78,7 @@ public class SpecificationObjectiveControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVES))
-                .andExpect(view().name(VIEW_SPECIFICATION_OBJECTIVE_LIST));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_LIST));
     }
 
     @Test
@@ -89,7 +87,7 @@ public class SpecificationObjectiveControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE.getName()))))
-                .andExpect(view().name(VIEW_SPECIFICATION_OBJECTIVE_DETAILS));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS));
 
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),
                         EMPTY_SPECIFICATION_OBJECTIVE_ID))

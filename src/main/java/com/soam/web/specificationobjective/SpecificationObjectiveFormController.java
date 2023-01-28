@@ -9,6 +9,7 @@ import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
@@ -23,7 +24,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveFormController extends SoamFormController {
-    private static final String VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM = "specificationObjective/addUpdateSpecificationObjective";
     private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
     private static final String REDIRECT_SPECIFICATION_OBJECTIVE_LIST = "redirect:/specification/%s/specificationObjective/list";
     private static final String REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS = "redirect:/specification/%s/specificationObjective/%s";
@@ -61,7 +61,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
 
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
         this.populateFormModel(model);
-        return VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/specificationObjective/new")
@@ -75,7 +75,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel(model);
-            return VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
         this.specificationObjectiveRepository.save(specificationObjective);
@@ -92,7 +92,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         }
         model.addAttribute(maybeSpecificationObjective.get());
         populateFormModel(model);
-        return VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/edit")
@@ -111,7 +111,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
             specificationObjective.setId(specificationObjectiveId);
             model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
             this.populateFormModel(model);
-            return VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
         specificationObjective.setId(specificationObjectiveId);

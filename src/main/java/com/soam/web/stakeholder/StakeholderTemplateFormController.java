@@ -6,6 +6,7 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,6 @@ import java.util.Optional;
 
 @Controller
 public class StakeholderTemplateFormController extends SoamFormController {
-    private static final String VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM = "stakeholder/template/addUpdateStakeholderTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/stakeholder/template/list";
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
@@ -40,7 +40,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
         this.populateFormModel( model );
 
-        return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholder/template/new")
@@ -53,7 +53,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel( model );
-            return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
         this.stakeholderTemplateRepository.save(stakeholderTemplate);
@@ -69,7 +69,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
         }
         model.addAttribute(maybeStakeholderTemplate.get());
         this.populateFormModel( model );
-        return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
@@ -85,7 +85,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
             stakeholderTemplate.setId( stakeholderTemplateId );
             model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholderTemplate);
             this.populateFormModel( model );
-            return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
 
@@ -114,13 +114,10 @@ public class StakeholderTemplateFormController extends SoamFormController {
         }
 
         return REDIRECT_TEMPLATE_LIST;
-
     }
 
     private void populateFormModel( Model model ){
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
-
-
 }

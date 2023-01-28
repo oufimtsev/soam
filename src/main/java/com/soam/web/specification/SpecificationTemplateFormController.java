@@ -8,6 +8,7 @@ import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,6 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationTemplateFormController  extends SoamFormController {
-    private static final String VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM = "specification/template/addUpdateSpecificationTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/specification/template/list";
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
@@ -48,7 +48,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
         this.populateFormModel( model );
 
-        return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/specification/template/new")
@@ -65,7 +65,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel( model );
-            return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
         if ("templateDeepCopy".equals(collectionType)) {
@@ -92,7 +92,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
         }
         model.addAttribute(maybeSpecificationTemplate.get());
         this.populateFormModel( model );
-        return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/specification/template/{specificationTemplateId}/edit")
@@ -108,9 +108,8 @@ public class SpecificationTemplateFormController  extends SoamFormController {
             specificationTemplate.setId( specificationTemplateId );
             model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
             this.populateFormModel( model );
-            return VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
-
 
         specificationTemplate.setId(specificationTemplateId);
         this.specificationTemplateRepository.save(specificationTemplate);
@@ -137,7 +136,6 @@ public class SpecificationTemplateFormController  extends SoamFormController {
         }
 
         return REDIRECT_TEMPLATE_LIST;
-
     }
 
     private void populateFormModel( Model model ){

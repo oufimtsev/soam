@@ -4,6 +4,7 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +22,6 @@ import java.util.Map;
 
 @Controller
 public class StakeholderTemplateController extends SoamFormController {
-	public static final String VIEW_FIND_SPECIFICATION_TEMPLATE = "stakeholder/template/findStakeholderTemplate";
-
 	private final StakeholderTemplateRepository stakeholderTemplateRepository;
 
 	public StakeholderTemplateController(StakeholderTemplateRepository stakeholderTemplateRepository) {
@@ -32,7 +31,7 @@ public class StakeholderTemplateController extends SoamFormController {
 	@GetMapping("/stakeholder/template/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
-		return VIEW_FIND_SPECIFICATION_TEMPLATE;
+		return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 	}
 
 	@GetMapping("/stakeholder/templates")
@@ -43,14 +42,14 @@ public class StakeholderTemplateController extends SoamFormController {
 		if ( StringUtils.isEmpty(stakeholderTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
-			return VIEW_FIND_SPECIFICATION_TEMPLATE;
+			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 
 		Page<StakeholderTemplate> stakeholderResults = findPaginatedForStakeholderTemplateName(page, stakeholderTemplate.getName());
 		if (stakeholderResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
-			return VIEW_FIND_SPECIFICATION_TEMPLATE;
+			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 
 		if ( stakeholderResults.getTotalElements() == 1) {
@@ -61,7 +60,6 @@ public class StakeholderTemplateController extends SoamFormController {
 		return addPaginationModel(page, model, stakeholderResults);
 	}
 
-
 	@GetMapping("/stakeholder/template/list")
 	public String listStakeholderTemplates( @RequestParam(defaultValue = "1") int page, Model model ){
 
@@ -69,7 +67,7 @@ public class StakeholderTemplateController extends SoamFormController {
 				findPaginatedForStakeholderTemplateName(page, "");
 		addPaginationModel( page, model, stakeholderTemplateResults );
 		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
-		return "stakeholder/template/stakeholderTemplateList";
+		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;
 	}
 
 	private String addPaginationModel(int page, Model model, Page<StakeholderTemplate> paginated) {
@@ -79,7 +77,7 @@ public class StakeholderTemplateController extends SoamFormController {
 		model.addAttribute(ModelConstants.ATTR_TOTAL_PAGES, paginated.getTotalPages());
 		model.addAttribute(ModelConstants.ATTR_TOTAL_ITEMS, paginated.getTotalElements());
 		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplates);
-		return "stakeholder/template/stakeholderTemplateList";
+		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;
 	}
 
 	private Page<StakeholderTemplate> findPaginatedForStakeholderTemplateName(int page, String name) {
@@ -88,5 +86,4 @@ public class StakeholderTemplateController extends SoamFormController {
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
-
 }

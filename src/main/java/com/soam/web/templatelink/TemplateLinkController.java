@@ -10,6 +10,7 @@ import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -23,7 +24,6 @@ import java.util.Optional;
 
 @Controller
 public class TemplateLinkController {
-    private static final String VIEWS_TEMPLATE_LINK_LIST = "templateLink/templateLinkList";
     private static final String REDIRECT_TEMPLATE_LINK_LIST = "redirect:/templateLink/list";
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
     private static final String TEMPLATE_LINK_TITLE = "%s / %s / %s";
@@ -82,7 +82,7 @@ public class TemplateLinkController {
 
     @GetMapping("/templateLink/list")
     public String listTemplateLinks() {
-        return VIEWS_TEMPLATE_LINK_LIST;
+        return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
     @PostMapping("/templateLink/list")
@@ -97,7 +97,7 @@ public class TemplateLinkController {
                         templateLinkForm.getFilterStakeholderTemplate());
             }
         }
-        return VIEWS_TEMPLATE_LINK_LIST;
+        return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
     @PostMapping("/templateLink/new")

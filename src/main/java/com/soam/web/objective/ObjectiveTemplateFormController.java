@@ -6,6 +6,7 @@ import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,6 @@ import java.util.Optional;
 
 @Controller
 public class ObjectiveTemplateFormController extends SoamFormController {
-    private static final String VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM = "objective/template/addUpdateObjectiveTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/objective/template/list";
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
@@ -40,7 +40,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
         this.populateFormModel( model );
 
-        return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/objective/template/new")
@@ -54,7 +54,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         if (result.hasErrors()) {
             this.populateFormModel( model );
             model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate );
-            return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
         this.objectiveTemplateRepository.save(objectiveTemplate);
@@ -70,7 +70,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         }
         model.addAttribute(maybeObjectiveTemplate.get());
         this.populateFormModel( model );
-        return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/objective/template/{objectiveTemplateId}/edit")
@@ -86,7 +86,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
             objectiveTemplate.setId( objectiveTemplateId );
             model.addAttribute("objective", objectiveTemplate );
             this.populateFormModel( model );
-            return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
 
@@ -115,13 +115,10 @@ public class ObjectiveTemplateFormController extends SoamFormController {
         }
 
         return REDIRECT_TEMPLATE_LIST;
-
     }
 
     private void populateFormModel( Model model ){
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
-
-
 }

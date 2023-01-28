@@ -4,6 +4,7 @@ import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,12 +19,8 @@ import org.thymeleaf.util.StringUtils;
 import java.util.List;
 import java.util.Map;
 
-
 @Controller
 public class ObjectiveTemplateController extends SoamFormController {
-
-	private static final String VIEW_FIND_OBJECTIVE_TEMPLATE = "objective/template/findObjectiveTemplate";
-
 	private final ObjectiveTemplateRepository objectiveTemplateRepository;
 
 	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository) {
@@ -33,7 +30,7 @@ public class ObjectiveTemplateController extends SoamFormController {
 	@GetMapping("/objective/template/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
-		return VIEW_FIND_OBJECTIVE_TEMPLATE;
+		return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 	}
 
 	@GetMapping("/objective/templates")
@@ -44,14 +41,14 @@ public class ObjectiveTemplateController extends SoamFormController {
 		if ( StringUtils.isEmpty(objectiveTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
-			return VIEW_FIND_OBJECTIVE_TEMPLATE;
+			return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
 		Page<ObjectiveTemplate> objectiveResults = findPaginatedForObjectiveTemplateName(page, objectiveTemplate.getName());
 		if (objectiveResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
-			return VIEW_FIND_OBJECTIVE_TEMPLATE;
+			return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
 		if ( objectiveResults.getTotalElements() == 1) {
@@ -62,7 +59,6 @@ public class ObjectiveTemplateController extends SoamFormController {
 		return addPaginationModel(page, model, objectiveResults);
 	}
 
-
 	@GetMapping("/objective/template/list")
 	public String listObjectiveTemplates( @RequestParam(defaultValue = "1") int page, Model model ){
 
@@ -70,7 +66,7 @@ public class ObjectiveTemplateController extends SoamFormController {
 				findPaginatedForObjectiveTemplateName(page, "");
 		addPaginationModel( page, model, objectiveTemplateResults );
 		model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
-		return "objective/template/objectiveTemplateList";
+		return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST;
 	}
 
 	private String addPaginationModel(int page, Model model, Page<ObjectiveTemplate> paginated) {
@@ -80,7 +76,7 @@ public class ObjectiveTemplateController extends SoamFormController {
 		model.addAttribute(ModelConstants.ATTR_TOTAL_PAGES, paginated.getTotalPages());
 		model.addAttribute(ModelConstants.ATTR_TOTAL_ITEMS, paginated.getTotalElements());
 		model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplates);
-		return "objective/template/objectiveTemplateList";
+		return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST;
 	}
 
 	private Page<ObjectiveTemplate> findPaginatedForObjectiveTemplateName(int page, String name) {

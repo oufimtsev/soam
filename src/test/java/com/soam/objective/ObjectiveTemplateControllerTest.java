@@ -5,6 +5,7 @@ import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.objective.ObjectiveTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,9 +46,6 @@ public class ObjectiveTemplateControllerTest {
     private static String URL_EDIT_OBJECTIVE = "/objective/{objectiveId}/edit";
     private static String URL_DELETE_OBJECTIVE = "/objective/{objectiveId}/delete";
     
-    private static String VIEW_FIND_OBJECTIVE_TEMPLATE = "objective/template/findObjectiveTemplate";
-
-
     static {
 
         PriorityType lowPriority = new PriorityType();
@@ -78,7 +76,7 @@ public class ObjectiveTemplateControllerTest {
     @Test
     void tesInitFind() throws Exception {
         mockMvc.perform(get("/objective/template/find")).andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_OBJECTIVE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
     }
 
     @Test
@@ -87,7 +85,7 @@ public class ObjectiveTemplateControllerTest {
         Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(objectiveTemplates);
         mockMvc.perform(get("/objective/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("objective/template/objectiveTemplateList"));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
@@ -103,15 +101,14 @@ public class ObjectiveTemplateControllerTest {
 
         mockMvc.perform(get("/objective/templates?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_OBJECTIVE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
 
         mockMvc.perform(get("/objective/templates?page=1").param("name", ""))
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_OBJECTIVE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
     }
-
 
     @Test
     void testListObjectiveTemplates() throws Exception{
@@ -121,7 +118,7 @@ public class ObjectiveTemplateControllerTest {
         mockMvc.perform( get("/objective/template/list"))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(status().isOk())
-                .andExpect(view().name("objective/template/objectiveTemplateList"));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST));
     }
 
 }

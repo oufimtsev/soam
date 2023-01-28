@@ -3,6 +3,7 @@ package com.soam.web.specification;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,20 +23,16 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationController {
-
-	public static final String  VIEW_FIND_SPECIFICATION = "specification/findSpecification";
-
 	private final SpecificationRepository specificationRepository;
 
 	public SpecificationController(SpecificationRepository specificationRepository) {
 		this.specificationRepository = specificationRepository;
 	}
 
-
 	@GetMapping("/specification/find")
 	public String initFindForm(Map<String, Object> model) {
 		model.put(ModelConstants.ATTR_SPECIFICATION, new Specification());
-		return VIEW_FIND_SPECIFICATION;
+		return ViewConstants.VIEW_FIND_SPECIFICATION;
 	}
 
 	@GetMapping("/specifications")
@@ -45,15 +42,14 @@ public class SpecificationController {
 		if ( StringUtils.isEmpty(specification.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-			return VIEW_FIND_SPECIFICATION;
+			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
-
 
 		Page<Specification> specificationResults = findPaginatedForSpecificationName(page, specification.getName());
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-			return VIEW_FIND_SPECIFICATION;
+			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 
 		if ( specificationResults.getTotalElements() == 1) {
@@ -65,14 +61,13 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specification/list")
-	public String listSpecificationTemplates( @RequestParam(defaultValue = "1") int page, Model model ){
-
+	public String listSpecificationTemplates( @RequestParam(defaultValue = "1") int page, Model model) {
 		Page<Specification> specificationResults =
 				findPaginatedForSpecificationName(page, "");
 		addPaginationModel( page, model, specificationResults );
 
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, new Specification()); // for breadcrumb
-		return "specification/specificationList";
+		return ViewConstants.VIEW_SPECIFICATION_LIST;
 	}
 
 	private String addPaginationModel(int page, Model model, Page<Specification> paginated) {
@@ -82,7 +77,7 @@ public class SpecificationController {
 		model.addAttribute(ModelConstants.ATTR_TOTAL_PAGES, paginated.getTotalPages());
 		model.addAttribute(ModelConstants.ATTR_TOTAL_ITEMS, paginated.getTotalElements());
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATIONS, specifications);
-		return "specification/specificationList";
+		return ViewConstants.VIEW_SPECIFICATION_LIST;
 	}
 
 	private Page<Specification> findPaginatedForSpecificationName(int page, String name) {
@@ -92,7 +87,6 @@ public class SpecificationController {
 		return specificationRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 
-
 	@GetMapping("/specification/{specificationId}")
 	public String showSpecification(@PathVariable("specificationId") int specificationId, Model model) {
 		Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
@@ -100,8 +94,6 @@ public class SpecificationController {
 			return "redirect:/specification/find";
 		}
 		model.addAttribute(maybeSpecification.get());
-		return "specification/specificationDetails";
+		return ViewConstants.VIEW_SPECIFICATION_DETAILS;
 	}
-
-
 }

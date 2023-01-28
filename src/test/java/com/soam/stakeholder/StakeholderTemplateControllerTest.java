@@ -5,6 +5,7 @@ import com.soam.model.priority.PriorityType;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.stakeholder.StakeholderTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StakeholderTemplateController.class)
 public class StakeholderTemplateControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
     
@@ -45,16 +45,11 @@ public class StakeholderTemplateControllerTest {
     private static String URL_EDIT_STAKEHOLDER = "/stakeholder/{stakeholderId}/edit";
     private static String URL_DELETE_STAKEHOLDER = "/stakeholder/{stakeholderId}/delete";
     
-    private static String VIEW_FIND_STAKEHOLDER_TEMPLATE = "stakeholder/template/findStakeholderTemplate";
-
-
     static {
-
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
         lowPriority.setId(1);
         lowPriority.setSequence(1);
-
 
         TEST_STAKEHOLDER_1.setId(100);
         TEST_STAKEHOLDER_1.setName("Test Spec 1");
@@ -62,8 +57,6 @@ public class StakeholderTemplateControllerTest {
         TEST_STAKEHOLDER_1.setNotes("notes");
         TEST_STAKEHOLDER_1.setPriority(lowPriority);
     }
-
-
 
     @BeforeEach
     void setup() {
@@ -78,7 +71,7 @@ public class StakeholderTemplateControllerTest {
     @Test
     void tesInitFind() throws Exception {
         mockMvc.perform(get("/stakeholder/template/find")).andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_STAKEHOLDER_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
     }
 
     @Test
@@ -87,7 +80,7 @@ public class StakeholderTemplateControllerTest {
         Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(stakeholderTemplates);
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("stakeholder/template/stakeholderTemplateList"));
+                .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST));
     }
 
     @Test
@@ -103,25 +96,23 @@ public class StakeholderTemplateControllerTest {
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_STAKEHOLDER_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", ""))
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_STAKEHOLDER_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
     }
 
-
     @Test
-    void testListStakeholderTemplates() throws Exception{
+    void testListStakeholderTemplates() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
         Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 
         mockMvc.perform( get("/stakeholder/template/list"))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(status().isOk())
-                .andExpect(view().name("stakeholder/template/stakeholderTemplateList"));
+                .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST));
     }
-
 }

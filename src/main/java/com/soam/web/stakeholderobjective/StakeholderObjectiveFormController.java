@@ -12,6 +12,7 @@ import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,6 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}/stakeholder/{stakeholderId}")
 public class StakeholderObjectiveFormController extends SoamFormController {
-    private static final String VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM = "stakeholderObjective/addUpdateStakeholderObjective";
     private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
     private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
     private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
@@ -69,7 +69,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
             return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
         model.addAttribute(maybeStakeholderObjective.get());
-        return "stakeholderObjective/stakeholderObjectiveDetails";
+        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
     }
 
     @GetMapping("/stakeholderObjective/new")
@@ -97,7 +97,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
 
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
         this.populateFormModel(model);
-        return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholderObjective/new")
@@ -125,7 +125,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel(model);
-            return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
         stakeholderObjectiveRepository.save(stakeholderObjective);
@@ -143,7 +143,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
         }
         model.addAttribute(maybeStakeholderObjective.get());
         populateFormModel(model);
-        return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
@@ -157,7 +157,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
             stakeholderObjective.setId(stakeholderObjectiveId);
             model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
             this.populateFormModel(model);
-            return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
         stakeholderObjective.setId(stakeholderObjectiveId);
         this.stakeholderObjectiveRepository.save(stakeholderObjective);

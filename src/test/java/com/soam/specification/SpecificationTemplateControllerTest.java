@@ -6,6 +6,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.specification.SpecificationTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationTemplateController.class)
 public class SpecificationTemplateControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -49,11 +49,7 @@ public class SpecificationTemplateControllerTest {
     private static String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
     private static String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
     
-    private static String VIEW_FIND_SPECIFICATION_TEMPLATE = "specification/template/findSpecificationTemplate";
-
-
     static {
-
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
         lowPriority.setId(1);
@@ -66,8 +62,6 @@ public class SpecificationTemplateControllerTest {
         TEST_SPECIFICATION_1.setNotes("notes");
         TEST_SPECIFICATION_1.setPriority(lowPriority);
     }
-
-
 
     @BeforeEach
     void setup() {
@@ -82,7 +76,7 @@ public class SpecificationTemplateControllerTest {
     @Test
     void tesInitFind() throws Exception {
         mockMvc.perform(get("/specification/template/find")).andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
     }
 
     @Test
@@ -91,7 +85,7 @@ public class SpecificationTemplateControllerTest {
         Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specificationTemplates);
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("specification/template/specificationTemplateList"));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST));
     }
 
     @Test
@@ -107,25 +101,23 @@ public class SpecificationTemplateControllerTest {
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", ""))
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_FIND_SPECIFICATION_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
     }
 
-
     @Test
-    void testListSpecificationTemplates() throws Exception{
+    void testListSpecificationTemplates() throws Exception {
         Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
         Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
         mockMvc.perform( get("/specification/template/list"))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(status().isOk())
-                .andExpect(view().name("specification/template/specificationTemplateList"));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST));
     }
-
 }

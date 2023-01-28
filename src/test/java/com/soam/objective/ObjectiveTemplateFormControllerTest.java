@@ -9,6 +9,7 @@ import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.objective.ObjectiveTemplateFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,8 +39,7 @@ public class ObjectiveTemplateFormControllerTest {
     private static final String URL_NEW_TEMPLATE =  "/objective/template/new";
     private static final String URL_EDIT_TEMPLATE =  "/objective/template/{objectiveId}/edit";
     private static final String URL_DELETE_TEMPLATE =  "/objective/template/{objectiveId}/delete";
-    
-    private static final String VIEW_ADD_UPDATE_TEMPLATE = "objective/template/addUpdateObjectiveTemplate";
+
     private static final String VIEW_REDIRECT_LIST_TEMPLATE = "redirect:/objective/template/list";
 
     static {
@@ -99,7 +99,6 @@ public class ObjectiveTemplateFormControllerTest {
         given( this.objectiveTemplateRepository.findByNameIgnoreCase(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
         given( this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
         given( this.objectiveTemplateRepository.findById(EMPTY_OBJECTIVE_ID)).willReturn(Optional.empty());
-
     }
 
     @Test
@@ -108,14 +107,15 @@ public class ObjectiveTemplateFormControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
     }
 
     @Test
     void testProcessCreationFormSuccess() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
     }
 
     @Test
@@ -125,14 +125,14 @@ public class ObjectiveTemplateFormControllerTest {
                         .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                           .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "description", "NotBlank"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class ObjectiveTemplateFormControllerTest {
                 .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("name", is(TEST_OBJECTIVE_1.getName()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("description", is("desc"))))
                 .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("notes", is("notes"))))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
@@ -159,9 +159,8 @@ public class ObjectiveTemplateFormControllerTest {
                         .param("notes", "notes here")
                         .param("description", "description there")
                         )
-                    .andExpect(status().is3xxRedirection())
+                .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
-
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                                 .param("name", TEST_OBJECTIVE_1.getName())
@@ -181,7 +180,7 @@ public class ObjectiveTemplateFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "description"))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID)
                         .param("name", TEST_OBJECTIVE_1.getName())
@@ -190,7 +189,7 @@ public class ObjectiveTemplateFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
     }
 
     @Test

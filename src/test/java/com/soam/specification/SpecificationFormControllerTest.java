@@ -14,6 +14,7 @@ import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.specification.SpecificationFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,8 +55,6 @@ public class SpecificationFormControllerTest {
     private static String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
     private static String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
     
-    private static String VIEW_EDIT_SPECIFICATION =  "specification/addUpdateSpecification";
-
     static {
 
         PriorityType lowPriority = new PriorityType();
@@ -122,7 +121,6 @@ public class SpecificationFormControllerTest {
 
     @MockBean
     private PriorityRepository priorityRepository;
-    
 
     @BeforeEach
     void setup() {
@@ -149,6 +147,12 @@ public class SpecificationFormControllerTest {
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_3)));
 
         given( specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE.getId()) ).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
+
+        given(specificationRepository.save(any())).will(invocation -> {
+            Specification specification = invocation.getArgument(0);
+            specification.setId(400);
+            return specification;
+        });
     }
 
     @Test
@@ -157,7 +161,7 @@ public class SpecificationFormControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
     }
 
     @Test
@@ -167,21 +171,24 @@ public class SpecificationFormControllerTest {
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
                 .andExpect(flash().attributeCount(0))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/specification/400"));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "srcSpecification")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
                 .andExpect(flash().attributeCount(0))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/specification/400"));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "templateDeepCopy")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
                 .andExpect(flash().attributeCount(0))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/specification/400"));
     }
 
     @Test
@@ -193,7 +200,7 @@ public class SpecificationFormControllerTest {
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "")
@@ -202,7 +209,7 @@ public class SpecificationFormControllerTest {
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION, "description", "NotBlank"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "desc")
@@ -230,7 +237,7 @@ public class SpecificationFormControllerTest {
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("name", is(TEST_SPECIFICATION_1.getName()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("description", is(TEST_SPECIFICATION_1.getDescription()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("notes", is(TEST_SPECIFICATION_1.getNotes()))))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
@@ -244,7 +251,7 @@ public class SpecificationFormControllerTest {
                         .param("notes", "notes here")
                         .param("description", "description there")
                         )
-                    .andExpect(status().is3xxRedirection())
+                .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/{specificationId}"));
     }
 
@@ -257,7 +264,7 @@ public class SpecificationFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "description"))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION, TEST_SPECIFICATION_1.getId())
                         .param("name", TEST_SPECIFICATION_1.getName() )
@@ -266,7 +273,7 @@ public class SpecificationFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "description"))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION, EMPTY_SPECIFICATION_ID)
                         .param("name", TEST_SPECIFICATION_1.getName() )
@@ -275,7 +282,7 @@ public class SpecificationFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
     }
 
     @Test
@@ -302,14 +309,10 @@ public class SpecificationFormControllerTest {
                 .andExpect( flash().attributeExists(Util.DANGER))
                 .andExpect(view().name("redirect:/specification/list"));
 
-
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_2.getId())
                         .param("name",TEST_SPECIFICATION_2.getName()))
                 .andExpect( flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(String.format("redirect:/specification/%s", TEST_SPECIFICATION_2.getId())));
-
-
-
     }
 }

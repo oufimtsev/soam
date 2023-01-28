@@ -9,6 +9,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.specificationobjective.SpecificationObjectiveFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,7 +33,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationObjectiveFormController.class)
 public class SpecificationObjectiveFormControllerTest {
-
     private static Specification TEST_SPECIFICATION = new Specification();
     private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_1 = new SpecificationObjective();
     private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_2 = new SpecificationObjective();
@@ -42,8 +43,6 @@ public class SpecificationObjectiveFormControllerTest {
     private static String URL_NEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/new";
     private static String URL_EDIT_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/edit";
     private static String URL_DELETE_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/delete";
-
-    private static String VIEW_EDIT_SPECIFICATION_OBJECTIVE =  "specificationObjective/addUpdateSpecificationObjective";
 
     private static String REDIRECT_SPECIFICATION_OBJECTIVE_LIST = "redirect:/specification/%s/specificationObjective/list";
     private static String REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS = "redirect:/specification/%s/specificationObjective/%s";
@@ -119,6 +118,12 @@ public class SpecificationObjectiveFormControllerTest {
 
         given( this.specificationObjectiveRepository.findById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willReturn(Optional.empty());
 
+        given(specificationObjectiveRepository.save(any())).will(invocation -> {
+            SpecificationObjective specificationObjective = invocation.getArgument(0);
+            specificationObjective.setId(400);
+            return specificationObjective;
+        });
+
         conversionService.addConverter(String.class, Specification.class, source -> specificationRepository.findById(Integer.parseInt(source)).orElse(null));
     }
 
@@ -128,10 +133,11 @@ public class SpecificationObjectiveFormControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, 42))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/specification/list"));
     }
 
     @Test
@@ -141,7 +147,8 @@ public class SpecificationObjectiveFormControllerTest {
                         .param("name", "New Test Specification Objective")
                         .param("notes", "Specification Objective notes")
                         .param("description", "Description"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, TEST_SPECIFICATION.getId(), 400)));
     }
 
     @Test
@@ -151,14 +158,14 @@ public class SpecificationObjectiveFormControllerTest {
                         .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                           .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId()).param("name", "New Test Specification Objective")
                         .param("notes", "Specification Objective notes").param("description", ""))
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "description", "NotBlank"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
     }
 
     @Test
@@ -171,7 +178,7 @@ public class SpecificationObjectiveFormControllerTest {
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("description", is(TEST_SPECIFICATION_OBJECTIVE_1.getDescription()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("notes", is(TEST_SPECIFICATION_OBJECTIVE_1.getNotes()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("priority", is(TEST_SPECIFICATION_OBJECTIVE_1.getPriority()))))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
@@ -199,7 +206,7 @@ public class SpecificationObjectiveFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "notes"))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
@@ -208,7 +215,7 @@ public class SpecificationObjectiveFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "description"))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
@@ -217,7 +224,7 @@ public class SpecificationObjectiveFormControllerTest {
                 ).andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "name"))
-                .andExpect(view().name(VIEW_EDIT_SPECIFICATION_OBJECTIVE));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
     }
 
     @Test

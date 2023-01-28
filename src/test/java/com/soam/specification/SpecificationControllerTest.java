@@ -6,6 +6,7 @@ import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
+import com.soam.web.ViewConstants;
 import com.soam.web.specification.SpecificationController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationController.class)
 public class SpecificationControllerTest {
-
     private static Specification TEST_SPECIFICATION_1 = new Specification();
     private static final int EMPTY_SPECIFICATION_ID = 999;
 
@@ -40,7 +40,6 @@ public class SpecificationControllerTest {
         lowPriority.setName("Low");
         lowPriority.setId(1);
         lowPriority.setSequence(1);
-
 
         TEST_SPECIFICATION_1.setId(100);
         TEST_SPECIFICATION_1.setName("Test Spec 1");
@@ -77,7 +76,7 @@ public class SpecificationControllerTest {
     @Test
     void tesInitFind() throws Exception {
         mockMvc.perform(get("/specification/find")).andExpect(status().isOk())
-                .andExpect(view().name("specification/findSpecification"));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));
     }
 
     @Test
@@ -86,7 +85,7 @@ public class SpecificationControllerTest {
         Mockito.when(this.specificationRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specifications);
         mockMvc.perform(get("/specifications?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("specification/specificationList"));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_LIST));
     }
 
     @Test
@@ -100,15 +99,14 @@ public class SpecificationControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/specification/" + TEST_SPECIFICATION_1.getId()));
 
-
         mockMvc.perform(get("/specifications?page=1").param("name", "Not Present"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("specification/findSpecification"));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));
 
         mockMvc.perform(get("/specifications?page=1").param("name", ""))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
-                .andExpect(view().name("specification/findSpecification"));
+                .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));
     }
 
     @Test
@@ -119,8 +117,7 @@ public class SpecificationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PAGINATED))
-                .andExpect(view().name("specification/specificationList"));
-
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_LIST));
     }
 
     @Test
@@ -129,7 +126,7 @@ public class SpecificationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("name", is("Test Spec 1"))))
-                .andExpect(view().name("specification/specificationDetails"));
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_DETAILS));
 
         mockMvc.perform(get("/specification/{specificationId}", EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())

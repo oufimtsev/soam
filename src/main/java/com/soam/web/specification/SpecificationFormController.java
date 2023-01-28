@@ -17,6 +17,7 @@ import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.ModelConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -31,7 +32,6 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationFormController extends SoamFormController {
-    private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
     private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/";
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
@@ -66,7 +66,7 @@ public class SpecificationFormController extends SoamFormController {
         Specification specification = new Specification();
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
         this.populateFormModel( model );
-        return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/specification/new")
@@ -81,7 +81,7 @@ public class SpecificationFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel(model);
-            return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
         if ("srcSpecification".equals(collectionType)) {
@@ -122,7 +122,7 @@ public class SpecificationFormController extends SoamFormController {
         }
         model.addAttribute(maybeSpecification.get());
         populateFormModel(model);
-        return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
 
@@ -140,10 +140,9 @@ public class SpecificationFormController extends SoamFormController {
 
         specification.setId( specificationId );
         if (result.hasErrors()) {
-
             model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification );
             this.populateFormModel( model );
-            return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
         this.specificationRepository.save(specification);
