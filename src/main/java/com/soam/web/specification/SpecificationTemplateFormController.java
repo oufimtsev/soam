@@ -83,10 +83,11 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @GetMapping("/specification/template/{specificationTemplateId}/edit")
-    public String initUpdateSpecificationForm(@PathVariable("specificationTemplateId") int specificationId, Model model) {
+    public String initUpdateSpecificationForm(@PathVariable("specificationTemplateId") int specificationId, Model model,
+                                              RedirectAttributes redirectAttributes) {
         Optional<SpecificationTemplate> maybeSpecificationTemplate = this.specificationTemplateRepository.findById(specificationId);
-        if(maybeSpecificationTemplate.isEmpty()){
-            //todo: pass error message
+        if (maybeSpecificationTemplate.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification template does not exist");
             return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
         }
         model.addAttribute(maybeSpecificationTemplate.get());

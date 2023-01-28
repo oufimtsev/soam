@@ -60,10 +60,11 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
-    public String initUpdateStakeholderForm(@PathVariable("stakeholderTemplateId") int stakeholderId, Model model) {
+    public String initUpdateStakeholderForm(@PathVariable("stakeholderTemplateId") int stakeholderId, Model model,
+                                            RedirectAttributes redirectAttributes) {
         Optional<StakeholderTemplate> maybeStakeholderTemplate = this.stakeholderTemplateRepository.findById(stakeholderId);
-        if(maybeStakeholderTemplate.isEmpty()){
-            //todo: pass error message
+        if (maybeStakeholderTemplate.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder template does not exist");
             return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
         }
         model.addAttribute(maybeStakeholderTemplate.get());

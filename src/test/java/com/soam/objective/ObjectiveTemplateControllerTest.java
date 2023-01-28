@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ObjectiveTemplateController.class)
 class ObjectiveTemplateControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
     
@@ -53,7 +52,6 @@ class ObjectiveTemplateControllerTest {
         lowPriority.setId(1);
         lowPriority.setSequence(1);
 
-
         TEST_OBJECTIVE_1.setId(100);
         TEST_OBJECTIVE_1.setName("Test Spec 1");
         TEST_OBJECTIVE_1.setDescription("desc");
@@ -63,17 +61,16 @@ class ObjectiveTemplateControllerTest {
 
     @BeforeEach
     void setup() {
-
         given( this.objectiveTemplateRepository.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
         given( this.objectiveTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_OBJECTIVE_1));
         given( this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
         given( this.objectiveTemplateRepository.findById(EMPTY_OBJECTIVE_ID)).willReturn(Optional.empty());
-
     }
 
     @Test
     void tesInitFind() throws Exception {
-        mockMvc.perform(get("/objective/template/find")).andExpect(status().isOk())
+        mockMvc.perform(get("/objective/template/find"))
+                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
     }
 
@@ -102,9 +99,9 @@ class ObjectiveTemplateControllerTest {
                 .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
 
         mockMvc.perform(get("/objective/templates?page=1").param("name", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
-                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
     }
 
@@ -114,8 +111,8 @@ class ObjectiveTemplateControllerTest {
         Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(objectiveTemplatesPage);
 
         mockMvc.perform( get("/objective/template/list"))
-                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST));
     }
 

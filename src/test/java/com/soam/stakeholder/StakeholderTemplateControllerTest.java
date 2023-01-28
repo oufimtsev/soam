@@ -71,7 +71,8 @@ class StakeholderTemplateControllerTest {
 
     @Test
     void tesInitFind() throws Exception {
-        mockMvc.perform(get("/stakeholder/template/find")).andExpect(status().isOk())
+        mockMvc.perform(get("/stakeholder/template/find"))
+                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
     }
 
@@ -100,9 +101,9 @@ class StakeholderTemplateControllerTest {
                 .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "name"))
-                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
     }
 
@@ -112,8 +113,8 @@ class StakeholderTemplateControllerTest {
         Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 
         mockMvc.perform( get("/stakeholder/template/list"))
-                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST));
     }
 }

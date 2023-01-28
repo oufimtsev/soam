@@ -76,7 +76,8 @@ class SpecificationTemplateControllerTest {
 
     @Test
     void tesInitFind() throws Exception {
-        mockMvc.perform(get("/specification/template/find")).andExpect(status().isOk())
+        mockMvc.perform(get("/specification/template/find"))
+                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
     }
 
@@ -105,9 +106,9 @@ class SpecificationTemplateControllerTest {
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
-                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
     }
 
@@ -117,8 +118,8 @@ class SpecificationTemplateControllerTest {
         Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
         mockMvc.perform( get("/specification/template/list"))
-                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST));
     }
 }

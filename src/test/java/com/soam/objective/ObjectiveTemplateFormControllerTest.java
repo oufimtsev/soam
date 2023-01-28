@@ -99,7 +99,8 @@ class ObjectiveTemplateFormControllerTest {
 
     @Test
     void testInitCreationForm() throws Exception {
-        mockMvc.perform(get(URL_NEW_TEMPLATE)).andExpect(status().isOk())
+        mockMvc.perform(get(URL_NEW_TEMPLATE))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
@@ -118,16 +119,16 @@ class ObjectiveTemplateFormControllerTest {
     void testProcessCreationFormHasErrors() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_OBJECTIVE_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
-                          .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "description", "NotBlank"))
-                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
     }
 
@@ -135,7 +136,8 @@ class ObjectiveTemplateFormControllerTest {
     void testInitUpdateObjectiveForm() throws Exception {
         Mockito.when(this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_OBJECTIVE_1));
 
-        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())).andExpect(status().isOk())
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId()))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("name", is(TEST_OBJECTIVE_1.getName()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("description", is("desc"))))
@@ -144,6 +146,7 @@ class ObjectiveTemplateFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
@@ -153,16 +156,14 @@ class ObjectiveTemplateFormControllerTest {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", "New Test Objective")
                         .param("notes", "notes here")
-                        .param("description", "description there")
-                        )
+                        .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                                 .param("name", TEST_OBJECTIVE_1.getName())
                                 .param("notes", "notes here")
-                                .param("description", "description there")
-                )
+                                .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
@@ -172,8 +173,8 @@ class ObjectiveTemplateFormControllerTest {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", "New Test Objective")
                         .param("notes", "notes")
-                        .param("description", "")
-                ).andExpect(status().isOk())
+                        .param("description", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "description"))
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
@@ -181,8 +182,8 @@ class ObjectiveTemplateFormControllerTest {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID)
                         .param("name", TEST_OBJECTIVE_1.getName())
                         .param("notes", "notes")
-                        .param("description", "")
-                ).andExpect(status().isOk())
+                        .param("description", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));

@@ -61,10 +61,11 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/objective/template/{objectiveTemplateId}/edit")
-    public String initUpdateObjectiveForm(@PathVariable("objectiveTemplateId") int objectiveId, Model model) {
+    public String initUpdateObjectiveForm(@PathVariable("objectiveTemplateId") int objectiveId, Model model,
+                                          RedirectAttributes redirectAttributes) {
         Optional<ObjectiveTemplate> maybeObjectiveTemplate = this.objectiveTemplateRepository.findById(objectiveId);
-        if(maybeObjectiveTemplate.isEmpty()){
-            //todo: pass error message
+        if (maybeObjectiveTemplate.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Objective template does not exist");
             return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
         }
         model.addAttribute(maybeObjectiveTemplate.get());

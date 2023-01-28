@@ -76,7 +76,8 @@ class SpecificationControllerTest {
 
     @Test
     void tesInitFind() throws Exception {
-        mockMvc.perform(get("/specification/find")).andExpect(status().isOk())
+        mockMvc.perform(get("/specification/find"))
+                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));
     }
 

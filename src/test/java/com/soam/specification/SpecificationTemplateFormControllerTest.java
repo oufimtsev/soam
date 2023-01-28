@@ -108,7 +108,8 @@ class SpecificationTemplateFormControllerTest {
 
     @Test
     void testInitCreationForm() throws Exception {
-        mockMvc.perform(get(URL_NEW_TEMPLATE)).andExpect(status().isOk())
+        mockMvc.perform(get(URL_NEW_TEMPLATE))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
@@ -121,16 +122,16 @@ class SpecificationTemplateFormControllerTest {
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
-                .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeCount(0))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "templateDeepCopy")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE_2.getId())))
-                .andExpect(flash().attributeCount(0))
                 .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeCount(0))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
@@ -140,26 +141,26 @@ class SpecificationTemplateFormControllerTest {
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
-                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "")
                         .param("collectionType", "")
                         .param("collectionItemId", "-1"))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "description", "NotBlank"))
-                .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "templateDeepCopy")
                         .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
-                .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
@@ -167,7 +168,8 @@ class SpecificationTemplateFormControllerTest {
     void testInitUpdateSpecificationForm() throws Exception {
         Mockito.when(this.specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
 
-        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())).andExpect(status().isOk())
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId()))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, hasProperty("name", is(TEST_SPECIFICATION_TEMPLATE_1.getName()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, hasProperty("description", is("desc"))))
@@ -176,6 +178,7 @@ class SpecificationTemplateFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
@@ -185,16 +188,14 @@ class SpecificationTemplateFormControllerTest {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes here")
-                        .param("description", "description there")
-                        )
+                        .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                                 .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName())
                                 .param("notes", "notes here")
-                                .param("description", "description there")
-                )
+                                .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
@@ -204,8 +205,8 @@ class SpecificationTemplateFormControllerTest {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes")
-                        .param("description", "")
-                ).andExpect(status().isOk())
+                        .param("description", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "description"))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM));
@@ -213,8 +214,8 @@ class SpecificationTemplateFormControllerTest {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID)
                         .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName())
                         .param("notes", "notes")
-                        .param("description", "")
-                ).andExpect(status().isOk())
+                        .param("description", ""))
+                .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM));

@@ -19,7 +19,8 @@ class WelcomeControllerTest {
 
     @Test
     void testInitCreationForm() throws Exception {
-        mockMvc.perform(get("/")).andExpect(status().isOk())
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
                 .andExpect(view().name("welcome"));
     }
 

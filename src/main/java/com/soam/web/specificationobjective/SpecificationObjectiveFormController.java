@@ -82,9 +82,11 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     @GetMapping("/specificationObjective/{specificationObjectiveId}/edit")
     public String initUpdateSpecificationObjectiveForm(
             Specification specification,
-            @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
+            @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model,
+            RedirectAttributes redirectAttributes) {
         Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification objective does not exist");
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
         model.addAttribute(maybeSpecificationObjective.get());

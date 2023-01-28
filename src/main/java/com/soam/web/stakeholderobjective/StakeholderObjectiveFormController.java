@@ -132,9 +132,11 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
     public String initUpdateStakeholderObjectiveForm(
             Specification specification, Stakeholder stakeholder,
-            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
+            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model,
+            RedirectAttributes redirectAttributes) {
         Optional<StakeholderObjective> maybeStakeholderObjective = this.stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
-        if(maybeStakeholderObjective.isEmpty()) {
+        if (maybeStakeholderObjective.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder objective does not exist");
             return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
         model.addAttribute(maybeStakeholderObjective.get());
