@@ -24,6 +24,10 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}/stakeholder/{stakeholderId}")
 public class StakeholderObjectiveFormController extends SoamFormController {
+    private static final String ATTR_SPECIFICATION = "specification";
+    private static final String ATTR_STAKEHOLDER = "stakeholder";
+    private static final String ATTR_STAKEHOLDER_OBJECTIVE = "stakeholderObjective";
+
     private static final String VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM = "stakeholderObjective/addUpdateStakeholderObjective";
     private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
     private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
@@ -47,13 +51,13 @@ public class StakeholderObjectiveFormController extends SoamFormController {
         this.priorities = priorities;
     }
 
-    @ModelAttribute("specification")
+    @ModelAttribute(ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
         return oSpecification.orElse(null);
     }
 
-    @ModelAttribute("stakeholder")
+    @ModelAttribute(ATTR_STAKEHOLDER)
     public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId) {
         Optional<Stakeholder> oStakeholder = stakeholderRepository.findById(stakeholderId);
         return oStakeholder.orElse(null);
@@ -94,7 +98,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
         stakeholderObjective.setNotes(specificationObjective.getNotes());
         stakeholderObjective.setPriority(specificationObjective.getPriority());
 
-        model.addAttribute("stakeholderObjective", stakeholderObjective);
+        model.addAttribute(ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
         this.populateFormModel(model);
         return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
@@ -154,7 +158,7 @@ public class StakeholderObjectiveFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             stakeholderObjective.setId(stakeholderObjectiveId);
-            model.addAttribute("stakeholderObjective", stakeholderObjective);
+            model.addAttribute(ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
             this.populateFormModel(model);
             return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }

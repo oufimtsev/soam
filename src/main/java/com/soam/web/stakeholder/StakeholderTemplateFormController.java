@@ -19,6 +19,10 @@ import java.util.Optional;
 
 @Controller
 public class StakeholderTemplateFormController extends SoamFormController {
+    private static final String ATTR_STAKEHOLDER = "stakeholder";
+    private static final String ATTR_STAKEHOLDER_TEMPLATE = "stakeholderTemplate";
+    private static final String ATTR_STAKEHOLDER_TEMPLATES = "stakeholderTemplates";
+    private static final String ATTR_PRIORITIES = "priorities";
 
     private static final String VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM = "stakeholder/template/addUpdateStakeholderTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/stakeholder/template/list";
@@ -37,7 +41,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
     public String initCreationForm(Model model ) {
 
         StakeholderTemplate stakeholderTemplate = new StakeholderTemplate();
-        model.addAttribute("stakeholderTemplate", stakeholderTemplate);
+        model.addAttribute(ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
         this.populateFormModel( model );
 
         return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
@@ -83,7 +87,7 @@ public class StakeholderTemplateFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             stakeholderTemplate.setId( stakeholderTemplateId );
-            model.addAttribute("stakeholder", stakeholderTemplate );
+            model.addAttribute(ATTR_STAKEHOLDER, stakeholderTemplate);
             this.populateFormModel( model );
             return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
@@ -118,8 +122,8 @@ public class StakeholderTemplateFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("stakeholderTemplates", stakeholderTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ATTR_PRIORITIES, priorities.findAll());
+        model.addAttribute(ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
 

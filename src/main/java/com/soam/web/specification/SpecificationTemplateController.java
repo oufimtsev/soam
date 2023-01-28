@@ -20,8 +20,15 @@ import java.util.Map;
 
 @Controller
 public class SpecificationTemplateController extends SoamFormController {
+	private static final String ATTR_SPECIFICATION_TEMPLATE = "specificationTemplate";
+	private static final String ATTR_SPECIFICATION_TEMPLATES = "specificationTemplates";
+	private static final String ATTR_PAGINATED = "paginated";
+	private static final String ATTR_CURRENT_PAGE = "currentPage";
+	private static final String ATTR_TOTAL_PAGES = "totalPages";
+	private static final String ATTR_TOTAL_ITEMS = "totalItems";
 
 	public static final String VIEW_FIND_SPECIFICATION_TEMPLATE =  "specification/template/findSpecificationTemplate";
+
 	private final SpecificationTemplateRepository specificationTemplates;
 
 	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository) {
@@ -32,7 +39,7 @@ public class SpecificationTemplateController extends SoamFormController {
 
 	@GetMapping("/specification/template/find")
 	public String initFindForm(Map<String, Object> model) {
-		model.put("specificationTemplate", new SpecificationTemplate());
+		model.put(ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
 		return VIEW_FIND_SPECIFICATION_TEMPLATE;
 	}
 
@@ -43,14 +50,14 @@ public class SpecificationTemplateController extends SoamFormController {
 
 		if ( StringUtils.isEmpty(specificationTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
-			model.addAttribute( "specificationTemplate", specificationTemplate);
+			model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
 			return VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
 		Page<SpecificationTemplate> specificationResults = findPaginatedForSpecificationTemplateName(page, specificationTemplate.getName());
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
-			model.addAttribute( "specificationTemplate", specificationTemplate);
+			model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
 			return VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
@@ -69,17 +76,17 @@ public class SpecificationTemplateController extends SoamFormController {
 		Page<SpecificationTemplate> specificationTemplateResults =
 				findPaginatedForSpecificationTemplateName(page, "");
 		addPaginationModel( page, model, specificationTemplateResults );
-		model.addAttribute("specificationTemplate", new SpecificationTemplate());
+		model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
 		return "specification/template/specificationTemplateList";
 	}
 
 	private String addPaginationModel(int page, Model model, Page<SpecificationTemplate> paginated) {
-		model.addAttribute("paginated", paginated);
-		List<SpecificationTemplate> listSpecificationTemplates = paginated.getContent();
-		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", paginated.getTotalPages());
-		model.addAttribute("totalItems", paginated.getTotalElements());
-		model.addAttribute("listSpecificationTemplates", listSpecificationTemplates);
+		model.addAttribute(ATTR_PAGINATED, paginated);
+		List<SpecificationTemplate> specificationTemplates = paginated.getContent();
+		model.addAttribute(ATTR_CURRENT_PAGE, page);
+		model.addAttribute(ATTR_TOTAL_PAGES, paginated.getTotalPages());
+		model.addAttribute(ATTR_TOTAL_ITEMS, paginated.getTotalElements());
+		model.addAttribute(ATTR_SPECIFICATION_TEMPLATES, specificationTemplates);
 		return "specification/template/specificationTemplateList";
 	}
 

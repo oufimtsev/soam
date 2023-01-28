@@ -20,20 +20,23 @@ import java.util.Map;
 
 @Controller
 public class ObjectiveTemplateController extends SoamFormController {
-
+	private static final String ATTR_OBJECTIVE_TEMPLATE = "objectiveTemplate";
+	private static final String ATTR_OBJECTIVE_TEMPLATES = "objectiveTemplates";
+	private static final String ATTR_CURRENT_PAGE = "currentPage";
+	private static final String ATTR_TOTAL_PAGES = "totalPages";
+	private static final String ATTR_TOTAL_ITEMS = "totalItems";
 
 	private static final String VIEW_FIND_OBJECTIVE_TEMPLATE = "objective/template/findObjectiveTemplate";
+
 	private final ObjectiveTemplateRepository objectiveTemplates;
 
 	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository) {
 		this.objectiveTemplates = objectiveTemplateRepository;
 	}
 
-
-
 	@GetMapping("/objective/template/find")
 	public String initFindForm(Map<String, Object> model) {
-		model.put("objectiveTemplate", new ObjectiveTemplate());
+		model.put(ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
 		return VIEW_FIND_OBJECTIVE_TEMPLATE;
 	}
 
@@ -44,14 +47,14 @@ public class ObjectiveTemplateController extends SoamFormController {
 
 		if ( StringUtils.isEmpty(objectiveTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
-			model.addAttribute( "objectiveTemplate", objectiveTemplate);
+			model.addAttribute(ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
 			return VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
 		Page<ObjectiveTemplate> objectiveResults = findPaginatedForObjectiveTemplateName(page, objectiveTemplate.getName());
 		if (objectiveResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
-			model.addAttribute( "objectiveTemplate", objectiveTemplate);
+			model.addAttribute(ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
 			return VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
@@ -70,17 +73,17 @@ public class ObjectiveTemplateController extends SoamFormController {
 		Page<ObjectiveTemplate> objectiveTemplateResults =
 				findPaginatedForObjectiveTemplateName(page, "");
 		addPaginationModel( page, model, objectiveTemplateResults );
-		model.addAttribute("objectiveTemplate", new ObjectiveTemplate());
+		model.addAttribute(ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
 		return "objective/template/objectiveTemplateList";
 	}
 
 	private String addPaginationModel(int page, Model model, Page<ObjectiveTemplate> paginated) {
 		model.addAttribute("paginated", paginated);
-		List<ObjectiveTemplate> listObjectiveTemplates = paginated.getContent();
-		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", paginated.getTotalPages());
-		model.addAttribute("totalItems", paginated.getTotalElements());
-		model.addAttribute("listObjectiveTemplates", listObjectiveTemplates);
+		List<ObjectiveTemplate> objectiveTemplates = paginated.getContent();
+		model.addAttribute(ATTR_CURRENT_PAGE, page);
+		model.addAttribute(ATTR_TOTAL_PAGES, paginated.getTotalPages());
+		model.addAttribute(ATTR_TOTAL_ITEMS, paginated.getTotalElements());
+		model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplates);
 		return "objective/template/objectiveTemplateList";
 	}
 

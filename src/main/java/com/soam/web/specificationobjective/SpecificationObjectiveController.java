@@ -16,6 +16,9 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveController {
+    private static final String ATTR_SPECIFICATION = "specification";
+    private static final String ATTR_SPECIFICATION_OBJECTIVES = "specificationObjectives";
+
     private static final String VIEWS_SPECIFICATION_OBJECTIVE_LIST = "specificationObjective/specificationObjectiveList";
     private static final String VIEWS_SPECIFICATION_OBJECTIVE_DETAILS = "specificationObjective/specificationObjectiveDetails";
     private static final String REDIRECT_SPECIFICATION_DETAILS =  "redirect:/specification/%s";
@@ -28,7 +31,7 @@ public class SpecificationObjectiveController {
         this.specificationObjectives = specificationObjectives;
     }
 
-    @ModelAttribute("specification")
+    @ModelAttribute(ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
         return oSpecification.orElse(null);
@@ -36,7 +39,7 @@ public class SpecificationObjectiveController {
 
     @GetMapping("/specificationObjective/list")
     public String listSpecificationObjectives(Specification specification, Model model) {
-        model.addAttribute("specificationObjectives", specification.getSpecificationObjectives());
+        model.addAttribute(ATTR_SPECIFICATION_OBJECTIVES, specification.getSpecificationObjectives());
         return VIEWS_SPECIFICATION_OBJECTIVE_LIST;
     }
 

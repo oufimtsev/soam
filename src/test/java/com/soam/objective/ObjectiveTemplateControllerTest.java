@@ -118,7 +118,7 @@ public class ObjectiveTemplateControllerTest {
         Mockito.when(this.objectiveTemplates.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(objectiveTemplatesPage);
 
         mockMvc.perform( get("/objective/template/list"))
-                .andExpect(model().attributeExists("listObjectiveTemplates"))
+                .andExpect(model().attributeExists("objectiveTemplates"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("objective/template/objectiveTemplateList"));
     }

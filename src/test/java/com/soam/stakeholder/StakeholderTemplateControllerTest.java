@@ -118,7 +118,7 @@ public class StakeholderTemplateControllerTest {
         Mockito.when(this.stakeholderTemplates.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 
         mockMvc.perform( get("/stakeholder/template/list"))
-                .andExpect(model().attributeExists("listStakeholderTemplates"))
+                .andExpect(model().attributeExists("stakeholderTemplates"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("stakeholder/template/stakeholderTemplateList"));
     }

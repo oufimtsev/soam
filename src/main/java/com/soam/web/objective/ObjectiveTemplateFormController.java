@@ -19,6 +19,9 @@ import java.util.Optional;
 
 @Controller
 public class ObjectiveTemplateFormController extends SoamFormController {
+    private static final String ATTR_OBJECTIVE_TEMPLATE = "objectiveTemplate";
+    private static final String ATTR_OBJECTIVE_TEMPLATES = "objectiveTemplates";
+    private static final String ATTR_PRIORITIES = "priorities";
 
     private static final String VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM = "objective/template/addUpdateObjectiveTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/objective/template/list";
@@ -37,7 +40,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
     public String initCreationForm(Model model ) {
 
         ObjectiveTemplate objectiveTemplate = new ObjectiveTemplate();
-        model.addAttribute("objectiveTemplate", objectiveTemplate);
+        model.addAttribute(ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
         this.populateFormModel( model );
 
         return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
@@ -53,7 +56,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
         if (result.hasErrors()) {
             this.populateFormModel( model );
-            model.addAttribute("objectiveTemplate", objectiveTemplate );
+            model.addAttribute(ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate );
             return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -119,8 +122,8 @@ public class ObjectiveTemplateFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("objectiveTemplates", objectiveTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ATTR_PRIORITIES, priorities.findAll());
+        model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
 

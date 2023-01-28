@@ -122,7 +122,7 @@ public class SpecificationTemplateControllerTest {
         Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
         mockMvc.perform( get("/specification/template/list"))
-                .andExpect(model().attributeExists("listSpecificationTemplates"))
+                .andExpect(model().attributeExists("specificationTemplates"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("specification/template/specificationTemplateList"));
     }

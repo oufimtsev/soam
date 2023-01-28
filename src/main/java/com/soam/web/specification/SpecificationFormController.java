@@ -30,6 +30,8 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationFormController extends SoamFormController {
+    private static final String ATTR_SPECIFICATIONS = "specifications";
+
     private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
     private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/";
 
@@ -55,7 +57,7 @@ public class SpecificationFormController extends SoamFormController {
         this.priorities = priorities;
     }
 
-    @ModelAttribute("specifications")
+    @ModelAttribute(ATTR_SPECIFICATIONS)
     public List<Specification> populateSpecifications() {
         return specifications.findAll(NAME_CASE_INSENSITIVE_SORT);
     }

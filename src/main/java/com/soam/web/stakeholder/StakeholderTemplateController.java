@@ -20,6 +20,12 @@ import java.util.Map;
 
 @Controller
 public class StakeholderTemplateController extends SoamFormController {
+	private static final String ATTR_STAKEHOLDER_TEMPLATE = "stakeholderTemplate";
+	private static final String ATTR_STAKEHOLDER_TEMPLATES = "stakeholderTemplates";
+	private static final String ATTR_PAGINATED = "paginated";
+	private static final String ATTR_CURRENT_PAGE = "currentPage";
+	private static final String ATTR_TOTAL_PAGES = "totalPages";
+	private static final String ATTR_TOTAL_ITEMS = "totalItems";
 
 	public static final String VIEW_FIND_SPECIFICATION_TEMPLATE = "stakeholder/template/findStakeholderTemplate";
 
@@ -33,7 +39,7 @@ public class StakeholderTemplateController extends SoamFormController {
 
 	@GetMapping("/stakeholder/template/find")
 	public String initFindForm(Map<String, Object> model) {
-		model.put("stakeholderTemplate", new StakeholderTemplate());
+		model.put(ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
 		return VIEW_FIND_SPECIFICATION_TEMPLATE;
 	}
 
@@ -44,14 +50,14 @@ public class StakeholderTemplateController extends SoamFormController {
 
 		if ( StringUtils.isEmpty(stakeholderTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
-			model.addAttribute( "stakeholderTemplate", stakeholderTemplate);
+			model.addAttribute(ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
 			return VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
 		Page<StakeholderTemplate> stakeholderResults = findPaginatedForStakeholderTemplateName(page, stakeholderTemplate.getName());
 		if (stakeholderResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
-			model.addAttribute( "stakeholderTemplate", stakeholderTemplate);
+			model.addAttribute(ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
 			return VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
@@ -70,17 +76,17 @@ public class StakeholderTemplateController extends SoamFormController {
 		Page<StakeholderTemplate> stakeholderTemplateResults =
 				findPaginatedForStakeholderTemplateName(page, "");
 		addPaginationModel( page, model, stakeholderTemplateResults );
-		model.addAttribute("stakeholderTemplate", new StakeholderTemplate());
+		model.addAttribute(ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
 		return "stakeholder/template/stakeholderTemplateList";
 	}
 
 	private String addPaginationModel(int page, Model model, Page<StakeholderTemplate> paginated) {
-		model.addAttribute("paginated", paginated);
-		List<StakeholderTemplate> listStakeholderTemplates = paginated.getContent();
-		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", paginated.getTotalPages());
-		model.addAttribute("totalItems", paginated.getTotalElements());
-		model.addAttribute("listStakeholderTemplates", listStakeholderTemplates);
+		model.addAttribute(ATTR_PAGINATED, paginated);
+		List<StakeholderTemplate> stakeholderTemplates = paginated.getContent();
+		model.addAttribute(ATTR_CURRENT_PAGE, page);
+		model.addAttribute(ATTR_TOTAL_PAGES, paginated.getTotalPages());
+		model.addAttribute(ATTR_TOTAL_ITEMS, paginated.getTotalElements());
+		model.addAttribute(ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplates);
 		return "stakeholder/template/stakeholderTemplateList";
 	}
 

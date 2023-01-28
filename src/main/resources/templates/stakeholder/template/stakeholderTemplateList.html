@@ -13,7 +13,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="stakeholderTemplate : ${listStakeholderTemplates}">
+  <tr th:each="stakeholderTemplate : ${stakeholderTemplates}">
     <td>
       <a th:href="@{/stakeholder/template/__${stakeholderTemplate.id}__/edit}" th:text="${stakeholderTemplate.name}"/></a>
     </td>
