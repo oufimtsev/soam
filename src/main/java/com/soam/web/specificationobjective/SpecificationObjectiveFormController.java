@@ -44,15 +44,11 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElse(null);
+        return oSpecification.orElseThrow(IllegalArgumentException::new);
     }
 
     @GetMapping("/specificationObjective/new")
     public String initCreationForm(Specification specification, Model model) {
-        if (specification == null) {
-            //todo: throw error!
-            return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
-        }
         SpecificationObjective specificationObjective = new SpecificationObjective();
         specificationObjective.setSpecification(specification);
 
@@ -138,6 +134,12 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification objective");
         }
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String errorHandler(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
     private void populateFormModel(Model model) {

@@ -47,13 +47,13 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElse(null);
+        return oSpecification.orElseThrow(IllegalArgumentException::new);
     }
 
     @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER)
     public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId) {
         Optional<Stakeholder> oStakeholder = stakeholderRepository.findById(stakeholderId);
-        return oStakeholder.orElse(null);
+        return oStakeholder.orElseThrow(IllegalArgumentException::new);
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}")
@@ -71,12 +71,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     @GetMapping("/stakeholderObjective/new")
     public String initCreationForm(
             Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
-        if (specification == null) {
-            return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
-        }
-        if (stakeholder == null) {
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-        }
         if (specification.getSpecificationObjectives().isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Specification does not have any Specification Objectives");
             return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
@@ -182,6 +176,12 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder objective");
             return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String errorHandler(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
     private void populateFormModel(Model model) {
