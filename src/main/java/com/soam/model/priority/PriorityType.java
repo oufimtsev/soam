@@ -9,7 +9,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "priority_types")
-//todo: This should be an enum.
 public class PriorityType extends BaseEntity implements Comparable<PriorityType> {
     private String name;
     private Integer sequence; // todo: make unique? use as a weight?
