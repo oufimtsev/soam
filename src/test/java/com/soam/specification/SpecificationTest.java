@@ -26,7 +26,7 @@ class SpecificationTest {
     private WebClient webClient;
 
     @BeforeEach
-    public void setup(WebApplicationContext context) {
+    void setup(WebApplicationContext context) {
         webClient = MockMvcWebClientBuilder
                 .webAppContextSetup(context)
                 .build();
@@ -37,12 +37,12 @@ class SpecificationTest {
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         webClient.close();
     }
 
     @Test
-    public void testCopySpecification() throws Exception {
+    void testCopySpecification() throws Exception {
         //prepare test data
         int srcSpecificationId = ITUtils.addSpecification(webClient, "Test Specification",
                 "Test Specification Description", "Test Specification Notes", "", -1);
@@ -76,7 +76,7 @@ class SpecificationTest {
     }
 
     @Test
-    public void testCreateFromTemplate() throws IOException {
+    void testCreateFromTemplate() throws IOException {
         //prepare test data
         int specificationTemplateId = ITUtils.addSpecificationTemplate(webClient, "Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes");
