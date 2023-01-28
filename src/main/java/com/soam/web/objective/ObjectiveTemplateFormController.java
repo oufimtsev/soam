@@ -28,12 +28,12 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
-    private final ObjectiveTemplateRepository objectiveTemplates;
-    private final PriorityRepository priorities;
+    private final ObjectiveTemplateRepository objectiveTemplateRepository;
+    private final PriorityRepository priorityRepository;
 
-    public ObjectiveTemplateFormController(ObjectiveTemplateRepository objectiveTemplates, PriorityRepository priorities) {
-        this.objectiveTemplates = objectiveTemplates;
-        this.priorities = priorities;
+    public ObjectiveTemplateFormController(ObjectiveTemplateRepository objectiveTemplateRepository, PriorityRepository priorityRepository) {
+        this.objectiveTemplateRepository = objectiveTemplateRepository;
+        this.priorityRepository = priorityRepository;
     }
 
     @GetMapping("/objective/template/new")
@@ -49,7 +49,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
     @PostMapping("/objective/template/new")
     public String processCreationForm(@Valid ObjectiveTemplate objectiveTemplate, BindingResult result, Model model) {
 
-        Optional<ObjectiveTemplate> testTemplate = objectiveTemplates.findByNameIgnoreCase(objectiveTemplate.getName());
+        Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
         if( testTemplate.isPresent() ){
             result.rejectValue("name", "unique", "Template already exists");
         }
@@ -60,13 +60,13 @@ public class ObjectiveTemplateFormController extends SoamFormController {
             return VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        this.objectiveTemplates.save(objectiveTemplate);
+        this.objectiveTemplateRepository.save(objectiveTemplate);
         return REDIRECT_TEMPLATE_LIST;
     }
 
     @GetMapping("/objective/template/{objectiveTemplateId}/edit")
     public String initUpdateObjectiveForm(@PathVariable("objectiveTemplateId") int objectiveId, Model model) {
-        Optional<ObjectiveTemplate> maybeObjectiveTemplate = this.objectiveTemplates.findById(objectiveId);
+        Optional<ObjectiveTemplate> maybeObjectiveTemplate = this.objectiveTemplateRepository.findById(objectiveId);
         if(maybeObjectiveTemplate.isEmpty()){
             //todo: pass error message
             return REDIRECT_TEMPLATE_LIST;
@@ -80,7 +80,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
     public String processUpdateObjectiveForm(@Valid ObjectiveTemplate objectiveTemplate, BindingResult result,
                                                  @PathVariable("objectiveTemplateId") int objectiveTemplateId, Model model) {
 
-        Optional<ObjectiveTemplate> testTemplate = objectiveTemplates.findByNameIgnoreCase(objectiveTemplate.getName());
+        Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
         if( testTemplate.isPresent() && testTemplate.get().getId() != objectiveTemplateId ){
             result.rejectValue("name", "unique", "Template already exists");
         }
@@ -94,7 +94,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
 
         objectiveTemplate.setId(objectiveTemplateId);
-        this.objectiveTemplates.save(objectiveTemplate);
+        this.objectiveTemplateRepository.save(objectiveTemplate);
         return REDIRECT_TEMPLATE_LIST;
     }
 
@@ -103,7 +103,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
             @PathVariable("objectiveTemplateId") int objectiveTemplateId, ObjectiveTemplate objectiveTemplate,
             RedirectAttributes redirectAttributes ){
 
-        Optional<ObjectiveTemplate> objectiveTemplateById = objectiveTemplates.findById(objectiveTemplateId);
+        Optional<ObjectiveTemplate> objectiveTemplateById = objectiveTemplateRepository.findById(objectiveTemplateId);
         //todo: validate objectiveById's name matches the passed in Objective's name.
 
         if (objectiveTemplateById.isPresent()) {
@@ -111,7 +111,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
             } else {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", objectiveTemplateById.get().getName()));
-                objectiveTemplates.delete(objectiveTemplateById.get());
+                objectiveTemplateRepository.delete(objectiveTemplateById.get());
             }
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
@@ -122,8 +122,8 @@ public class ObjectiveTemplateFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute(ATTR_PRIORITIES, priorities.findAll());
-        model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
 

@@ -29,13 +29,11 @@ public class SpecificationTemplateController extends SoamFormController {
 
 	public static final String VIEW_FIND_SPECIFICATION_TEMPLATE =  "specification/template/findSpecificationTemplate";
 
-	private final SpecificationTemplateRepository specificationTemplates;
+	private final SpecificationTemplateRepository specificationTemplateRepository;
 
 	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository) {
-		this.specificationTemplates = specificationTemplateRepository;
+		this.specificationTemplateRepository = specificationTemplateRepository;
 	}
-
-
 
 	@GetMapping("/specification/template/find")
 	public String initFindForm(Map<String, Object> model) {
@@ -94,7 +92,7 @@ public class SpecificationTemplateController extends SoamFormController {
 		int pageSize = 10;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return specificationTemplates.findByNameStartsWithIgnoreCase(name, pageable);
+		return specificationTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 
 

@@ -88,18 +88,17 @@ public class StakeholderTemplateFormControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplates;
+    private StakeholderTemplateRepository stakeholderTemplateRepository;
 
     @MockBean
-    private PriorityRepository priorities;
-
+    private PriorityRepository priorityRepository;
 
     @BeforeEach
     void setup() {
-        given( this.stakeholderTemplates.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplates.findByNameIgnoreCase(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplates.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplates.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
+        given( this.stakeholderTemplateRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderTemplateRepository.findByNameIgnoreCase(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderTemplateRepository.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
 
     }
 
@@ -138,7 +137,7 @@ public class StakeholderTemplateFormControllerTest {
 
     @Test
     void testInitUpdateStakeholderForm() throws Exception {
-        Mockito.when(this.stakeholderTemplates.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
+        Mockito.when(this.stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())).andExpect(status().isOk())
                 .andExpect(model().attributeExists("stakeholderTemplate"))
@@ -154,7 +153,7 @@ public class StakeholderTemplateFormControllerTest {
 
     @Test
     void testProcessUpdateStakeholderFormSuccess() throws Exception {
-        Mockito.when(this.stakeholderTemplates.findById(EMPTY_STAKEHOLDER_ID)).thenReturn(Optional.empty());
+        Mockito.when(this.stakeholderTemplateRepository.findById(EMPTY_STAKEHOLDER_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())
                         .param("name", "New Test Stakeholder")
                         .param("notes", "notes here")

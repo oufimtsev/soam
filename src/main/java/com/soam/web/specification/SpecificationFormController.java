@@ -37,29 +37,29 @@ public class SpecificationFormController extends SoamFormController {
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
-    private final SpecificationRepository specifications;
+    private final SpecificationRepository specificationRepository;
     private final StakeholderRepository stakeholderRepository;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
     private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
-    private final SpecificationTemplateRepository specificationTemplates;
-    private final PriorityRepository priorities;
+    private final SpecificationTemplateRepository specificationTemplateRepository;
+    private final PriorityRepository priorityRepository;
 
     public SpecificationFormController(
-            SpecificationRepository specifications, StakeholderRepository stakeholderRepository,
+            SpecificationRepository specificationRepository, StakeholderRepository stakeholderRepository,
             SpecificationObjectiveRepository specificationObjectiveRepository,
             StakeholderObjectiveRepository stakeholderObjectiveRepository,
-            SpecificationTemplateRepository specificationTemplates, PriorityRepository priorities) {
-        this.specifications = specifications;
+            SpecificationTemplateRepository specificationTemplateRepository, PriorityRepository priorityRepository) {
+        this.specificationRepository = specificationRepository;
         this.stakeholderRepository = stakeholderRepository;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
         this.stakeholderObjectiveRepository = stakeholderObjectiveRepository;
-        this.specificationTemplates = specificationTemplates;
-        this.priorities = priorities;
+        this.specificationTemplateRepository = specificationTemplateRepository;
+        this.priorityRepository = priorityRepository;
     }
 
     @ModelAttribute(ATTR_SPECIFICATIONS)
     public List<Specification> populateSpecifications() {
-        return specifications.findAll(NAME_CASE_INSENSITIVE_SORT);
+        return specificationRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
     @GetMapping("/specification/new")
@@ -75,7 +75,7 @@ public class SpecificationFormController extends SoamFormController {
                                       @ModelAttribute("collectionType") String collectionType,
                                       @ModelAttribute("collectionItemId") int collectionItemId,
                                       Model model, RedirectAttributes redirectAttributes) {
-        Optional<Specification> testSpecification = specifications.findByNameIgnoreCase(specification.getName());
+        Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         if (testSpecification.isPresent()) {
             result.rejectValue("name", "unique", "Specification already exists");
         }
@@ -87,9 +87,9 @@ public class SpecificationFormController extends SoamFormController {
 
         if ("srcSpecification".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification
-            Optional<Specification> srcSpecification = specifications.findById(collectionItemId);
+            Optional<Specification> srcSpecification = specificationRepository.findById(collectionItemId);
             if (srcSpecification.isPresent()) {
-                this.specifications.save(specification);
+                this.specificationRepository.save(specification);
                 deepSpecificationCopy(srcSpecification.get(), specification);
                 return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
             } else {
@@ -98,9 +98,9 @@ public class SpecificationFormController extends SoamFormController {
             }
         } else if ("templateDeepCopy".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification Template
-            Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplates.findById(collectionItemId);
+            Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
             if (srcSpecificationTemplate.isPresent()) {
-                this.specifications.save(specification);
+                this.specificationRepository.save(specification);
                 deepTemplateCopy(srcSpecificationTemplate.get(), specification);
                 return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
             } else {
@@ -110,14 +110,14 @@ public class SpecificationFormController extends SoamFormController {
 
         } else {
             //creating new Specification manually or as a shall copy of existing Specification Template
-            this.specifications.save(specification);
+            this.specificationRepository.save(specification);
             return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
         }
     }
 
     @GetMapping("/specification/{specificationId}/edit")
     public String initUpdateSpecificationForm(@PathVariable("specificationId") int specificationId, Model model) {
-        Optional<Specification> maybeSpecification = this.specifications.findById(specificationId);
+        Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
         if(maybeSpecification.isEmpty()){
             return "redirect:/specification/find";
         }
@@ -132,7 +132,7 @@ public class SpecificationFormController extends SoamFormController {
     public String processUpdateSpecificationForm(@Valid Specification specification, BindingResult result,
                                                  @PathVariable("specificationId") int specificationId, Model model) {
 
-        Optional<Specification> testSpecification = specifications.findByNameIgnoreCase(specification.getName());
+        Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         testSpecification.ifPresent(s-> {
             if( testSpecification.get().getId() != specificationId ){
                 result.rejectValue("name", "unique", "Specification already exists");
@@ -147,7 +147,7 @@ public class SpecificationFormController extends SoamFormController {
             return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
-        this.specifications.save(specification);
+        this.specificationRepository.save(specification);
         return "redirect:/specification/{specificationId}";
     }
 
@@ -156,7 +156,7 @@ public class SpecificationFormController extends SoamFormController {
             @PathVariable("specificationId") int specificationId,
             Model model, RedirectAttributes redirectAttributes) {
 
-        Optional<Specification> maybeSpecification = specifications.findById(specificationId);
+        Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
         //todo: validate specificationById's name matches the passed in Specification's name.
 
         if(maybeSpecification.isPresent()) {
@@ -167,7 +167,7 @@ public class SpecificationFormController extends SoamFormController {
                 return REDIRECT_SPECIFICATION_DETAILS+ specificationId;
             }
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationById.getName()));
-            specifications.delete(specificationById);
+            specificationRepository.delete(specificationById);
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification");
         }
@@ -254,7 +254,7 @@ public class SpecificationFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("specificationTemplates", specificationTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute("priorities", priorityRepository.findAll());
+        model.addAttribute("specificationTemplates", specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

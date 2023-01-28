@@ -89,25 +89,25 @@ public class SpecificationTemplateFormControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specifications;
+    private SpecificationRepository specificationRepository;
 
     @MockBean
-    private SpecificationTemplateRepository specificationTemplates;
+    private SpecificationTemplateRepository specificationTemplateRepository;
 
     @MockBean
     private TemplateLinkRepository templateLinkRepository;
 
     @MockBean
-    private PriorityRepository priorities;
+    private PriorityRepository priorityRepository;
 
 
     @BeforeEach
     void setup() {
-        given( this.specificationTemplates.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationTemplates.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationTemplates.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationTemplates.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
-        given( this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
+        given( this.specificationTemplateRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplateRepository.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
+        given( this.specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
     }
 
@@ -168,7 +168,7 @@ public class SpecificationTemplateFormControllerTest {
 
     @Test
     void testInitUpdateSpecificationForm() throws Exception {
-        Mockito.when(this.specificationTemplates.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
+        Mockito.when(this.specificationTemplateRepository.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_1.getId())).andExpect(status().isOk())
                 .andExpect(model().attributeExists("specificationTemplate"))
@@ -184,7 +184,7 @@ public class SpecificationTemplateFormControllerTest {
 
     @Test
     void testProcessUpdateSpecificationFormSuccess() throws Exception {
-        Mockito.when(this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).thenReturn(Optional.empty());
+        Mockito.when(this.specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes here")

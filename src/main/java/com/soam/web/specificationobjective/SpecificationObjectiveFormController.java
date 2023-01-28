@@ -34,18 +34,18 @@ public class SpecificationObjectiveFormController extends SoamFormController {
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
-    private final SpecificationObjectiveRepository specificationObjectives;
-    private final ObjectiveTemplateRepository objectiveTemplates;
+    private final SpecificationObjectiveRepository specificationObjectiveRepository;
+    private final ObjectiveTemplateRepository objectiveTemplateRepository;
     private final SpecificationRepository specificationRepository;
-    private final PriorityRepository priorities;
+    private final PriorityRepository priorityRepository;
 
     public SpecificationObjectiveFormController(
-            SpecificationObjectiveRepository specificationObjectives, ObjectiveTemplateRepository objectiveTemplates,
-            SpecificationRepository specificationRepository, PriorityRepository priorities) {
-        this.specificationObjectives = specificationObjectives;
-        this.objectiveTemplates = objectiveTemplates;
+            SpecificationObjectiveRepository specificationObjectiveRepository, ObjectiveTemplateRepository objectiveTemplateRepository,
+            SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
+        this.specificationObjectiveRepository = specificationObjectiveRepository;
+        this.objectiveTemplateRepository = objectiveTemplateRepository;
         this.specificationRepository = specificationRepository;
-        this.priorities = priorities;
+        this.priorityRepository = priorityRepository;
     }
 
     @ModelAttribute(ATTR_SPECIFICATION)
@@ -72,7 +72,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
             @Valid SpecificationObjective specificationObjective, BindingResult result, Model model) {
-        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectives.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
+        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
         if( testSpecificationObjective.isPresent()) {
             result.rejectValue("name", "unique", "Specification Objective already exists");
         }
@@ -82,7 +82,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
             return VIEWS_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
-        this.specificationObjectives.save(specificationObjective);
+        this.specificationObjectiveRepository.save(specificationObjective);
         return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
     }
 
@@ -90,7 +90,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
     public String initUpdateSpecificationObjectiveForm(
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectives.findById(specificationObjectiveId);
+        Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
             return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
@@ -105,7 +105,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
             @ModelAttribute(binding = false) Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId,
             Model model) {
-        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectives.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
+        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
         testSpecificationObjective.ifPresent(s-> {
             if (testSpecificationObjective.get().getId() != specificationObjectiveId) {
                 result.rejectValue("name", "unique", "Specification Objective already exists");
@@ -119,7 +119,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
         }
 
         specificationObjective.setId(specificationObjectiveId);
-        this.specificationObjectives.save(specificationObjective);
+        this.specificationObjectiveRepository.save(specificationObjective);
         return String.format(REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjectiveId);
     }
 
@@ -129,14 +129,14 @@ public class SpecificationObjectiveFormController extends SoamFormController {
             @PathVariable("specificationObjectiveId") int specificationObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             Model model, BindingResult result, RedirectAttributes redirectAttributes) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectives.findById(specificationObjectiveId);
+        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
         //todo: validate objectiveById's name matches the passed in Stakeholder's name.
 
         if (maybeSpecificationObjective.isPresent()) {
             if (maybeSpecificationObjective.get().getStakeholderObjectives() != null && !maybeSpecificationObjective.get().getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
             } else {
-                specificationObjectives.delete(maybeSpecificationObjective.get());
+                specificationObjectiveRepository.delete(maybeSpecificationObjective.get());
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", maybeSpecificationObjective.get().getName()));
             }
         } else {
@@ -146,7 +146,7 @@ public class SpecificationObjectiveFormController extends SoamFormController {
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ATTR_PRIORITIES, priorities.findAll());
-        model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

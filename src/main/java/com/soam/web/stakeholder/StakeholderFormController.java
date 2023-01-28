@@ -32,18 +32,18 @@ public class StakeholderFormController extends SoamFormController {
 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
-    private final StakeholderRepository stakeholders;
-    private final StakeholderTemplateRepository stakeholderTemplates;
+    private final StakeholderRepository stakeholderRepository;
+    private final StakeholderTemplateRepository stakeholderTemplateRepository;
 
     private final SpecificationRepository specificationRepository;
 
-    private final PriorityRepository priorities;
+    private final PriorityRepository priorityRepository;
 
-    public StakeholderFormController(StakeholderRepository stakeholders, StakeholderTemplateRepository stakeholderTemplates, SpecificationRepository specificationRepository, PriorityRepository priorities) {
-        this.stakeholders = stakeholders;
-        this.stakeholderTemplates = stakeholderTemplates;
+    public StakeholderFormController(StakeholderRepository stakeholderRepository, StakeholderTemplateRepository stakeholderTemplateRepository, SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
+        this.stakeholderRepository = stakeholderRepository;
+        this.stakeholderTemplateRepository = stakeholderTemplateRepository;
         this.specificationRepository = specificationRepository;
-        this.priorities = priorities;
+        this.priorityRepository = priorityRepository;
     }
 
     @ModelAttribute(ATTR_SPECIFICATION)
@@ -56,7 +56,7 @@ public class StakeholderFormController extends SoamFormController {
     @GetMapping("/stakeholder/{stakeholderId}")
     public String showStakeholder( @PathVariable("specificationId") int specificationId,
                                    @PathVariable("stakeholderId") int stakeholderId, Model model) {
-        Optional<Stakeholder> maybeStakeholder = this.stakeholders.findById(stakeholderId);
+        Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
         if(maybeStakeholder.isEmpty()){
             return "redirect:/specification/"+specificationId;
         }
@@ -86,7 +86,7 @@ public class StakeholderFormController extends SoamFormController {
             @Valid Stakeholder stakeholder, BindingResult result, Model model) {
         //todo: test specificationId path variable matches bound stakeholder.specificationId
 
-        Optional<Stakeholder> testStakeholder = stakeholders.findByNameIgnoreCase(stakeholder.getName());
+        Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
         if( testStakeholder.isPresent() ){
             result.rejectValue("name", "unique", "Stakeholder already exists");
         }
@@ -96,14 +96,14 @@ public class StakeholderFormController extends SoamFormController {
             return VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM;
         }
 
-        this.stakeholders.save(stakeholder);
+        this.stakeholderRepository.save(stakeholder);
         return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholder.getId() );
     }
 
     @GetMapping("/stakeholder/{stakeholderId}/edit")
     public String initUpdateStakeholderForm(
             @PathVariable("stakeholderId") int stakeholderId, @PathVariable("specificationId") int specificationId, Model model) {
-        Optional<Stakeholder> maybeStakeholder = this.stakeholders.findById(stakeholderId);
+        Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
         if(maybeStakeholder.isEmpty()){
             return "redirect:/specification/"+specificationId;
         }
@@ -119,7 +119,7 @@ public class StakeholderFormController extends SoamFormController {
                                                  @PathVariable("specificationId") int specificationId,
                                                  @PathVariable("stakeholderId") int stakeholderId, Model model) {
 
-        Optional<Stakeholder> testStakeholder = stakeholders.findByNameIgnoreCase(stakeholder.getName());
+        Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
         testStakeholder.ifPresent(s-> {
             if( testStakeholder.get().getId() != stakeholderId ){
                 result.rejectValue("name", "unique", "Stakeholder already exists");
@@ -135,7 +135,7 @@ public class StakeholderFormController extends SoamFormController {
         }
 
 
-        this.stakeholders.save(stakeholder);
+        this.stakeholderRepository.save(stakeholder);
         return String.format(REDIRECT_STAKEHOLDER_DETAILS,specificationId, stakeholderId);
     }
 
@@ -145,7 +145,7 @@ public class StakeholderFormController extends SoamFormController {
             @PathVariable("specificationId") int specificationId, @PathVariable("stakeholderId") int stakeholderId, Stakeholder stakeholder,
             BindingResult result, Model model, RedirectAttributes redirectAttributes ){
 
-        Optional<Stakeholder> maybeStakeholder = stakeholders.findById(stakeholderId);
+        Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
         //todo: validate stakeholderById's name matches the passed in Stakeholder's name.
 
         if(maybeStakeholder.isPresent()) {
@@ -154,7 +154,7 @@ public class StakeholderFormController extends SoamFormController {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
                 return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId);
             }
-            stakeholders.delete(fetchedStakeholder);
+            stakeholderRepository.delete(fetchedStakeholder);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholder.getName()));
             return "redirect:/specification/"+fetchedStakeholder.getSpecification().getId();
         }else{
@@ -164,7 +164,7 @@ public class StakeholderFormController extends SoamFormController {
     }
 
     private void populateFormModel( Model model ){
-        model.addAttribute(ATTR_PRIORITIES, priorities.findAll());
-        model.addAttribute(ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

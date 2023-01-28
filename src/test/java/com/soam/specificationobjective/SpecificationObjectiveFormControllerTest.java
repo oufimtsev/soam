@@ -92,13 +92,13 @@ public class SpecificationObjectiveFormControllerTest {
     private SpecificationRepository specificationRepository;
 
     @MockBean
-    private SpecificationObjectiveRepository specificationObjectives;
+    private SpecificationObjectiveRepository specificationObjectiveRepository;
 
     @MockBean
-    private ObjectiveTemplateRepository objectiveTemplates;
+    private ObjectiveTemplateRepository objectiveTemplateRepository;
 
     @MockBean
-    private PriorityRepository priorities;
+    private PriorityRepository priorityRepository;
 
     @Autowired
     private WebConversionService conversionService;
@@ -107,16 +107,16 @@ public class SpecificationObjectiveFormControllerTest {
     void setup() {
         given( this.specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
 
-        given( this.specificationObjectives.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
-        given( this.specificationObjectives.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
+        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
+        given( this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
-        given( this.specificationObjectives.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
-        given( this.specificationObjectives.findById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
+        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
+        given( this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
 
-        given( this.specificationObjectives.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
-        given( this.specificationObjectives.findById(TEST_SPECIFICATION_OBJECTIVE_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
+        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
+        given( this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
 
-        given( this.specificationObjectives.findById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willReturn(Optional.empty());
+        given( this.specificationObjectiveRepository.findById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willReturn(Optional.empty());
 
         conversionService.addConverter(String.class, Specification.class, source -> specificationRepository.findById(Integer.parseInt(source)).orElse(null));
     }
@@ -162,7 +162,7 @@ public class SpecificationObjectiveFormControllerTest {
 
     @Test
     void testInitUpdateSpecificationObjectiveForm() throws Exception {
-        Mockito.when(this.specificationObjectives.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
+        Mockito.when(this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())).andExpect(status().isOk())
                 .andExpect(model().attributeExists("specificationObjective"))

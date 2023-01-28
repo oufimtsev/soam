@@ -33,13 +33,13 @@ public class SpecificationTemplateControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specifications;
+    private SpecificationRepository specificationRepository;
 
     @MockBean
-    private SpecificationTemplateRepository specificationTemplates;
+    private SpecificationTemplateRepository specificationTemplateRepository;
 
     @MockBean
-    private PriorityRepository priorities;
+    private PriorityRepository priorityRepository;
 
     private static SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
     private static final int EMPTY_SPECIFICATION_ID = 999;
@@ -71,10 +71,10 @@ public class SpecificationTemplateControllerTest {
     @BeforeEach
     void setup() {
 
-        given( this.specificationTemplates.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationTemplates.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationTemplates.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specificationTemplates.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
+        given( this.specificationTemplateRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
 
     }
 
@@ -87,7 +87,7 @@ public class SpecificationTemplateControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<SpecificationTemplate> specificationTemplates = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1, new SpecificationTemplate()));
-        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specificationTemplates);
+        Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specificationTemplates);
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("specification/template/specificationTemplateList"));
@@ -97,8 +97,8 @@ public class SpecificationTemplateControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<SpecificationTemplate> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
         //todo: Use constant for "Test"
-        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
-        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
+        Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -119,7 +119,7 @@ public class SpecificationTemplateControllerTest {
     @Test
     void testListSpecificationTemplates() throws Exception{
         Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        Mockito.when(this.specificationTemplates.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
+        Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
         mockMvc.perform( get("/specification/template/list"))
                 .andExpect(model().attributeExists("specificationTemplates"))

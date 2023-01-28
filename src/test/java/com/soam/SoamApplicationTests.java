@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SoamApplicationTests {
 
 	@Autowired
-	private SpecificationRepository specifications;
+	private SpecificationRepository specificationRepository;
 
 	@LocalServerPort
 	int port;

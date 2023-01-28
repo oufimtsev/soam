@@ -55,8 +55,6 @@ public class SpecificationFormControllerTest {
     
     private static String VIEW_EDIT_SPECIFICATION =  "specification/addUpdateSpecification";
 
-
-
     static {
 
         PriorityType lowPriority = new PriorityType();
@@ -107,7 +105,7 @@ public class SpecificationFormControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specifications;
+    private SpecificationRepository specificationRepository;
 
     @MockBean
     private StakeholderRepository stakeholderRepository;
@@ -119,37 +117,37 @@ public class SpecificationFormControllerTest {
     private StakeholderObjectiveRepository stakeholderObjectiveRepository;
 
     @MockBean
-    private SpecificationTemplateRepository specificationTemplates;
+    private SpecificationTemplateRepository specificationTemplateRepository;
 
     @MockBean
-    private PriorityRepository priorities;
+    private PriorityRepository priorityRepository;
     
 
     @BeforeEach
     void setup() {
-        given( this.specifications.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specifications.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given( this.specifications.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
 
-        given( this.specifications.findByName(TEST_SPECIFICATION_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_2));
-        given( this.specifications.findByNameIgnoreCase(TEST_SPECIFICATION_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_2));
-        given( this.specifications.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
+        given( this.specificationRepository.findByName(TEST_SPECIFICATION_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_2));
+        given( this.specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_2));
+        given( this.specificationRepository.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
 
-        given( this.specifications.findByName(TEST_SPECIFICATION_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_3));
-        given( this.specifications.findByNameIgnoreCase(TEST_SPECIFICATION_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_3));
-        given( this.specifications.findById(TEST_SPECIFICATION_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_3));
+        given( this.specificationRepository.findByName(TEST_SPECIFICATION_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_3));
+        given( this.specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_3));
+        given( this.specificationRepository.findById(TEST_SPECIFICATION_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_3));
 
 
-        given( this.specifications.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
+        given( this.specificationRepository.findById(EMPTY_SPECIFICATION_ID)).willReturn(Optional.empty());
         
 
-        given( this.specifications.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
+        given( this.specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_2, TEST_SPECIFICATION_2)));
 
-        given( this.specifications.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
+        given( this.specificationRepository.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_3)));
 
-        given( specificationTemplates.findById(TEST_SPECIFICATION_TEMPLATE.getId()) ).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
+        given( specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE.getId()) ).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
     }
 
     @Test
@@ -224,7 +222,7 @@ public class SpecificationFormControllerTest {
 
     @Test
     void testInitUpdateSpecificationForm() throws Exception {
-        Mockito.when(this.specifications.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
+        Mockito.when(this.specificationRepository.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION, TEST_SPECIFICATION_1.getId())).andExpect(status().isOk())
                 .andExpect(model().attributeExists("specification"))

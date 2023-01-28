@@ -24,11 +24,11 @@ public class SpecificationObjectiveController {
     private static final String REDIRECT_SPECIFICATION_DETAILS =  "redirect:/specification/%s";
 
     private final SpecificationRepository specificationRepository;
-    private final SpecificationObjectiveRepository specificationObjectives;
+    private final SpecificationObjectiveRepository specificationObjectiveRepository;
 
-    public SpecificationObjectiveController(SpecificationRepository specificationRepository, SpecificationObjectiveRepository specificationObjectives) {
+    public SpecificationObjectiveController(SpecificationRepository specificationRepository, SpecificationObjectiveRepository specificationObjectiveRepository) {
         this.specificationRepository = specificationRepository;
-        this.specificationObjectives = specificationObjectives;
+        this.specificationObjectiveRepository = specificationObjectiveRepository;
     }
 
     @ModelAttribute(ATTR_SPECIFICATION)
@@ -47,7 +47,7 @@ public class SpecificationObjectiveController {
     public String showSpecificationObjective(
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectives.findById(specificationObjectiveId);
+        Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
             return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }

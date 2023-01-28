@@ -28,10 +28,10 @@ public class ObjectiveTemplateController extends SoamFormController {
 
 	private static final String VIEW_FIND_OBJECTIVE_TEMPLATE = "objective/template/findObjectiveTemplate";
 
-	private final ObjectiveTemplateRepository objectiveTemplates;
+	private final ObjectiveTemplateRepository objectiveTemplateRepository;
 
 	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository) {
-		this.objectiveTemplates = objectiveTemplateRepository;
+		this.objectiveTemplateRepository = objectiveTemplateRepository;
 	}
 
 	@GetMapping("/objective/template/find")
@@ -91,7 +91,7 @@ public class ObjectiveTemplateController extends SoamFormController {
 		int pageSize = 10;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return objectiveTemplates.findByNameStartsWithIgnoreCase(name, pageable);
+		return objectiveTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 
 

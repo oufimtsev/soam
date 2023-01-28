@@ -32,10 +32,10 @@ public class StakeholderTemplateControllerTest {
     private MockMvc mockMvc;
     
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplates;
+    private StakeholderTemplateRepository stakeholderTemplateRepository;
 
     @MockBean
-    private PriorityRepository priorities;
+    private PriorityRepository priorityRepository;
 
     private static StakeholderTemplate TEST_STAKEHOLDER_1 = new StakeholderTemplate();
     private static final int EMPTY_STAKEHOLDER_ID = 999;
@@ -67,10 +67,10 @@ public class StakeholderTemplateControllerTest {
     @BeforeEach
     void setup() {
 
-        given( this.stakeholderTemplates.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplates.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplates.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplates.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
+        given( this.stakeholderTemplateRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderTemplateRepository.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
 
     }
 
@@ -83,7 +83,7 @@ public class StakeholderTemplateControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplates = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1, new StakeholderTemplate()));
-        Mockito.when(this.stakeholderTemplates.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(stakeholderTemplates);
+        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(stakeholderTemplates);
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("stakeholder/template/stakeholderTemplateList"));
@@ -93,8 +93,8 @@ public class StakeholderTemplateControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<StakeholderTemplate> stakeholders = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
         //todo: Use constant for "Test"
-        Mockito.when(this.stakeholderTemplates.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(stakeholders);
-        Mockito.when(this.stakeholderTemplates.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(stakeholders);
+        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -115,7 +115,7 @@ public class StakeholderTemplateControllerTest {
     @Test
     void testListStakeholderTemplates() throws Exception{
         Page<StakeholderTemplate> stakeholderTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
-        Mockito.when(this.stakeholderTemplates.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
+        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 
         mockMvc.perform( get("/stakeholder/template/list"))
                 .andExpect(model().attributeExists("stakeholderTemplates"))

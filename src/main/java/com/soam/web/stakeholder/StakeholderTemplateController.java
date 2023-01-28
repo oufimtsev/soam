@@ -29,13 +29,11 @@ public class StakeholderTemplateController extends SoamFormController {
 
 	public static final String VIEW_FIND_SPECIFICATION_TEMPLATE = "stakeholder/template/findStakeholderTemplate";
 
-	private final StakeholderTemplateRepository stakeholderTemplates;
+	private final StakeholderTemplateRepository stakeholderTemplateRepository;
 
 	public StakeholderTemplateController(StakeholderTemplateRepository stakeholderTemplateRepository) {
-		this.stakeholderTemplates = stakeholderTemplateRepository;
+		this.stakeholderTemplateRepository = stakeholderTemplateRepository;
 	}
-
-
 
 	@GetMapping("/stakeholder/template/find")
 	public String initFindForm(Map<String, Object> model) {
@@ -94,7 +92,7 @@ public class StakeholderTemplateController extends SoamFormController {
 		int pageSize = 10;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return stakeholderTemplates.findByNameStartsWithIgnoreCase(name, pageable);
+		return stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 
 }

@@ -95,13 +95,13 @@ public class StakeholderObjectiveFormControllerTest {
     private StakeholderRepository stakeholderRepository;
 
     @MockBean
-    private SpecificationObjectiveRepository specificationObjectives;
+    private SpecificationObjectiveRepository specificationObjectiveRepository;
 
     @MockBean
     private StakeholderObjectiveRepository stakeholderObjectiveRepository;
 
     @MockBean
-    private PriorityRepository priorities;
+    private PriorityRepository priorityRepository;
 
     @Autowired
     private WebConversionService conversionService;
@@ -113,14 +113,14 @@ public class StakeholderObjectiveFormControllerTest {
 
         given(this.stakeholderRepository.findById(TEST_STAKEHOLDER.getId())).willReturn(Optional.of(TEST_STAKEHOLDER));
 
-        given(this.specificationObjectives.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
-        given(this.specificationObjectives.findById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
+        given(this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
+        given(this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
 
         given(this.stakeholderObjectiveRepository.findById(TEST_STAKEHOLDER_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_OBJECTIVE_1));
         given(this.stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(TEST_STAKEHOLDER, TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_OBJECTIVE_1));
 
         conversionService.addConverter(String.class, Stakeholder.class, source -> stakeholderRepository.findById(Integer.parseInt(source)).orElse(null));
-        conversionService.addConverter(String.class, SpecificationObjective.class, source -> specificationObjectives.findById(Integer.parseInt(source)).orElse(null));
+        conversionService.addConverter(String.class, SpecificationObjective.class, source -> specificationObjectiveRepository.findById(Integer.parseInt(source)).orElse(null));
     }
 
     @Test

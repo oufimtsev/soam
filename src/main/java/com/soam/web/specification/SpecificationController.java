@@ -30,10 +30,10 @@ public class SpecificationController {
 
 	public static final String  VIEW_FIND_SPECIFICATION = "specification/findSpecification";
 
-	private final SpecificationRepository specifications;
+	private final SpecificationRepository specificationRepository;
 
 	public SpecificationController(SpecificationRepository specificationRepository) {
-		this.specifications = specificationRepository;
+		this.specificationRepository = specificationRepository;
 	}
 
 
@@ -94,13 +94,13 @@ public class SpecificationController {
 		int pageSize = 20;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return specifications.findByNameStartsWithIgnoreCase(name, pageable);
+		return specificationRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 
 
 	@GetMapping("/specification/{specificationId}")
 	public String showSpecification(@PathVariable("specificationId") int specificationId, Model model) {
-		Optional<Specification> maybeSpecification = this.specifications.findById(specificationId);
+		Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
 		if(maybeSpecification.isEmpty()){
 			return "redirect:/specification/find";
 		}

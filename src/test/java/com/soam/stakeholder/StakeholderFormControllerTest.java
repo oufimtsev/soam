@@ -54,8 +54,6 @@ public class StakeholderFormControllerTest {
     
     private static String VIEW_EDIT_STAKEHOLDER =  "stakeholder/addUpdateStakeholder";
 
-
-
     static {
 
 
@@ -119,40 +117,41 @@ public class StakeholderFormControllerTest {
 
     @MockBean
     private SpecificationRepository specificationRepository;
-    @MockBean
-    private StakeholderRepository stakeholders;
 
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplates;
+    private StakeholderRepository stakeholderRepository;
 
     @MockBean
-    private PriorityRepository priorities;
+    private StakeholderTemplateRepository stakeholderTemplateRepository;
+
+    @MockBean
+    private PriorityRepository priorityRepository;
     
 
     @BeforeEach
     void setup() {
         given( this.specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of( TEST_SPECIFICATION));
 
-        given( this.stakeholders.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholders.findByNameIgnoreCase(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholders.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderRepository.findByNameIgnoreCase(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given( this.stakeholderRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
 
-        given( this.stakeholders.findByName(TEST_STAKEHOLDER_2.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
-        given( this.stakeholders.findByNameIgnoreCase(TEST_STAKEHOLDER_2.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
-        given( this.stakeholders.findById(TEST_STAKEHOLDER_2.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
+        given( this.stakeholderRepository.findByName(TEST_STAKEHOLDER_2.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
+        given( this.stakeholderRepository.findByNameIgnoreCase(TEST_STAKEHOLDER_2.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
+        given( this.stakeholderRepository.findById(TEST_STAKEHOLDER_2.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
 
-        given( this.stakeholders.findByName(TEST_STAKEHOLDER_3.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
-        given( this.stakeholders.findByNameIgnoreCase(TEST_STAKEHOLDER_3.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
-        given( this.stakeholders.findById(TEST_STAKEHOLDER_3.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
+        given( this.stakeholderRepository.findByName(TEST_STAKEHOLDER_3.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
+        given( this.stakeholderRepository.findByNameIgnoreCase(TEST_STAKEHOLDER_3.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
+        given( this.stakeholderRepository.findById(TEST_STAKEHOLDER_3.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
 
 
-        given( this.stakeholders.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
+        given( this.stakeholderRepository.findById(EMPTY_STAKEHOLDER_ID)).willReturn(Optional.empty());
         
 
-        given( this.stakeholders.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
+        given( this.stakeholderRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_2, TEST_STAKEHOLDER_2)));
 
-        given( this.stakeholders.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
+        given( this.stakeholderRepository.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_3)));
 
     }
@@ -209,7 +208,7 @@ public class StakeholderFormControllerTest {
     }
     @Test
     void testInitUpdateStakeholderForm() throws Exception {
-        Mockito.when(this.stakeholders.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
+        Mockito.when(this.stakeholderRepository.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
 
         mockMvc.perform(get(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION.getId(), TEST_STAKEHOLDER_1.getId())).andExpect(status().isOk())
                 .andExpect(model().attributeExists("stakeholder"))
