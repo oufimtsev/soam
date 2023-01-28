@@ -20,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -121,14 +122,16 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             @ModelAttribute(binding = false) Specification specification,
             Model model, BindingResult result, RedirectAttributes redirectAttributes) {
         Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
-        //todo: validate objectiveById's name matches the passed in Stakeholder's name.
 
         if (maybeSpecificationObjective.isPresent()) {
-            if (maybeSpecificationObjective.get().getStakeholderObjectives() != null && !maybeSpecificationObjective.get().getStakeholderObjectives().isEmpty()) {
+            SpecificationObjective specificationObjective = maybeSpecificationObjective.get();
+            if (!Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            } else if (specificationObjective.getStakeholderObjectives() != null && !specificationObjective.getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
             } else {
-                specificationObjectiveRepository.delete(maybeSpecificationObjective.get());
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", maybeSpecificationObjective.get().getName()));
+                specificationObjectiveRepository.delete(specificationObjective);
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationObjective.getName()));
             }
         } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification objective");

@@ -20,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -129,25 +130,25 @@ public class StakeholderFormController implements SoamFormController {
     @PostMapping("/stakeholder/{stakeholderId}/delete")
     @Transactional
     public String processDeleteStakeholder(
-            Specification specification, @PathVariable("stakeholderId") int stakeholderId, Stakeholder stakeholder,
-            BindingResult result, Model model, RedirectAttributes redirectAttributes ){
+            Specification specification, @PathVariable("stakeholderId") int stakeholderId,
+            BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
-        //todo: validate stakeholderById's name matches the passed in Stakeholder's name.
 
-        if(maybeStakeholder.isPresent()) {
-            Stakeholder fetchedStakeholder = maybeStakeholder.get();
-            if(fetchedStakeholder.getStakeholderObjectives() != null && !fetchedStakeholder.getStakeholderObjectives().isEmpty()) {
+        if (maybeStakeholder.isPresent()) {
+            Stakeholder stakeholder = maybeStakeholder.get();
+            if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            } else if (stakeholder.getStakeholderObjectives() != null && !stakeholder.getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
                 return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholderId);
             }
-            stakeholderRepository.delete(fetchedStakeholder);
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholder.getName()));
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, fetchedStakeholder.getSpecification().getId());
+            stakeholderRepository.delete(stakeholder);
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholder.getName()));
         }else{
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

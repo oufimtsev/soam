@@ -34,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationObjectiveFormController.class)
 class SpecificationObjectiveFormControllerTest {
-    private static Specification TEST_SPECIFICATION = new Specification();
+    private static Specification TEST_SPECIFICATION_1 = new Specification();
+    private static Specification TEST_SPECIFICATION_2 = new Specification();
     private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_1 = new SpecificationObjective();
     private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_2 = new SpecificationObjective();
     private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_3 = new SpecificationObjective();
@@ -57,31 +58,34 @@ class SpecificationObjectiveFormControllerTest {
         lowPriority.setId(3);
         lowPriority.setSequence(3);
 
-        TEST_SPECIFICATION.setId(10);
-        TEST_SPECIFICATION.setName("Test Specification");
+        TEST_SPECIFICATION_1.setId(10);
+        TEST_SPECIFICATION_1.setName("Test Specification 1");
+
+        TEST_SPECIFICATION_2.setId(20);
+        TEST_SPECIFICATION_2.setName("Test Specification 2");
 
         TEST_SPECIFICATION_OBJECTIVE_1.setId(100);
-        TEST_SPECIFICATION_OBJECTIVE_1.setSpecification( TEST_SPECIFICATION );
+        TEST_SPECIFICATION_OBJECTIVE_1.setSpecification(TEST_SPECIFICATION_1);
         TEST_SPECIFICATION_OBJECTIVE_1.setName("Test Spec 1");
         TEST_SPECIFICATION_OBJECTIVE_1.setDescription("desc");
         TEST_SPECIFICATION_OBJECTIVE_1.setNotes("notes");
         TEST_SPECIFICATION_OBJECTIVE_1.setPriority(lowPriority);
 
         TEST_SPECIFICATION_OBJECTIVE_2.setId(200);
-        TEST_SPECIFICATION_OBJECTIVE_1.setSpecification( TEST_SPECIFICATION );
+        TEST_SPECIFICATION_OBJECTIVE_2.setSpecification(TEST_SPECIFICATION_1);
         TEST_SPECIFICATION_OBJECTIVE_2.setName("Test Spec 2");
         TEST_SPECIFICATION_OBJECTIVE_2.setDescription("desc");
         TEST_SPECIFICATION_OBJECTIVE_2.setNotes("notes");
         TEST_SPECIFICATION_OBJECTIVE_2.setPriority(highPriority);
 
         TEST_SPECIFICATION_OBJECTIVE_3.setId(300);
-        TEST_SPECIFICATION_OBJECTIVE_1.setSpecification( TEST_SPECIFICATION );
+        TEST_SPECIFICATION_OBJECTIVE_3.setSpecification(TEST_SPECIFICATION_1);
         TEST_SPECIFICATION_OBJECTIVE_3.setName("Spec 3");
         TEST_SPECIFICATION_OBJECTIVE_3.setDescription("desc");
         TEST_SPECIFICATION_OBJECTIVE_3.setNotes("notes");
         TEST_SPECIFICATION_OBJECTIVE_3.setPriority(lowPriority);
 
-        TEST_SPECIFICATION.setSpecificationObjectives( Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE_1, TEST_SPECIFICATION_OBJECTIVE_2, TEST_SPECIFICATION_OBJECTIVE_3));
+        TEST_SPECIFICATION_1.setSpecificationObjectives( Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE_1, TEST_SPECIFICATION_OBJECTIVE_2, TEST_SPECIFICATION_OBJECTIVE_3));
     }
 
     @Autowired
@@ -104,15 +108,16 @@ class SpecificationObjectiveFormControllerTest {
 
     @BeforeEach
     void setup() {
-        given( this.specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
+        given( this.specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given( this.specificationRepository.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
 
-        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
+        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_SPECIFICATION_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
         given( this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
-        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
+        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_SPECIFICATION_OBJECTIVE_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
         given( this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
 
-        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION, TEST_SPECIFICATION_OBJECTIVE_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
+        given( this.specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_SPECIFICATION_OBJECTIVE_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
         given( this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
 
         given(specificationObjectiveRepository.save(any())).will(invocation -> {
@@ -126,7 +131,7 @@ class SpecificationObjectiveFormControllerTest {
 
     @Test
     void testInitCreationForm() throws Exception {
-        mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId()))
+        mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
@@ -140,25 +145,25 @@ class SpecificationObjectiveFormControllerTest {
 
     @Test
     void testProcessCreationFormSuccess() throws Exception {
-        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId())
-                        .param("specification", String.valueOf(TEST_SPECIFICATION.getId()))
+        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
                         .param("name", "New Test Specification Objective")
                         .param("notes", "Specification Objective notes")
                         .param("description", "Description"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, TEST_SPECIFICATION.getId(), 400)));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, TEST_SPECIFICATION_1.getId(), 400)));
     }
 
     @Test
     void testProcessCreationFormHasErrors() throws Exception {
-        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId()).param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
+        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId()).param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
                         .param("notes", "Specification Objective notes").param("description", "Description"))
                         .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                           .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "name"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId()).param("name", "New Test Specification Objective")
+        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId()).param("name", "New Test Specification Objective")
                         .param("notes", "Specification Objective notes").param("description", ""))
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "description", "NotBlank"))
@@ -170,7 +175,7 @@ class SpecificationObjectiveFormControllerTest {
     void testInitUpdateSpecificationObjectiveForm() throws Exception {
         Mockito.when(this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
-        mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId()))
+        mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE_1.getName()))))
@@ -184,26 +189,26 @@ class SpecificationObjectiveFormControllerTest {
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
-        mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
+        mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
     }
 
     @Test
     void testProcessUpdateSpecificationObjectiveFormSuccess() throws Exception {
-        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", "New Test Specification Objective")
                         .param("notes", "notes here")
                         .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS,
-                        TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())));
+                        TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())));
     }
 
     @Test
     void testProcessUpdateSpecificationObjectiveFormHasErrors() throws Exception {
-        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", "New Test Specification Objective")
                         .param("notes", "")
                         .param("description", "descr"))
@@ -212,7 +217,7 @@ class SpecificationObjectiveFormControllerTest {
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "notes"))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
                         .param("notes", "notes")
                         .param("description", ""))
@@ -229,7 +234,7 @@ class SpecificationObjectiveFormControllerTest {
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
-        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
+        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
                         .param("notes", "notes")
                         .param("description", "descr"))
@@ -241,31 +246,37 @@ class SpecificationObjectiveFormControllerTest {
 
     @Test
     void testProcessDeleteSpecificationObjectiveSuccess() throws Exception {
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
 
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), TEST_SPECIFICATION_OBJECTIVE_3.getId())
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_3.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_3.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
     }
 
     @Test
     void testProcessDeleteSpecificationObjectiveError() throws Exception {
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_2.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_2.getId())));
+
         mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
     }
 }
