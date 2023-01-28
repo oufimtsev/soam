@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class SpecificationFormController extends SoamFormController {
+public class SpecificationFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationRepository specificationRepository;

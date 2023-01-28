@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/specification/{specificationId}")
-public class StakeholderFormController extends SoamFormController {
+public class StakeholderFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final StakeholderRepository stakeholderRepository;

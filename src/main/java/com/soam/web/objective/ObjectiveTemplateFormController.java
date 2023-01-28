@@ -21,7 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.Optional;
 
 @Controller
-public class ObjectiveTemplateFormController extends SoamFormController {
+public class ObjectiveTemplateFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final ObjectiveTemplateRepository objectiveTemplateRepository;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class StakeholderTemplateController extends SoamFormController {
+public class StakeholderTemplateController implements SoamFormController {
 	private final StakeholderTemplateRepository stakeholderTemplateRepository;
 
 	public StakeholderTemplateController(StakeholderTemplateRepository stakeholderTemplateRepository) {

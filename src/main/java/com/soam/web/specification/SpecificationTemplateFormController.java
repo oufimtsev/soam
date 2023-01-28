@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Controller
-public class SpecificationTemplateFormController  extends SoamFormController {
+public class SpecificationTemplateFormController  implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationTemplateRepository specificationTemplateRepository;

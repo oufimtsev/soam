@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @Controller
 @RequestMapping("/specification/{specificationId}/stakeholder/{stakeholderId}")
-public class StakeholderObjectiveFormController extends SoamFormController {
+public class StakeholderObjectiveFormController implements SoamFormController {
     private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
     private final SpecificationRepository specificationRepository;
     private final StakeholderRepository stakeholderRepository;

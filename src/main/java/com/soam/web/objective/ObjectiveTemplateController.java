@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class ObjectiveTemplateController extends SoamFormController {
+public class ObjectiveTemplateController implements SoamFormController {
 	private final ObjectiveTemplateRepository objectiveTemplateRepository;
 
 	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository) {

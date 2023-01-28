@@ -24,7 +24,7 @@ import static com.soam.web.ModelConstants.ATTR_SPECIFICATION_TEMPLATE;
 
 
 @Controller
-public class SpecificationTemplateController extends SoamFormController {
+public class SpecificationTemplateController implements SoamFormController {
 	private final SpecificationTemplateRepository specificationTemplateRepository;
 
 	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository) {

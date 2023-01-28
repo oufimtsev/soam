@@ -1,7 +1,6 @@
 package com.soam.model.stakeholder;
 
 import com.soam.model.specification.Specification;
-import com.soam.model.specificationobjective.SpecificationObjective;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
