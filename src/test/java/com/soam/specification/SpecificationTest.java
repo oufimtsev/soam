@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class SpecificationTest {
+class SpecificationTest {
     private static final String URL_SPECIFICATION_DETAILS = "http://localhost/specification/%s";
     private static final String URL_SPECIFICATION_OBJECTIVE_LIST = "http://localhost/specification/%s/specificationObjective/list";
 

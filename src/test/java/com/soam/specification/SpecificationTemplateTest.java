@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SpecificationTemplateTest {
+class SpecificationTemplateTest {
     private static final String URL_SPECIFICATION_TEMPLATE_EDIT = "http://localhost/specification/template/%s/edit";
     private static final String URL_TEMPLATE_LINK_LIST = "http://localhost/templateLink/list";
 

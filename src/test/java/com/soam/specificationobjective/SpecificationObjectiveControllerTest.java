@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationObjectiveController.class)
-public class SpecificationObjectiveControllerTest {
+class SpecificationObjectiveControllerTest {
     private static Specification TEST_SPECIFICATION = new Specification();
     private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
 

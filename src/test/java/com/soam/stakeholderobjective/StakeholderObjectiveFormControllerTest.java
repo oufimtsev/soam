@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StakeholderObjectiveFormController.class)
-public class StakeholderObjectiveFormControllerTest {
+class StakeholderObjectiveFormControllerTest {
     private static Specification TEST_SPECIFICATION = new Specification();
     private static Stakeholder TEST_STAKEHOLDER = new Stakeholder();
     private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_1 = new SpecificationObjective();

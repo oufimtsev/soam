@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationTemplateFormController.class)
-public class SpecificationTemplateFormControllerTest {
+class SpecificationTemplateFormControllerTest {
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE_1 = new SpecificationTemplate();
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE_2 = new SpecificationTemplate();
     private static final int EMPTY_SPECIFICATION_ID = 200;

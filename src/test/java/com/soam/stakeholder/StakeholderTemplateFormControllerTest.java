@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StakeholderTemplateFormController.class)
-public class StakeholderTemplateFormControllerTest {
+class StakeholderTemplateFormControllerTest {
     private static final StakeholderTemplate TEST_STAKEHOLDER_1 = new StakeholderTemplate();
     private static final StakeholderTemplate TEST_STAKEHOLDER_2 = new StakeholderTemplate();
     private static final int EMPTY_STAKEHOLDER_ID = 200;

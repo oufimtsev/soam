@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ObjectiveTemplateFormController.class)
-public class ObjectiveTemplateFormControllerTest {
+class ObjectiveTemplateFormControllerTest {
     private static final ObjectiveTemplate TEST_OBJECTIVE_1 = new ObjectiveTemplate();
     private static final ObjectiveTemplate TEST_OBJECTIVE_2 = new ObjectiveTemplate();
     private static final int EMPTY_OBJECTIVE_ID = 200;

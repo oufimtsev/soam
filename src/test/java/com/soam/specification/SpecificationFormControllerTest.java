@@ -43,7 +43,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationFormController.class)
-public class SpecificationFormControllerTest {
+class SpecificationFormControllerTest {
     private static Specification TEST_SPECIFICATION_1 = new Specification();
     private static Specification TEST_SPECIFICATION_2 = new Specification();
     private static Specification TEST_SPECIFICATION_3 = new Specification();

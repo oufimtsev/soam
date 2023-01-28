@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TemplateLinkController.class)
-public class TemplateLinkControllerTest {
+class TemplateLinkControllerTest {
     private static TemplateLink TEST_TEMPLATE_LINK = new TemplateLink();
     private static SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
     private static StakeholderTemplate TEST_STAKEHOLDER_TEMPLATE = new StakeholderTemplate();
