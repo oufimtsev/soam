@@ -49,7 +49,6 @@ public class ObjectiveTemplateController implements SoamFormController {
 		Page<ObjectiveTemplate> objectiveResults = findPaginatedForObjectiveTemplateName(page, objectiveTemplate.getName());
 		if (objectiveResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
-			model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
 			return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 

@@ -49,7 +49,6 @@ public class StakeholderTemplateController implements SoamFormController {
 		Page<StakeholderTemplate> stakeholderResults = findPaginatedForStakeholderTemplateName(page, stakeholderTemplate.getName());
 		if (stakeholderResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
-			model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 

@@ -49,7 +49,6 @@ public class SpecificationController {
 		Page<Specification> specificationResults = findPaginatedForSpecificationName(page, specification.getName());
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
-			model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 

@@ -51,7 +51,6 @@ public class SpecificationTemplateController implements SoamFormController {
 		Page<SpecificationTemplate> specificationResults = findPaginatedForSpecificationTemplateName(page, specificationTemplate.getName());
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
-			model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
 			return ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
