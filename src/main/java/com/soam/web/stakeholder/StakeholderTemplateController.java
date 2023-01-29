@@ -40,7 +40,6 @@ public class StakeholderTemplateController implements SoamFormController {
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, StakeholderTemplate stakeholderTemplate,
 		  	BindingResult result, Model model) {
-
 		if (StringUtils.isEmpty(stakeholderTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
@@ -62,9 +61,7 @@ public class StakeholderTemplateController implements SoamFormController {
 
 	@GetMapping("/stakeholder/template/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-
-		Page<StakeholderTemplate> stakeholderTemplateResults =
-				findPaginatedForStakeholderTemplateName(page, "");
+		Page<StakeholderTemplate> stakeholderTemplateResults = findPaginatedForStakeholderTemplateName(page, "");
 		addPaginationModel(page, model, stakeholderTemplateResults);
 		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
 		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;

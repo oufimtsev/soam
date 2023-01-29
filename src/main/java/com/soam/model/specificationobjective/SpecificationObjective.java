@@ -29,7 +29,6 @@ import java.util.List;
 @Entity
 @Table(name = "specification_objectives")
 public class SpecificationObjective extends SoamEntity {
-
 	@ManyToOne
 	@JoinColumn(name = "specification_id")
 	private Specification specification;

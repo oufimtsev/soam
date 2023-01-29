@@ -40,7 +40,6 @@ public class SpecificationController {
 	@GetMapping("/specifications")
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, Specification specification, BindingResult result, Model model) {
-
 		if (StringUtils.isEmpty(specification.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
@@ -62,8 +61,7 @@ public class SpecificationController {
 
 	@GetMapping("/specification/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<Specification> specificationResults =
-				findPaginatedForSpecificationName(page, "");
+		Page<Specification> specificationResults = findPaginatedForSpecificationName(page, "");
 		addPaginationModel(page, model, specificationResults);
 
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, new Specification()); // for breadcrumb

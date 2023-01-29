@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SoamApplicationTests {
-
 	@Autowired
 	private SpecificationRepository specificationRepository;
 
@@ -25,13 +24,10 @@ class SoamApplicationTests {
 	@Autowired
 	private RestTemplateBuilder builder;
 
-
 	@Test
 	void testSpecificationDetails() {
 		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
 		ResponseEntity<String> result = template.exchange(RequestEntity.get("/specification/1").build(), String.class);
 		assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
-
-
 }

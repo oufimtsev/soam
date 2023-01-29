@@ -17,5 +17,4 @@ public interface TemplateLinkRepository extends CrudRepository<TemplateLink, Int
     Optional<TemplateLink> findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
             SpecificationTemplate specificationTemplate, StakeholderTemplate stakeholderTemplate,
             ObjectiveTemplate objectiveTemplate);
-
 }

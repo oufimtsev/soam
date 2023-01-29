@@ -40,7 +40,6 @@ public class ObjectiveTemplateController implements SoamFormController {
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, ObjectiveTemplate objectiveTemplate,
 		  	BindingResult result, Model model) {
-
 		if (StringUtils.isEmpty(objectiveTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
@@ -62,9 +61,7 @@ public class ObjectiveTemplateController implements SoamFormController {
 
 	@GetMapping("/objective/template/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-
-		Page<ObjectiveTemplate> objectiveTemplateResults =
-				findPaginatedForObjectiveTemplateName(page, "");
+		Page<ObjectiveTemplate> objectiveTemplateResults = findPaginatedForObjectiveTemplateName(page, "");
 		addPaginationModel(page, model, objectiveTemplateResults);
 		model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
 		return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST;

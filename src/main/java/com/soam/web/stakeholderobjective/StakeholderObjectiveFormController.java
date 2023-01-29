@@ -101,7 +101,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @ModelAttribute(binding = false) Stakeholder stakeholder,
             @RequestParam("collectionItemId") int specificationObjectiveId,
             @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model) {
-
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
         if (testSpecificationObjective.isEmpty()) {
             SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
@@ -149,7 +148,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder, Model model) {
-
         if (result.hasErrors()) {
             stakeholderObjective.setId(stakeholderObjectiveId);
             populateFormModel(model);
@@ -167,7 +165,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder,
             Model model, RedirectAttributes redirectAttributes) {
-
         Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
 
         if (maybeStakeholderObjective.isPresent()) {

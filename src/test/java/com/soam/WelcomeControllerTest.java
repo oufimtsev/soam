@@ -12,10 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(WelcomeController.class)
 class WelcomeControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
-
 
     @Test
     void testInitCreationForm() throws Exception {
@@ -23,5 +21,4 @@ class WelcomeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("welcome"));
     }
-
 }

@@ -130,7 +130,6 @@ public class SpecificationFormController implements SoamFormController {
     public String processUpdateForm(
             @Valid Specification specification, BindingResult result,
             @PathVariable("specificationId") int specificationId, Model model) {
-
         Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         testSpecification.ifPresent(s-> {
             if (testSpecification.get().getId() != specificationId) {

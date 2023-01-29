@@ -10,7 +10,6 @@ import java.util.Optional;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 class PriorityTest {
-
     private PriorityType getPriorityLow() {
         PriorityType low = new PriorityType();
         low.setId(1);

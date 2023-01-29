@@ -160,9 +160,9 @@ class StakeholderTemplateFormControllerTest {
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())
-                                .param("name", TEST_STAKEHOLDER_1.getName())
-                                .param("notes", "notes here")
-                                .param("description", "description there"))
+                        .param("name", TEST_STAKEHOLDER_1.getName())
+                        .param("notes", "notes here")
+                        .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
     }

@@ -43,7 +43,6 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
     @GetMapping("/specification/template/new")
     public String initCreationForm(Model model) {
-
         SpecificationTemplate specificationTemplate = new SpecificationTemplate();
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
         populateFormModel(model);
@@ -57,7 +56,6 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,
             @ModelAttribute(ModelConstants.ATTR_COLLECTION_ITEM_ID) int collectionItemId,
             Model model, RedirectAttributes redirectAttributes) {
-
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
         if (testTemplate.isPresent()) {
             result.rejectValue("name", "unique", "Specification Template already exists.");
@@ -101,7 +99,6 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     public String processUpdateForm(
             @Valid SpecificationTemplate specificationTemplate, BindingResult result,
             @PathVariable("specificationTemplateId") int specificationTemplateId, Model model) {
-
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
         if (testTemplate.isPresent() && testTemplate.get().getId() != specificationTemplateId) {
             result.rejectValue("name", "unique", "Specification Template already exists.");

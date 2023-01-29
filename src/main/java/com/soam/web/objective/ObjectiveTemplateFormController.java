@@ -36,7 +36,6 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
     @GetMapping("/objective/template/new")
     public String initCreationForm(Model model) {
-
         ObjectiveTemplate objectiveTemplate = new ObjectiveTemplate();
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
         populateFormModel(model);
@@ -46,7 +45,6 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
     @PostMapping("/objective/template/new")
     public String processCreationForm(@Valid ObjectiveTemplate objectiveTemplate, BindingResult result, Model model) {
-
         Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
         if (testTemplate.isPresent()) {
             result.rejectValue("name", "unique", "Objective Template already exists.");
@@ -78,7 +76,6 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     public String processUpdateForm(
             @Valid ObjectiveTemplate objectiveTemplate, BindingResult result,
             @PathVariable("objectiveTemplateId") int objectiveTemplateId, Model model) {
-
         Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
         if (testTemplate.isPresent() && testTemplate.get().getId() != objectiveTemplateId) {
             result.rejectValue("name", "unique", "Objective Template already exists.");

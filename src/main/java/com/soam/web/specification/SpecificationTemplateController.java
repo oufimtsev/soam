@@ -42,7 +42,6 @@ public class SpecificationTemplateController implements SoamFormController {
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, SpecificationTemplate specificationTemplate,
 		  	BindingResult result, Model model) {
-
 		if (StringUtils.isEmpty(specificationTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			return ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE;
@@ -64,9 +63,7 @@ public class SpecificationTemplateController implements SoamFormController {
 
 	@GetMapping("/specification/template/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-
-		Page<SpecificationTemplate> specificationTemplateResults =
-				findPaginatedForSpecificationTemplateName(page, "");
+		Page<SpecificationTemplate> specificationTemplateResults = findPaginatedForSpecificationTemplateName(page, "");
 		addPaginationModel(page, model, specificationTemplateResults);
 		model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
 		return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST;
