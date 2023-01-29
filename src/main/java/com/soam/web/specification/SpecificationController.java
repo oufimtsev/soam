@@ -43,7 +43,6 @@ public class SpecificationController {
 
 		if (StringUtils.isEmpty(specification.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
-			model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 

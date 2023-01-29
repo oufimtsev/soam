@@ -43,7 +43,6 @@ public class StakeholderTemplateController implements SoamFormController {
 
 		if (StringUtils.isEmpty(stakeholderTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
-			model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 

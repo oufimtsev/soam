@@ -45,7 +45,6 @@ public class SpecificationTemplateController implements SoamFormController {
 
 		if (StringUtils.isEmpty(specificationTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
-			model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
 			return ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 

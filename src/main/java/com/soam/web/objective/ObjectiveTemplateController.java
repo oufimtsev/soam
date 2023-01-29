@@ -43,7 +43,6 @@ public class ObjectiveTemplateController implements SoamFormController {
 
 		if (StringUtils.isEmpty(objectiveTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
-			model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
 			return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
