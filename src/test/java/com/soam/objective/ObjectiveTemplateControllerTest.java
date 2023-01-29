@@ -85,7 +85,7 @@ class ObjectiveTemplateControllerTest {
     @Test
     void testProcessFindFormByName() throws Exception {
         Page<ObjectiveTemplate> objectives = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_1));
-        //todo: Use constant for "Test"
+
         Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(objectives);
         Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 

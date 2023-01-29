@@ -85,7 +85,7 @@ class StakeholderTemplateControllerTest {
     @Test
     void testProcessFindFormByName() throws Exception {
         Page<StakeholderTemplate> stakeholders = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
-        //todo: Use constant for "Test"
+
         Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(stakeholders);
         Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 

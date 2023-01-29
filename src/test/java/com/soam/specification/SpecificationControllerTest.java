@@ -91,7 +91,7 @@ class SpecificationControllerTest {
     @Test
     void testProcessFindFormByName() throws Exception {
         Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        //todo: Use constant for "Test"
+
         Mockito.when(this.specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
         Mockito.when(this.specificationRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
