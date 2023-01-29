@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -30,8 +29,8 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specification/find")
-	public String initFindForm(Map<String, Object> model) {
-		model.put(ModelConstants.ATTR_SPECIFICATION, new Specification());
+	public String initFindForm(Model model) {
+		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, new Specification());
 		return ViewConstants.VIEW_FIND_SPECIFICATION;
 	}
 

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ObjectiveTemplateController implements SoamFormController {
@@ -29,8 +28,8 @@ public class ObjectiveTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/objective/template/find")
-	public String initFindForm(Map<String, Object> model) {
-		model.put(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
+	public String initFindForm(Model model) {
+		model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
 		return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 	}
 

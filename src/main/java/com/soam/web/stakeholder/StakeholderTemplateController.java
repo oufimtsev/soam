@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class StakeholderTemplateController implements SoamFormController {
@@ -29,8 +28,8 @@ public class StakeholderTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/stakeholder/template/find")
-	public String initFindForm(Map<String, Object> model) {
-		model.put(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
+	public String initFindForm(Model model) {
+		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
 		return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 	}
 

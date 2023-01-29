@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
-import java.util.Map;
 
 import static com.soam.web.ModelConstants.ATTR_SPECIFICATION_TEMPLATE;
-
 
 @Controller
 public class SpecificationTemplateController implements SoamFormController {
@@ -32,8 +30,8 @@ public class SpecificationTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/specification/template/find")
-	public String initFindForm(Map<String, Object> model) {
-		model.put(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
+	public String initFindForm(Model model) {
+		model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
 		return ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE;
 	}
 
