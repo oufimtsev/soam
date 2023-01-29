@@ -99,10 +99,10 @@ class SpecificationTemplateFormControllerTest {
 
     @BeforeEach
     void setup() {
-        given( this.specificationTemplateRepository.findByName(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
-        given( this.specificationTemplateRepository.findByNameIgnoreCase(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
-        given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
-        given( this.specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_2));
+        given(specificationTemplateRepository.findByName(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
+        given(specificationTemplateRepository.findByNameIgnoreCase(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
+        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
+        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_2));
     }
 
     @Test
@@ -165,7 +165,7 @@ class SpecificationTemplateFormControllerTest {
 
     @Test
     void testInitUpdateForm() throws Exception {
-        Mockito.when(this.specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
+        Mockito.when(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId()))
                 .andExpect(status().isOk())
@@ -183,7 +183,7 @@ class SpecificationTemplateFormControllerTest {
 
     @Test
     void testProcessUpdateFormSuccess() throws Exception {
-        Mockito.when(this.specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).thenReturn(Optional.empty());
+        Mockito.when(specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes here")

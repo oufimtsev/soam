@@ -64,7 +64,7 @@ public class SpecificationFormController implements SoamFormController {
     public String initCreationForm(Model model) {
         Specification specification = new Specification();
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-        this.populateFormModel( model );
+        populateFormModel( model );
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
@@ -79,7 +79,7 @@ public class SpecificationFormController implements SoamFormController {
         }
 
         if (result.hasErrors()) {
-            this.populateFormModel(model);
+            populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
@@ -87,7 +87,7 @@ public class SpecificationFormController implements SoamFormController {
             //creating new Specification as a deep copy of source Specification
             Optional<Specification> srcSpecification = specificationRepository.findById(collectionItemId);
             if (srcSpecification.isPresent()) {
-                this.specificationRepository.save(specification);
+                specificationRepository.save(specification);
                 deepSpecificationCopy(srcSpecification.get(), specification);
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
@@ -98,7 +98,7 @@ public class SpecificationFormController implements SoamFormController {
             //creating new Specification as a deep copy of source Specification Template
             Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
             if (srcSpecificationTemplate.isPresent()) {
-                this.specificationRepository.save(specification);
+                specificationRepository.save(specification);
                 deepTemplateCopy(srcSpecificationTemplate.get(), specification);
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
@@ -107,7 +107,7 @@ public class SpecificationFormController implements SoamFormController {
             }
         } else {
             //creating new Specification manually or as a shall copy of existing Specification Template
-            this.specificationRepository.save(specification);
+            specificationRepository.save(specification);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
     }
@@ -115,7 +115,7 @@ public class SpecificationFormController implements SoamFormController {
     @GetMapping("/specification/{specificationId}/edit")
     public String initUpdateSpecificationForm(@PathVariable("specificationId") int specificationId, Model model,
                                               RedirectAttributes redirectAttributes) {
-        Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
+        Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
         if (maybeSpecification.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification does not exist.");
             return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
@@ -139,11 +139,11 @@ public class SpecificationFormController implements SoamFormController {
         specification.setId( specificationId );
         if (result.hasErrors()) {
             model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification );
-            this.populateFormModel( model );
+            populateFormModel( model );
             return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
-        this.specificationRepository.save(specification);
+        specificationRepository.save(specification);
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
     }
 

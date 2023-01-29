@@ -46,7 +46,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
         SpecificationTemplate specificationTemplate = new SpecificationTemplate();
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
-        this.populateFormModel( model );
+        populateFormModel( model );
 
         return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
@@ -64,7 +64,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
         }
 
         if (result.hasErrors()) {
-            this.populateFormModel( model );
+            populateFormModel( model );
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -72,13 +72,13 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             //creating new Specification Template as a deep copy of source Specification Template
             Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
             if (srcSpecificationTemplate.isPresent()) {
-                this.specificationTemplateRepository.save(specificationTemplate);
+                specificationTemplateRepository.save(specificationTemplate);
                 deepTemplateCopy(srcSpecificationTemplate.get(), specificationTemplate);
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
             }
         } else {
-            this.specificationTemplateRepository.save(specificationTemplate);
+            specificationTemplateRepository.save(specificationTemplate);
         }
         return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
     }
@@ -86,13 +86,13 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     @GetMapping("/specification/template/{specificationTemplateId}/edit")
     public String initUpdateSpecificationForm(@PathVariable("specificationTemplateId") int specificationId, Model model,
                                               RedirectAttributes redirectAttributes) {
-        Optional<SpecificationTemplate> maybeSpecificationTemplate = this.specificationTemplateRepository.findById(specificationId);
+        Optional<SpecificationTemplate> maybeSpecificationTemplate = specificationTemplateRepository.findById(specificationId);
         if (maybeSpecificationTemplate.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Template does not exist.");
             return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
         }
         model.addAttribute(maybeSpecificationTemplate.get());
-        this.populateFormModel( model );
+        populateFormModel( model );
         return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
@@ -108,12 +108,12 @@ public class SpecificationTemplateFormController  implements SoamFormController 
         if (result.hasErrors()) {
             specificationTemplate.setId( specificationTemplateId );
             model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
-            this.populateFormModel( model );
+            populateFormModel( model );
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
         specificationTemplate.setId(specificationTemplateId);
-        this.specificationTemplateRepository.save(specificationTemplate);
+        specificationTemplateRepository.save(specificationTemplate);
         return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
     }
 

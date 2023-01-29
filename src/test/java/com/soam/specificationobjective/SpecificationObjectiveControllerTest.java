@@ -67,10 +67,10 @@ class SpecificationObjectiveControllerTest {
 
     @BeforeEach
     void setup() {
-        given(this.specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
+        given(specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
 
-        given(this.specificationObjectiveRepository.findAll()).willReturn(Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE));
-        given(this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE));
+        given(specificationObjectiveRepository.findAll()).willReturn(Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE));
+        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE));
     }
 
     @Test

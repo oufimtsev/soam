@@ -34,7 +34,7 @@ public class PriorityType extends BaseEntity implements Comparable<PriorityType>
 
     @Override
     public int compareTo(PriorityType o) {
-        return Comparators.comparable().compare(this.getSequence(), o.getSequence());
+        return Comparators.comparable().compare(getSequence(), o.getSequence());
     }
 
     @Override

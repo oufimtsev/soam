@@ -38,7 +38,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
         ObjectiveTemplate objectiveTemplate = new ObjectiveTemplate();
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
-        this.populateFormModel( model );
+        populateFormModel( model );
 
         return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
@@ -52,25 +52,25 @@ public class ObjectiveTemplateFormController implements SoamFormController {
         }
 
         if (result.hasErrors()) {
-            this.populateFormModel( model );
+            populateFormModel( model );
             model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate );
             return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        this.objectiveTemplateRepository.save(objectiveTemplate);
+        objectiveTemplateRepository.save(objectiveTemplate);
         return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
     }
 
     @GetMapping("/objective/template/{objectiveTemplateId}/edit")
     public String initUpdateObjectiveForm(@PathVariable("objectiveTemplateId") int objectiveId, Model model,
                                           RedirectAttributes redirectAttributes) {
-        Optional<ObjectiveTemplate> maybeObjectiveTemplate = this.objectiveTemplateRepository.findById(objectiveId);
+        Optional<ObjectiveTemplate> maybeObjectiveTemplate = objectiveTemplateRepository.findById(objectiveId);
         if (maybeObjectiveTemplate.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Objective Template does not exist.");
             return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
         }
         model.addAttribute(maybeObjectiveTemplate.get());
-        this.populateFormModel( model );
+        populateFormModel( model );
         return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
@@ -86,12 +86,12 @@ public class ObjectiveTemplateFormController implements SoamFormController {
         if (result.hasErrors()) {
             objectiveTemplate.setId( objectiveTemplateId );
             model.addAttribute("objective", objectiveTemplate );
-            this.populateFormModel( model );
+            populateFormModel( model );
             return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
         objectiveTemplate.setId(objectiveTemplateId);
-        this.objectiveTemplateRepository.save(objectiveTemplate);
+        objectiveTemplateRepository.save(objectiveTemplate);
         return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
     }
 

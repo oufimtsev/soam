@@ -89,7 +89,7 @@ public class SpecificationController {
 
 	@GetMapping("/specification/{specificationId}")
 	public String showSpecification(@PathVariable("specificationId") int specificationId, Model model) {
-		Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
+		Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
 		if(maybeSpecification.isEmpty()){
 			return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
 		}

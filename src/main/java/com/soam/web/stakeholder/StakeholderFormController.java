@@ -52,7 +52,7 @@ public class StakeholderFormController implements SoamFormController {
     @GetMapping("/stakeholder/{stakeholderId}")
     public String showStakeholder(@PathVariable("specificationId") int specificationId,
                                   @PathVariable("stakeholderId") int stakeholderId, Model model) {
-        Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
+        Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
         if (maybeStakeholder.isEmpty()) {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
         }
@@ -66,7 +66,7 @@ public class StakeholderFormController implements SoamFormController {
         stakeholder.setSpecification(specification);
 
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
-        this.populateFormModel( model );
+        populateFormModel( model );
         return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
 
@@ -85,11 +85,11 @@ public class StakeholderFormController implements SoamFormController {
         }
 
         if (result.hasErrors()) {
-            this.populateFormModel(model);
+            populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
         }
 
-        this.stakeholderRepository.save(stakeholder);
+        stakeholderRepository.save(stakeholder);
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
     }
 
@@ -97,7 +97,7 @@ public class StakeholderFormController implements SoamFormController {
     public String initUpdateStakeholderForm(
             @PathVariable("stakeholderId") int stakeholderId, Specification specification,
             Model model, RedirectAttributes redirectAttributes) {
-        Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
+        Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
         if(maybeStakeholder.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder does not exist.");
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
@@ -128,11 +128,11 @@ public class StakeholderFormController implements SoamFormController {
 
         if (result.hasErrors()) {
             model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
-            this.populateFormModel( model );
+            populateFormModel( model );
             return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
         }
 
-        this.stakeholderRepository.save(stakeholder);
+        stakeholderRepository.save(stakeholder);
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholderId);
     }
 

@@ -61,9 +61,9 @@ class ObjectiveTemplateControllerTest {
 
     @BeforeEach
     void setup() {
-        given( this.objectiveTemplateRepository.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
     }
 
     @Test
@@ -76,7 +76,7 @@ class ObjectiveTemplateControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<ObjectiveTemplate> objectiveTemplates = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_1, new ObjectiveTemplate()));
-        Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(objectiveTemplates);
+        Mockito.when(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(objectiveTemplates);
         mockMvc.perform(get("/objective/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST));
@@ -86,8 +86,8 @@ class ObjectiveTemplateControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<ObjectiveTemplate> objectives = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_1));
 
-        Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(objectives);
-        Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        Mockito.when(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(objectives);
+        Mockito.when(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/objective/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -107,7 +107,7 @@ class ObjectiveTemplateControllerTest {
     @Test
     void testListAll() throws Exception{
         Page<ObjectiveTemplate> objectiveTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_1));
-        Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(objectiveTemplatesPage);
+        Mockito.when(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(objectiveTemplatesPage);
 
         mockMvc.perform( get("/objective/template/list"))
                 .andExpect(status().isOk())

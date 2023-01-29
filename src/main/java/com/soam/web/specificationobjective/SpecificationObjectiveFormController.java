@@ -55,7 +55,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         specificationObjective.setSpecification(specification);
 
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
-        this.populateFormModel(model);
+        populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
@@ -75,11 +75,11 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         }
 
         if (result.hasErrors()) {
-            this.populateFormModel(model);
+            populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
-        this.specificationObjectiveRepository.save(specificationObjective);
+        specificationObjectiveRepository.save(specificationObjective);
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
     }
 
@@ -88,7 +88,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model,
             RedirectAttributes redirectAttributes) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
+        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Objective does not exist.");
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
@@ -118,12 +118,12 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         if (result.hasErrors()) {
             specificationObjective.setId(specificationObjectiveId);
             model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
-            this.populateFormModel(model);
+            populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
         specificationObjective.setId(specificationObjectiveId);
-        this.specificationObjectiveRepository.save(specificationObjective);
+        specificationObjectiveRepository.save(specificationObjective);
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjectiveId);
     }
 

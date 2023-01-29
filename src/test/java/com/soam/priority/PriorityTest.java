@@ -37,9 +37,9 @@ class PriorityTest {
 
     @Test
     void testPriorityType() {
-        PriorityType low = this.getPriorityLow();
-        PriorityType medium = this.getPriorityMedium();
-        PriorityType high = this.getPriorityHigh();
+        PriorityType low = getPriorityLow();
+        PriorityType medium = getPriorityMedium();
+        PriorityType high = getPriorityHigh();
         ArrayList<PriorityType> unsorted = Lists.newArrayList( high, low, medium);
         Optional<PriorityType> first = unsorted.stream().sorted().findFirst();
 

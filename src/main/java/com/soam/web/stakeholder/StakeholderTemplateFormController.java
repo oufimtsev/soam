@@ -38,7 +38,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
 
         StakeholderTemplate stakeholderTemplate = new StakeholderTemplate();
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
-        this.populateFormModel( model );
+        populateFormModel( model );
 
         return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
@@ -52,24 +52,24 @@ public class StakeholderTemplateFormController implements SoamFormController {
         }
 
         if (result.hasErrors()) {
-            this.populateFormModel( model );
+            populateFormModel( model );
             return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        this.stakeholderTemplateRepository.save(stakeholderTemplate);
+        stakeholderTemplateRepository.save(stakeholderTemplate);
         return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
     @GetMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
     public String initUpdateStakeholderForm(@PathVariable("stakeholderTemplateId") int stakeholderId, Model model,
                                             RedirectAttributes redirectAttributes) {
-        Optional<StakeholderTemplate> maybeStakeholderTemplate = this.stakeholderTemplateRepository.findById(stakeholderId);
+        Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderId);
         if (maybeStakeholderTemplate.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Template does not exist.");
             return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
         }
         model.addAttribute(maybeStakeholderTemplate.get());
-        this.populateFormModel( model );
+        populateFormModel( model );
         return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
@@ -85,12 +85,12 @@ public class StakeholderTemplateFormController implements SoamFormController {
         if (result.hasErrors()) {
             stakeholderTemplate.setId( stakeholderTemplateId );
             model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholderTemplate);
-            this.populateFormModel( model );
+            populateFormModel( model );
             return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
         stakeholderTemplate.setId(stakeholderTemplateId);
-        this.stakeholderTemplateRepository.save(stakeholderTemplate);
+        stakeholderTemplateRepository.save(stakeholderTemplate);
         return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 

@@ -46,7 +46,7 @@ public class SpecificationObjectiveController {
     public String showSpecificationObjective(
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
+        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }

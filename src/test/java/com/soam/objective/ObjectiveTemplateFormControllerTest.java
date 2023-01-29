@@ -91,9 +91,9 @@ class ObjectiveTemplateFormControllerTest {
 
     @BeforeEach
     void setup() {
-        given( this.objectiveTemplateRepository.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplateRepository.findByNameIgnoreCase(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findByNameIgnoreCase(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
     }
 
     @Test
@@ -133,7 +133,7 @@ class ObjectiveTemplateFormControllerTest {
 
     @Test
     void testInitUpdateForm() throws Exception {
-        Mockito.when(this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_OBJECTIVE_1));
+        Mockito.when(objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_OBJECTIVE_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId()))
                 .andExpect(status().isOk())
@@ -151,7 +151,7 @@ class ObjectiveTemplateFormControllerTest {
 
     @Test
     void testProcessUpdateFormSuccess() throws Exception {
-        Mockito.when(this.objectiveTemplateRepository.findById(EMPTY_OBJECTIVE_ID)).thenReturn(Optional.empty());
+        Mockito.when(objectiveTemplateRepository.findById(EMPTY_OBJECTIVE_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", "New Test Objective")
                         .param("notes", "notes here")

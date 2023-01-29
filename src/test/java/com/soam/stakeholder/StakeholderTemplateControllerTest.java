@@ -61,9 +61,9 @@ class StakeholderTemplateControllerTest {
 
     @BeforeEach
     void setup() {
-        given( this.stakeholderTemplateRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given( this.stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given(stakeholderTemplateRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given(stakeholderTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given(stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
     }
 
     @Test
@@ -76,7 +76,7 @@ class StakeholderTemplateControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplates = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1, new StakeholderTemplate()));
-        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(stakeholderTemplates);
+        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(stakeholderTemplates);
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST));
@@ -86,8 +86,8 @@ class StakeholderTemplateControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<StakeholderTemplate> stakeholders = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
 
-        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(stakeholders);
-        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(stakeholders);
+        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -107,7 +107,7 @@ class StakeholderTemplateControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
-        Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
+        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 
         mockMvc.perform( get("/stakeholder/template/list"))
                 .andExpect(status().isOk())
