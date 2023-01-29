@@ -62,7 +62,7 @@ public class SpecificationTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/specification/template/list")
-	public String listSpecificationTemplates( @RequestParam(defaultValue = "1") int page, Model model ){
+	public String listAll( @RequestParam(defaultValue = "1") int page, Model model ){
 
 		Page<SpecificationTemplate> specificationTemplateResults =
 				findPaginatedForSpecificationTemplateName(page, "");

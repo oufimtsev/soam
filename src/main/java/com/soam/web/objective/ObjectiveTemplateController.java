@@ -60,7 +60,7 @@ public class ObjectiveTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/objective/template/list")
-	public String listObjectiveTemplates( @RequestParam(defaultValue = "1") int page, Model model ){
+	public String listAll( @RequestParam(defaultValue = "1") int page, Model model ){
 
 		Page<ObjectiveTemplate> objectiveTemplateResults =
 				findPaginatedForObjectiveTemplateName(page, "");

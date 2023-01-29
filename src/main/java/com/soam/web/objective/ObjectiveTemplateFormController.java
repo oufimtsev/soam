@@ -62,7 +62,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/objective/template/{objectiveTemplateId}/edit")
-    public String initUpdateObjectiveForm(@PathVariable("objectiveTemplateId") int objectiveId, Model model,
+    public String initUpdateForm(@PathVariable("objectiveTemplateId") int objectiveId, Model model,
                                           RedirectAttributes redirectAttributes) {
         Optional<ObjectiveTemplate> maybeObjectiveTemplate = objectiveTemplateRepository.findById(objectiveId);
         if (maybeObjectiveTemplate.isEmpty()) {
@@ -75,7 +75,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     }
 
     @PostMapping("/objective/template/{objectiveTemplateId}/edit")
-    public String processUpdateObjectiveForm(@Valid ObjectiveTemplate objectiveTemplate, BindingResult result,
+    public String processUpdateForm(@Valid ObjectiveTemplate objectiveTemplate, BindingResult result,
                                                  @PathVariable("objectiveTemplateId") int objectiveTemplateId, Model model) {
 
         Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
@@ -96,7 +96,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     }
 
     @PostMapping("/objective/template/{objectiveTemplateId}/delete")
-    public String processDeleteObjective(
+    public String processDelete(
             @PathVariable("objectiveTemplateId") int objectiveTemplateId, @RequestParam("id") int formId,
             ObjectiveTemplate objectiveTemplate, RedirectAttributes redirectAttributes) {
         if (objectiveTemplateId != formId) {

@@ -84,7 +84,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     }
 
     @GetMapping("/specificationObjective/{specificationObjectiveId}/edit")
-    public String initUpdateSpecificationObjectiveForm(
+    public String initUpdateForm(
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model,
             RedirectAttributes redirectAttributes) {
@@ -99,7 +99,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     }
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/edit")
-    public String processUpdateSpecificationObjectiveForm(
+    public String processUpdateForm(
             @Valid SpecificationObjective specificationObjective, BindingResult result,
             @ModelAttribute(binding = false) Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId,
@@ -129,7 +129,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/delete")
     @Transactional
-    public String processDeleteSpecificationObjective(
+    public String processDelete(
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, @RequestParam("id") int formId,
             @ModelAttribute(binding = false) Specification specification,
             Model model, RedirectAttributes redirectAttributes) {

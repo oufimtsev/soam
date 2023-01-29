@@ -113,7 +113,7 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     @GetMapping("/specification/{specificationId}/edit")
-    public String initUpdateSpecificationForm(@PathVariable("specificationId") int specificationId, Model model,
+    public String initUpdateForm(@PathVariable("specificationId") int specificationId, Model model,
                                               RedirectAttributes redirectAttributes) {
         Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
         if (maybeSpecification.isEmpty()) {
@@ -126,7 +126,7 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     @PostMapping("/specification/{specificationId}/edit")
-    public String processUpdateSpecificationForm(@Valid Specification specification, BindingResult result,
+    public String processUpdateForm(@Valid Specification specification, BindingResult result,
                                                  @PathVariable("specificationId") int specificationId, Model model) {
 
         Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
@@ -148,7 +148,7 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     @PostMapping("/specification/{specificationId}/delete")
-    public String processDeleteSpecification(
+    public String processDelete(
             @PathVariable("specificationId") int specificationId, @RequestParam("id") int formId,
             Model model, RedirectAttributes redirectAttributes) {
         if (specificationId != formId) {

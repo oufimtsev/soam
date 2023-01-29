@@ -50,7 +50,7 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/{stakeholderId}")
-    public String showStakeholder(@PathVariable("specificationId") int specificationId,
+    public String showDetails(@PathVariable("specificationId") int specificationId,
                                   @PathVariable("stakeholderId") int stakeholderId, Model model) {
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
         if (maybeStakeholder.isEmpty()) {
@@ -94,7 +94,7 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/{stakeholderId}/edit")
-    public String initUpdateStakeholderForm(
+    public String initUpdateForm(
             @PathVariable("stakeholderId") int stakeholderId, Specification specification,
             Model model, RedirectAttributes redirectAttributes) {
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
@@ -108,7 +108,7 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     @PostMapping("/stakeholder/{stakeholderId}/edit")
-    public String processUpdateStakeholderForm(@Valid Stakeholder stakeholder, BindingResult result,
+    public String processUpdateForm(@Valid Stakeholder stakeholder, BindingResult result,
                                                Specification specification,
                                                @PathVariable("stakeholderId") int stakeholderId, Model model,
                                                RedirectAttributes redirectAttributes) {
@@ -138,7 +138,7 @@ public class StakeholderFormController implements SoamFormController {
 
     @PostMapping("/stakeholder/{stakeholderId}/delete")
     @Transactional
-    public String processDeleteStakeholder(
+    public String processDelete(
             @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
             @RequestParam("id") int formId, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholderId != formId) {

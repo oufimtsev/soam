@@ -60,7 +60,7 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specification/list")
-	public String listSpecificationTemplates( @RequestParam(defaultValue = "1") int page, Model model) {
+	public String listAll( @RequestParam(defaultValue = "1") int page, Model model) {
 		Page<Specification> specificationResults =
 				findPaginatedForSpecificationName(page, "");
 		addPaginationModel( page, model, specificationResults );
@@ -87,7 +87,7 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specification/{specificationId}")
-	public String showSpecification(@PathVariable("specificationId") int specificationId, Model model) {
+	public String showDetails(@PathVariable("specificationId") int specificationId, Model model) {
 		Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
 		if(maybeSpecification.isEmpty()){
 			return RedirectConstants.REDIRECT_FIND_SPECIFICATION;

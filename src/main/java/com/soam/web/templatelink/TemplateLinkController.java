@@ -81,12 +81,12 @@ public class TemplateLinkController {
     }
 
     @GetMapping("/templateLink/list")
-    public String listTemplateLinks() {
+    public String listAll() {
         return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
     @PostMapping("/templateLink/list")
-    public String listTemplateLinks(@ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
+    public String listFiltered(@ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
         if (templateLinkForm.getNewTemplateLink() != null) {
             if (templateLinkForm.getFilterSpecificationTemplate() != null) {
                 templateLinkForm.getNewTemplateLink().setSpecificationTemplate(
@@ -124,7 +124,7 @@ public class TemplateLinkController {
     }
 
     @PostMapping("/templateLink/delete")
-    public String processDeleteTemplateLink(@Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult,
+    public String processDelete(@Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult,
                                             RedirectAttributes redirectAttributes) {
         Optional<TemplateLink> maybeTemplateLink = templateLinkRepository.findById(templateLinkForm.getDeleteTemplateLinkId());
 

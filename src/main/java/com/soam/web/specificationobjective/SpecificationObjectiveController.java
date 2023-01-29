@@ -37,13 +37,13 @@ public class SpecificationObjectiveController {
     }
 
     @GetMapping("/specificationObjective/list")
-    public String listSpecificationObjectives(Specification specification, Model model) {
+    public String listAll(Specification specification, Model model) {
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVES, specification.getSpecificationObjectives());
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_LIST;
     }
 
     @GetMapping("/specificationObjective/{specificationObjectiveId}")
-    public String showSpecificationObjective(
+    public String showDetails(
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
         Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);

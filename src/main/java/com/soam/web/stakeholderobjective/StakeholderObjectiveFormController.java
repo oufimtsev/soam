@@ -62,7 +62,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}")
-    public String showStakeholderObjective(
+    public String showDetails(
             Specification specification, Stakeholder stakeholder,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
         Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
@@ -129,7 +129,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
-    public String initUpdateStakeholderObjectiveForm(
+    public String initUpdateForm(
             Specification specification, Stakeholder stakeholder,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model,
             RedirectAttributes redirectAttributes) {
@@ -144,7 +144,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
-    public String processUpdateStakeholderObjectiveForm(
+    public String processUpdateForm(
             @Valid StakeholderObjective stakeholderObjective, BindingResult result,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
@@ -163,7 +163,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/delete")
     @Transactional
-    public String processDeleteStakeholderObjective(
+    public String processDelete(
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder,

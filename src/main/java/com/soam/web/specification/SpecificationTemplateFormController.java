@@ -84,7 +84,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @GetMapping("/specification/template/{specificationTemplateId}/edit")
-    public String initUpdateSpecificationForm(@PathVariable("specificationTemplateId") int specificationId, Model model,
+    public String initUpdateForm(@PathVariable("specificationTemplateId") int specificationId, Model model,
                                               RedirectAttributes redirectAttributes) {
         Optional<SpecificationTemplate> maybeSpecificationTemplate = specificationTemplateRepository.findById(specificationId);
         if (maybeSpecificationTemplate.isEmpty()) {
@@ -97,7 +97,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @PostMapping("/specification/template/{specificationTemplateId}/edit")
-    public String processUpdateSpecificationForm(@Valid SpecificationTemplate specificationTemplate, BindingResult result,
+    public String processUpdateForm(@Valid SpecificationTemplate specificationTemplate, BindingResult result,
                                                  @PathVariable("specificationTemplateId") int specificationTemplateId, Model model) {
 
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
@@ -118,7 +118,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @PostMapping("/specification/template/{specificationTemplateId}/delete")
-    public String processDeleteSpecification(
+    public String processDelete(
             @PathVariable("specificationTemplateId") int specificationTemplateId, @RequestParam("id") int formId,
             SpecificationTemplate specificationTemplate, RedirectAttributes redirectAttributes) {
         if (specificationTemplateId != formId) {

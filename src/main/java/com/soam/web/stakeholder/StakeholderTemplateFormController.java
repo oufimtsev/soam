@@ -61,7 +61,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
-    public String initUpdateStakeholderForm(@PathVariable("stakeholderTemplateId") int stakeholderId, Model model,
+    public String initUpdateForm(@PathVariable("stakeholderTemplateId") int stakeholderId, Model model,
                                             RedirectAttributes redirectAttributes) {
         Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderId);
         if (maybeStakeholderTemplate.isEmpty()) {
@@ -74,7 +74,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
-    public String processUpdateStakeholderForm(@Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
+    public String processUpdateForm(@Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
                                                  @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, Model model) {
 
         Optional<StakeholderTemplate> testTemplate = stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName());
@@ -95,7 +95,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/delete")
-    public String processDeleteStakeholder(
+    public String processDelete(
             @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, @RequestParam("id") int formId,
             StakeholderTemplate stakeholderTemplate, RedirectAttributes redirectAttributes) {
         if (stakeholderTemplateId != formId) {

@@ -60,7 +60,7 @@ public class StakeholderTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/stakeholder/template/list")
-	public String listStakeholderTemplates( @RequestParam(defaultValue = "1") int page, Model model ){
+	public String listAll( @RequestParam(defaultValue = "1") int page, Model model ){
 
 		Page<StakeholderTemplate> stakeholderTemplateResults =
 				findPaginatedForStakeholderTemplateName(page, "");
