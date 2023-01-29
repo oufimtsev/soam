@@ -1,26 +1,20 @@
 package com.soam.specification;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.soam.ITUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class SpecificationTemplateTest {
     private static final String URL_SPECIFICATION_TEMPLATE_EDIT = "http://localhost/specification/template/%s/edit";
     private static final String URL_TEMPLATE_LINK_LIST = "http://localhost/templateLink/list";
@@ -60,43 +54,12 @@ class SpecificationTemplateTest {
                 specificationTemplateId);
 
         HtmlPage specificationTemplateCopyPage = webClient.getPage(String.format(URL_SPECIFICATION_TEMPLATE_EDIT, specificationTemplateCopyId));
-        validateSpecificationTemplateEdit(specificationTemplateCopyPage, "Copy of Test Specification Template",
+        ITUtils.validateSpecificationTemplateEdit(specificationTemplateCopyPage, "Copy of Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes");
 
-        validateTemplateLink(specificationTemplateCopyId, new String[][] {
+        HtmlPage templateLinkPage = webClient.getPage(URL_TEMPLATE_LINK_LIST);
+        ITUtils.validateTemplateLink(templateLinkPage, specificationTemplateCopyId, new String[][] {
                 {"Copy of Test Specification Template", "Test Stakeholder Template", "Test Objective Template"}
-        });
-    }
-
-    private static void validateSpecificationTemplateEdit(HtmlPage page, String name, String description, String notes) {
-        HtmlForm form = (HtmlForm) page.querySelectorAll("form").listIterator().next();
-
-        assertEquals(name, form.getInputByName("name").getValue());
-        assertEquals(description, form.getInputByName("description").getValue());
-        assertEquals(notes, form.getTextAreaByName("notes").getText());
-    }
-
-    private void validateTemplateLink(int specificationTemplateId, String[][] templateLinkNames) throws IOException {
-        HtmlPage page = webClient.getPage(URL_TEMPLATE_LINK_LIST);
-        HtmlForm form = page.getHtmlElementById("templateLinksForm");
-        form.getSelectByName("filterSpecificationTemplate").setSelectedAttribute(String.valueOf(specificationTemplateId), true);
-
-        DomElement button = page.createElement("button");
-        button.setAttribute("type", "submit");
-        form.appendChild(button);
-
-        Map<String, String[]> templateLinkMap = Arrays.stream(templateLinkNames)
-                .collect(Collectors.toMap(linkNames -> linkNames[0], Function.identity()));
-
-        HtmlPage filteredPage = button.click();
-        filteredPage.querySelectorAll("table tbody tr").forEach(row -> {
-            String actualSpecificationTemplateName = row.querySelector("td:nth-of-type(1)").getTextContent();
-            String actualStakeholderTemplateName = row.querySelector("td:nth-of-type(2)").getTextContent();
-            String actualObjectiveTemplateName = row.querySelector("td:nth-of-type(3)").getTextContent();
-            String[] expectedTemplateLink = templateLinkMap.get(actualSpecificationTemplateName);
-            assertEquals(expectedTemplateLink[0], actualSpecificationTemplateName);
-            assertEquals(expectedTemplateLink[1], actualStakeholderTemplateName);
-            assertEquals(expectedTemplateLink[2], actualObjectiveTemplateName);
         });
     }
 }

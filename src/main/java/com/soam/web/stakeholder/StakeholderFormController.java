@@ -52,7 +52,7 @@ public class StakeholderFormController implements SoamFormController {
     public String showStakeholder(@PathVariable("specificationId") int specificationId,
                                   @PathVariable("stakeholderId") int stakeholderId, Model model) {
         Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
-        if(maybeStakeholder.isEmpty()) {
+        if (maybeStakeholder.isEmpty()) {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
         }
         model.addAttribute(maybeStakeholder.get());
@@ -71,7 +71,7 @@ public class StakeholderFormController implements SoamFormController {
 
     @PostMapping("/stakeholder/new")
     public String processCreationForm(
-            Specification specification,
+            @ModelAttribute(binding = false) Specification specification,
             @Valid Stakeholder stakeholder, BindingResult result, Model model) {
         //todo: test specificationId path variable matches bound stakeholder.specificationId
 
@@ -130,7 +130,7 @@ public class StakeholderFormController implements SoamFormController {
     @PostMapping("/stakeholder/{stakeholderId}/delete")
     @Transactional
     public String processDeleteStakeholder(
-            Specification specification, @PathVariable("stakeholderId") int stakeholderId,
+            @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
             BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);

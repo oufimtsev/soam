@@ -1,24 +1,24 @@
 package com.soam.specification;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.soam.ITUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class SpecificationTest {
     private static final String URL_SPECIFICATION_DETAILS = "http://localhost/specification/%s";
     private static final String URL_SPECIFICATION_OBJECTIVE_LIST = "http://localhost/specification/%s/specificationObjective/list";
@@ -61,17 +61,17 @@ class SpecificationTest {
         assertNotEquals(srcSpecificationId, dstSpecificationId);
 
         HtmlPage dstSpecificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, dstSpecificationId));
-        validateSpecificationDetails(dstSpecificationDetailsPage, "Copy of Test Specification",
+        ITUtils.validateSpecificationDetails(dstSpecificationDetailsPage, "Copy of Test Specification",
                 "Test Specification Description", "Test Specification Notes", List.of("Test Stakeholder"));
 
         //verify Specification Objectives list
         HtmlPage dstSpecificationObjectiveListPage = webClient.getPage(String.format(URL_SPECIFICATION_OBJECTIVE_LIST, dstSpecificationId));
-        validateSpecificationObjectiveList(dstSpecificationObjectiveListPage, List.of("Test Specification Objective"));
+        ITUtils.validateSpecificationObjectiveList(dstSpecificationObjectiveListPage, List.of("Test Specification Objective"));
 
         //verify Stakeholder Objectives list
         HtmlAnchor dstStakeholderAnchor = dstSpecificationDetailsPage.querySelector("#stakeholders tbody tr:nth-of-type(1) td a");
         HtmlPage dstStakeholderDetailsPage = (HtmlPage) dstStakeholderAnchor.openLinkInNewWindow();
-        validateStakeholderDetails(dstStakeholderDetailsPage, "Test Stakeholder",
+        ITUtils.validateStakeholderDetails(dstStakeholderDetailsPage, "Test Stakeholder",
                 "Test Stakeholder Description", "Test Stakeholder Notes", List.of("Test Specification Objective"));
     }
 
@@ -95,60 +95,19 @@ class SpecificationTest {
                 "templateDeepCopy", specificationTemplateId);
 
         HtmlPage specificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, specificationId));
-        validateSpecificationDetails(specificationDetailsPage, "Copy of Test Specification Template",
+        ITUtils.validateSpecificationDetails(specificationDetailsPage, "Copy of Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes",
                 List.of("Test Stakeholder Template 1", "Test Stakeholder Template 2"));
 
         //verify Specification Objectives list
         HtmlPage specificationObjectiveListPage = webClient.getPage(String.format(URL_SPECIFICATION_OBJECTIVE_LIST, specificationId));
-        validateSpecificationObjectiveList(specificationObjectiveListPage, List.of("Test Objective Template"));
+        ITUtils.validateSpecificationObjectiveList(specificationObjectiveListPage, List.of("Test Objective Template"));
 
         //verify Stakeholder Objectives list
         HtmlAnchor stakeholderAnchor = specificationDetailsPage.querySelector("#stakeholders tbody tr:nth-of-type(1) td a");
         HtmlPage stakeholderDetailsPage = (HtmlPage) stakeholderAnchor.openLinkInNewWindow();
-        validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder Template 1",
+        ITUtils.validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder Template 1",
                 "Test Stakeholder Template 1 Description", "Test Stakeholder Template 1 Notes",
                 List.of("Test Objective Template"));
-    }
-
-    private static void validateSpecificationDetails(HtmlPage page, String name, String description, String notes, List<String> stakeholderNames) throws IOException {
-        //verify Specification details
-        assertEquals(name,
-                page.querySelector("table.table-striped:nth-of-type(1) tr:nth-of-type(1) td b").getTextContent());
-        assertEquals(description,
-                page.querySelector("table.table-striped:nth-of-type(1) tr:nth-of-type(2) td").getTextContent());
-        assertEquals(notes,
-                page.querySelector("table.table-striped:nth-of-type(1) tr:nth-of-type(3) td").getTextContent());
-
-        //verify Stakeholders list
-        Set<String> expectedStakeholderNames = new HashSet<>(stakeholderNames);
-        Set<String> actualStakeholderNames = page.querySelectorAll("#stakeholders tbody tr td a").stream()
-                .map(DomNode::getTextContent)
-                .collect(Collectors.toSet());
-        assertEquals(expectedStakeholderNames, actualStakeholderNames);
-    }
-
-    private static void validateSpecificationObjectiveList(HtmlPage page, List<String> specificationObjectiveNames) {
-        Set<String> expectedSpecificationObjectiveNames = new HashSet<>(specificationObjectiveNames);
-        Set<String> actualSpecificationObjectiveNames = page.querySelectorAll("#specificationObjectives tbody tr td a").stream()
-                .map(DomNode::getTextContent)
-                .collect(Collectors.toSet());
-        assertEquals(expectedSpecificationObjectiveNames, actualSpecificationObjectiveNames);
-    }
-
-    private static void validateStakeholderDetails(HtmlPage page, String name, String description, String notes, List<String> stakeholderObjectiveNames) {
-        //verify Stakeholder details
-        assertEquals(name,
-                page.querySelector("table.table-striped:nth-of-type(1) tr:nth-of-type(1) td b").getTextContent());
-        assertEquals(description,
-                page.querySelector("table.table-striped:nth-of-type(1) tr:nth-of-type(3) td").getTextContent());
-        assertEquals(notes,
-                page.querySelector("table.table-striped:nth-of-type(1) tr:nth-of-type(4) td").getTextContent());
-
-        Set<String> expectedStakeholderObjectiveNames = new HashSet<>(stakeholderObjectiveNames);
-        Set<String> actualStakeholderObjectiveNames = page.querySelectorAll("#stakeholderObjectives tbody tr td a").stream()
-                .map(DomNode::getTextContent)
-                .collect(Collectors.toSet());
-        assertEquals(expectedStakeholderObjectiveNames, actualStakeholderObjectiveNames);
     }
 }
