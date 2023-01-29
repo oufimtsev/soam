@@ -123,20 +123,19 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             SpecificationTemplate specificationTemplate, RedirectAttributes redirectAttributes) {
         if (specificationTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
-            return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
-        }
+        } else {
+            Optional<SpecificationTemplate> specificationTemplateById = specificationTemplateRepository.findById(specificationTemplateId);
 
-        Optional<SpecificationTemplate> specificationTemplateById = specificationTemplateRepository.findById(specificationTemplateId);
-
-        if( specificationTemplateById.isPresent()) {
-            if (specificationTemplateById.get().getTemplateLinks() != null && !specificationTemplateById.get().getTemplateLinks().isEmpty()) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+            if (specificationTemplateById.isPresent()) {
+                if (specificationTemplateById.get().getTemplateLinks() != null && !specificationTemplateById.get().getTemplateLinks().isEmpty()) {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+                } else {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationTemplateById.get().getName()));
+                    specificationTemplateRepository.delete(specificationTemplateById.get());
+                }
             } else {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationTemplateById.get().getName()));
-                specificationTemplateRepository.delete(specificationTemplateById.get());
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
             }
-        }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
         return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;

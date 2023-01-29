@@ -27,6 +27,7 @@ import java.util.Optional;
 @RequestMapping("/specification/{specificationId}")
 public class StakeholderFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
+    private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
     private final StakeholderRepository stakeholderRepository;
     private final StakeholderTemplateRepository stakeholderTemplateRepository;
@@ -74,7 +75,7 @@ public class StakeholderFormController implements SoamFormController {
             @ModelAttribute(binding = false) Specification specification,
             @Valid Stakeholder stakeholder, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
@@ -112,7 +113,7 @@ public class StakeholderFormController implements SoamFormController {
                                                @PathVariable("stakeholderId") int stakeholderId, Model model,
                                                RedirectAttributes redirectAttributes) {
         if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
@@ -141,7 +142,7 @@ public class StakeholderFormController implements SoamFormController {
             @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
             @RequestParam("id") int formId, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholderId != formId) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
@@ -150,7 +151,7 @@ public class StakeholderFormController implements SoamFormController {
         if (maybeStakeholder.isPresent()) {
             Stakeholder stakeholder = maybeStakeholder.get();
             if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+                redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             } else if (stakeholder.getStakeholderObjectives() != null && !stakeholder.getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
                 return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholderId);

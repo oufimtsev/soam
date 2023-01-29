@@ -27,6 +27,7 @@ import java.util.Optional;
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
+    private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
     private final ObjectiveTemplateRepository objectiveTemplateRepository;
@@ -64,7 +65,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             @Valid SpecificationObjective specificationObjective, BindingResult result, Model model,
             RedirectAttributes redirectAttributes) {
         if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
@@ -104,7 +105,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             @PathVariable("specificationObjectiveId") int specificationObjectiveId,
             Model model, RedirectAttributes redirectAttributes) {
         if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
@@ -133,7 +134,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             @ModelAttribute(binding = false) Specification specification,
             Model model, BindingResult result, RedirectAttributes redirectAttributes) {
         if (specificationObjectiveId != formId) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
@@ -142,7 +143,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         if (maybeSpecificationObjective.isPresent()) {
             SpecificationObjective specificationObjective = maybeSpecificationObjective.get();
             if (!Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+                redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             } else if (specificationObjective.getStakeholderObjectives() != null && !specificationObjective.getStakeholderObjectives().isEmpty()) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
             } else {

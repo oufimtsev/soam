@@ -100,20 +100,19 @@ public class StakeholderTemplateFormController implements SoamFormController {
             StakeholderTemplate stakeholderTemplate, RedirectAttributes redirectAttributes) {
         if (stakeholderTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
-            return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
-        }
+        } else {
+            Optional<StakeholderTemplate> stakeholderTemplateById = stakeholderTemplateRepository.findById(stakeholderTemplateId);
 
-        Optional<StakeholderTemplate> stakeholderTemplateById = stakeholderTemplateRepository.findById(stakeholderTemplateId);
-
-        if (stakeholderTemplateById.isPresent()) {
-            if (stakeholderTemplateById.get().getTemplateLinks() != null && !stakeholderTemplateById.get().getTemplateLinks().isEmpty()) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+            if (stakeholderTemplateById.isPresent()) {
+                if (stakeholderTemplateById.get().getTemplateLinks() != null && !stakeholderTemplateById.get().getTemplateLinks().isEmpty()) {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+                } else {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholderTemplateById.get().getName()));
+                    stakeholderTemplateRepository.delete(stakeholderTemplateById.get());
+                }
             } else {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholderTemplateById.get().getName()));
-                stakeholderTemplateRepository.delete(stakeholderTemplateById.get());
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
             }
-        }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
         return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;

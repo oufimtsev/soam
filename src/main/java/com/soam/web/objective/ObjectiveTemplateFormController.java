@@ -101,20 +101,19 @@ public class ObjectiveTemplateFormController implements SoamFormController {
             ObjectiveTemplate objectiveTemplate, RedirectAttributes redirectAttributes) {
         if (objectiveTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
-            return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
-        }
+        } else {
+            Optional<ObjectiveTemplate> objectiveTemplateById = objectiveTemplateRepository.findById(objectiveTemplateId);
 
-        Optional<ObjectiveTemplate> objectiveTemplateById = objectiveTemplateRepository.findById(objectiveTemplateId);
-
-        if (objectiveTemplateById.isPresent()) {
-            if (objectiveTemplateById.get().getTemplateLinks() != null && !objectiveTemplateById.get().getTemplateLinks().isEmpty()) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+            if (objectiveTemplateById.isPresent()) {
+                if (objectiveTemplateById.get().getTemplateLinks() != null && !objectiveTemplateById.get().getTemplateLinks().isEmpty()) {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+                } else {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", objectiveTemplateById.get().getName()));
+                    objectiveTemplateRepository.delete(objectiveTemplateById.get());
+                }
             } else {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", objectiveTemplateById.get().getName()));
-                objectiveTemplateRepository.delete(objectiveTemplateById.get());
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
             }
-        }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
         return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
