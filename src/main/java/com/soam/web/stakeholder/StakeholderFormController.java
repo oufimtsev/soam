@@ -81,7 +81,7 @@ public class StakeholderFormController implements SoamFormController {
 
         Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
         if (testStakeholder.isPresent()) {
-            result.rejectValue("name", "unique", "Stakeholder already exists");
+            result.rejectValue("name", "unique", "Stakeholder already exists.");
         }
 
         if (result.hasErrors()) {
@@ -99,7 +99,7 @@ public class StakeholderFormController implements SoamFormController {
             Model model, RedirectAttributes redirectAttributes) {
         Optional<Stakeholder> maybeStakeholder = this.stakeholderRepository.findById(stakeholderId);
         if(maybeStakeholder.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder does not exist");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder does not exist.");
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
         model.addAttribute(maybeStakeholder.get());
@@ -120,7 +120,7 @@ public class StakeholderFormController implements SoamFormController {
         Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
         testStakeholder.ifPresent(s-> {
             if(testStakeholder.get().getId() != stakeholderId) {
-                result.rejectValue("name", "unique", "Stakeholder already exists");
+                result.rejectValue("name", "unique", "Stakeholder already exists.");
             }
         });
 
@@ -153,20 +153,20 @@ public class StakeholderFormController implements SoamFormController {
             if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
                 redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             } else if (stakeholder.getStakeholderObjectives() != null && !stakeholder.getStakeholderObjectives().isEmpty()) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Stakeholder Objectives first.");
                 return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholderId);
             }
             stakeholderRepository.delete(stakeholder);
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholder.getName()));
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", stakeholder.getName()));
         }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder.");
         }
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String errorHandler(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 

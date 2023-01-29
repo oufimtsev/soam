@@ -75,7 +75,7 @@ public class SpecificationFormController implements SoamFormController {
                                       Model model, RedirectAttributes redirectAttributes) {
         Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         if (testSpecification.isPresent()) {
-            result.rejectValue("name", "unique", "Specification already exists");
+            result.rejectValue("name", "unique", "Specification already exists.");
         }
 
         if (result.hasErrors()) {
@@ -91,7 +91,7 @@ public class SpecificationFormController implements SoamFormController {
                 deepSpecificationCopy(srcSpecification.get(), specification);
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist");
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist.");
                 return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
         } else if ("templateDeepCopy".equals(collectionType)) {
@@ -102,7 +102,7 @@ public class SpecificationFormController implements SoamFormController {
                 deepTemplateCopy(srcSpecificationTemplate.get(), specification);
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist");
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
                 return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
         } else {
@@ -117,7 +117,7 @@ public class SpecificationFormController implements SoamFormController {
                                               RedirectAttributes redirectAttributes) {
         Optional<Specification> maybeSpecification = this.specificationRepository.findById(specificationId);
         if (maybeSpecification.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification does not exist");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification does not exist.");
             return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
         }
         model.addAttribute(maybeSpecification.get());
@@ -132,7 +132,7 @@ public class SpecificationFormController implements SoamFormController {
         Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         testSpecification.ifPresent(s-> {
             if( testSpecification.get().getId() != specificationId ){
-                result.rejectValue("name", "unique", "Specification already exists");
+                result.rejectValue("name", "unique", "Specification already exists.");
             }
         });
 
@@ -162,13 +162,13 @@ public class SpecificationFormController implements SoamFormController {
             Specification specificationById = maybeSpecification.get();
             if((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
                 (specificationById.getSpecificationObjectives() != null && !specificationById.getSpecificationObjectives().isEmpty())) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholders and specification objectives first.");
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Stakeholders and Specification Objectives first.");
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
             }
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationById.getName()));
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", specificationById.getName()));
             specificationRepository.delete(specificationById);
         }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification.");
         }
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }

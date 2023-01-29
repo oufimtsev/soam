@@ -60,7 +60,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
         if (testTemplate.isPresent() ){
-            result.rejectValue("name", "unique", "Template already exists");
+            result.rejectValue("name", "unique", "Specification Template already exists.");
         }
 
         if (result.hasErrors()) {
@@ -75,7 +75,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
                 this.specificationTemplateRepository.save(specificationTemplate);
                 deepTemplateCopy(srcSpecificationTemplate.get(), specificationTemplate);
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist");
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
             }
         } else {
             this.specificationTemplateRepository.save(specificationTemplate);
@@ -88,7 +88,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
                                               RedirectAttributes redirectAttributes) {
         Optional<SpecificationTemplate> maybeSpecificationTemplate = this.specificationTemplateRepository.findById(specificationId);
         if (maybeSpecificationTemplate.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification template does not exist");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Template does not exist.");
             return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
         }
         model.addAttribute(maybeSpecificationTemplate.get());
@@ -102,7 +102,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
         if( testTemplate.isPresent() && testTemplate.get().getId() != specificationTemplateId ){
-            result.rejectValue("name", "unique", "Template already exists");
+            result.rejectValue("name", "unique", "Specification Template already exists.");
         }
 
         if (result.hasErrors()) {
@@ -128,13 +128,13 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
             if (specificationTemplateById.isPresent()) {
                 if (specificationTemplateById.get().getTemplateLinks() != null && !specificationTemplateById.get().getTemplateLinks().isEmpty()) {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationTemplateById.get().getName()));
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", specificationTemplateById.get().getName()));
                     specificationTemplateRepository.delete(specificationTemplateById.get());
                 }
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Specification Template.");
             }
         }
 

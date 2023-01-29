@@ -77,7 +77,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     public String initCreationForm(
             Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
         if (specification.getSpecificationObjectives().isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Specification does not have any Specification Objectives");
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Specification does not have any Specification Objectives.");
             return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
 
@@ -107,14 +107,14 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
             emptySeSpecificationObjective.setId(-1);
             stakeholderObjective.setSpecificationObjective(emptySeSpecificationObjective);
-            result.rejectValue("specificationObjective", "required", "Specification Objective should not be empty");
+            result.rejectValue("specificationObjective", "required", "Specification Objective should not be empty.");
         } else {
             stakeholderObjective.setSpecificationObjective(testSpecificationObjective.get());
 
             Optional<StakeholderObjective> testStakeholderObjective = stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId);
             if (testStakeholderObjective.isPresent()) {
                 testStakeholderObjective.get().setSpecificationObjective(testSpecificationObjective.get());
-                result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists");
+                result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists.");
             }
         }
 
@@ -135,7 +135,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             RedirectAttributes redirectAttributes) {
         Optional<StakeholderObjective> maybeStakeholderObjective = this.stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
         if (maybeStakeholderObjective.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder objective does not exist");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Objective does not exist.");
             return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
         model.addAttribute(maybeStakeholderObjective.get());
@@ -177,23 +177,23 @@ public class StakeholderObjectiveFormController implements SoamFormController {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
             } else {
                 stakeholderObjectiveRepository.delete(stakeholderObjective);
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholderObjective.getSpecificationObjective().getName()));
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", stakeholderObjective.getSpecificationObjective().getName()));
             }
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder objective");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder Objective.");
         }
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
     }
 
     @ExceptionHandler(IllegalSpecificationIdException.class)
     public String errorHandlerSpecification(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
     @ExceptionHandler(IllegalStakeholderIdException.class)
     public String errorHandlerStakeholder(RedirectAttributes redirectAttributes, IllegalStakeholderIdException e) {
-        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, e.specification.getId());
     }
 

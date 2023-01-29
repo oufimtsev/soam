@@ -112,13 +112,13 @@ public class TemplateLinkController {
         if (maybeExistingTemplateLink.isEmpty()) {
             if (bindingResult.hasErrors()) {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST
-                redirectAttributes.addFlashAttribute(Util.DANGER, "New template link data is not complete.");
+                redirectAttributes.addFlashAttribute(Util.DANGER, "New Template Link data is not complete.");
             } else {
                 templateLinkRepository.save(templateLink);
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully created template link %s.", getTemplateLinkTitle(templateLink)));
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully created Template Link %s.", getTemplateLinkTitle(templateLink)));
             }
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, String.format("Template link %s already exists.", getTemplateLinkTitle(templateLink)));
+            redirectAttributes.addFlashAttribute(Util.DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
         }
         return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }
@@ -134,11 +134,11 @@ public class TemplateLinkController {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST
                 redirectAttributes.addFlashAttribute(Util.DANGER, "New form data is malformed.");
             } else {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted template link %s.", getTemplateLinkTitle(maybeTemplateLink.get())));
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(maybeTemplateLink.get())));
                 templateLinkRepository.delete(maybeTemplateLink.get());
             }
         }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template link.");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Template Link.");
         }
         return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }

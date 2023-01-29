@@ -48,7 +48,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
         Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
         if( testTemplate.isPresent() ){
-            result.rejectValue("name", "unique", "Template already exists");
+            result.rejectValue("name", "unique", "Objective Template already exists.");
         }
 
         if (result.hasErrors()) {
@@ -66,7 +66,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
                                           RedirectAttributes redirectAttributes) {
         Optional<ObjectiveTemplate> maybeObjectiveTemplate = this.objectiveTemplateRepository.findById(objectiveId);
         if (maybeObjectiveTemplate.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Objective template does not exist");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Objective Template does not exist.");
             return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
         }
         model.addAttribute(maybeObjectiveTemplate.get());
@@ -80,7 +80,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
         Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
         if( testTemplate.isPresent() && testTemplate.get().getId() != objectiveTemplateId ){
-            result.rejectValue("name", "unique", "Template already exists");
+            result.rejectValue("name", "unique", "Objective Template already exists.");
         }
 
         if (result.hasErrors()) {
@@ -106,13 +106,13 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
             if (objectiveTemplateById.isPresent()) {
                 if (objectiveTemplateById.get().getTemplateLinks() != null && !objectiveTemplateById.get().getTemplateLinks().isEmpty()) {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", objectiveTemplateById.get().getName()));
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", objectiveTemplateById.get().getName()));
                     objectiveTemplateRepository.delete(objectiveTemplateById.get());
                 }
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Objective Template.");
             }
         }
 

@@ -71,7 +71,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
 
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
         if( testSpecificationObjective.isPresent()) {
-            result.rejectValue("name", "unique", "Specification Objective already exists");
+            result.rejectValue("name", "unique", "Specification Objective already exists.");
         }
 
         if (result.hasErrors()) {
@@ -90,7 +90,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             RedirectAttributes redirectAttributes) {
         Optional<SpecificationObjective> maybeSpecificationObjective = this.specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification objective does not exist");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Objective does not exist.");
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
         model.addAttribute(maybeSpecificationObjective.get());
@@ -112,7 +112,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
         testSpecificationObjective.ifPresent(s-> {
             if (testSpecificationObjective.get().getId() != specificationObjectiveId) {
-                result.rejectValue("name", "unique", "Specification Objective already exists");
+                result.rejectValue("name", "unique", "Specification Objective already exists.");
             }
         });
         if (result.hasErrors()) {
@@ -145,20 +145,20 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             if (!Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
                 redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             } else if (specificationObjective.getStakeholderObjectives() != null && !specificationObjective.getStakeholderObjectives().isEmpty()) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Stakeholder Objectives first.");
             } else {
                 specificationObjectiveRepository.delete(specificationObjective);
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationObjective.getName()));
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", specificationObjective.getName()));
             }
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification objective");
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Specification Objective.");
         }
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String errorHandler(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 

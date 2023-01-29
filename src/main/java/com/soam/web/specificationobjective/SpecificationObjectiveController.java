@@ -56,7 +56,7 @@ public class SpecificationObjectiveController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String errorHandler(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters");
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 }
