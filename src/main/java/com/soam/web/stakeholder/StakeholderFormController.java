@@ -36,7 +36,9 @@ public class StakeholderFormController implements SoamFormController {
 
     private final PriorityRepository priorityRepository;
 
-    public StakeholderFormController(StakeholderRepository stakeholderRepository, StakeholderTemplateRepository stakeholderTemplateRepository, SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
+    public StakeholderFormController(
+            StakeholderRepository stakeholderRepository, StakeholderTemplateRepository stakeholderTemplateRepository,
+            SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
         this.stakeholderRepository = stakeholderRepository;
         this.stakeholderTemplateRepository = stakeholderTemplateRepository;
         this.specificationRepository = specificationRepository;
@@ -50,8 +52,9 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/{stakeholderId}")
-    public String showDetails(@PathVariable("specificationId") int specificationId,
-                                  @PathVariable("stakeholderId") int stakeholderId, Model model) {
+    public String showDetails(
+            @PathVariable("specificationId") int specificationId, @PathVariable("stakeholderId") int stakeholderId,
+            Model model) {
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
         if (maybeStakeholder.isEmpty()) {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
@@ -108,10 +111,9 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     @PostMapping("/stakeholder/{stakeholderId}/edit")
-    public String processUpdateForm(@Valid Stakeholder stakeholder, BindingResult result,
-                                               Specification specification,
-                                               @PathVariable("stakeholderId") int stakeholderId, Model model,
-                                               RedirectAttributes redirectAttributes) {
+    public String processUpdateForm(
+            @Valid Stakeholder stakeholder, BindingResult result, Specification specification,
+            @PathVariable("stakeholderId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());

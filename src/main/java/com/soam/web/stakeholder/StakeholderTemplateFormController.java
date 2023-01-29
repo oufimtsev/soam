@@ -28,7 +28,8 @@ public class StakeholderTemplateFormController implements SoamFormController {
     private final StakeholderTemplateRepository stakeholderTemplateRepository;
     private final PriorityRepository priorityRepository;
 
-    public StakeholderTemplateFormController(StakeholderTemplateRepository stakeholderTemplateRepository, PriorityRepository priorityRepository) {
+    public StakeholderTemplateFormController(
+            StakeholderTemplateRepository stakeholderTemplateRepository, PriorityRepository priorityRepository) {
         this.stakeholderTemplateRepository = stakeholderTemplateRepository;
         this.priorityRepository = priorityRepository;
     }
@@ -61,8 +62,8 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
-    public String initUpdateForm(@PathVariable("stakeholderTemplateId") int stakeholderId, Model model,
-                                            RedirectAttributes redirectAttributes) {
+    public String initUpdateForm(
+            @PathVariable("stakeholderTemplateId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
         Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderId);
         if (maybeStakeholderTemplate.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Template does not exist.");
@@ -74,8 +75,9 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
-    public String processUpdateForm(@Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
-                                                 @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, Model model) {
+    public String processUpdateForm(
+            @Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
+            @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, Model model) {
 
         Optional<StakeholderTemplate> testTemplate = stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName());
         if (testTemplate.isPresent() && testTemplate.get().getId() != stakeholderTemplateId) {

@@ -38,7 +38,7 @@ public class SpecificationTemplateController implements SoamFormController {
 	@GetMapping("/specification/templates")
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, SpecificationTemplate specificationTemplate,
-								  BindingResult result, Model model) {
+		  	BindingResult result, Model model) {
 
 		if (StringUtils.isEmpty(specificationTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");

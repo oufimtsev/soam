@@ -67,7 +67,8 @@ public class TemplateLinkController {
     }
 
     @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINKS)
-    public Iterable<TemplateLink> populateTemplateLinks(@ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm) {
+    public Iterable<TemplateLink> populateTemplateLinks(
+            @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm) {
         if (templateLinkForm.getFilterSpecificationTemplate() != null && templateLinkForm.getFilterStakeholderTemplate() != null) {
             return templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplate(
                     templateLinkForm.getFilterSpecificationTemplate(), templateLinkForm.getFilterStakeholderTemplate(), TEMPLATE_LINK_SORT);
@@ -86,7 +87,8 @@ public class TemplateLinkController {
     }
 
     @PostMapping("/templateLink/list")
-    public String listFiltered(@ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
+    public String listFiltered(
+            @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
         if (templateLinkForm.getNewTemplateLink() != null) {
             if (templateLinkForm.getFilterSpecificationTemplate() != null) {
                 templateLinkForm.getNewTemplateLink().setSpecificationTemplate(
@@ -101,8 +103,8 @@ public class TemplateLinkController {
     }
 
     @PostMapping("/templateLink/new")
-    public String processCreateForm(@Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult,
-                                    RedirectAttributes redirectAttributes) {
+    public String processCreateForm(
+            @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         TemplateLink templateLink = templateLinkForm.getNewTemplateLink();
         Optional<TemplateLink> maybeExistingTemplateLink =
                 templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
@@ -124,8 +126,8 @@ public class TemplateLinkController {
     }
 
     @PostMapping("/templateLink/delete")
-    public String processDelete(@Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult,
-                                            RedirectAttributes redirectAttributes) {
+    public String processDelete(
+            @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Optional<TemplateLink> maybeTemplateLink = templateLinkRepository.findById(templateLinkForm.getDeleteTemplateLinkId());
 
         redirectAttributes.addFlashAttribute("templateLinkForm", templateLinkForm);

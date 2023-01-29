@@ -25,7 +25,9 @@ public class SpecificationObjectiveController {
     private final SpecificationRepository specificationRepository;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
 
-    public SpecificationObjectiveController(SpecificationRepository specificationRepository, SpecificationObjectiveRepository specificationObjectiveRepository) {
+    public SpecificationObjectiveController(
+            SpecificationRepository specificationRepository,
+            SpecificationObjectiveRepository specificationObjectiveRepository) {
         this.specificationRepository = specificationRepository;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
     }
@@ -44,8 +46,7 @@ public class SpecificationObjectiveController {
 
     @GetMapping("/specificationObjective/{specificationObjectiveId}")
     public String showDetails(
-            Specification specification,
-            @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
+            Specification specification, @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
         Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
         if (maybeSpecificationObjective.isEmpty()) {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());

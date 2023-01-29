@@ -69,10 +69,11 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     @PostMapping("/specification/new")
-    public String processCreationForm(@Valid Specification specification, BindingResult result,
-                                      @ModelAttribute("collectionType") String collectionType,
-                                      @ModelAttribute("collectionItemId") int collectionItemId,
-                                      Model model, RedirectAttributes redirectAttributes) {
+    public String processCreationForm(
+            @Valid Specification specification, BindingResult result,
+            @ModelAttribute("collectionType") String collectionType,
+            @ModelAttribute("collectionItemId") int collectionItemId,
+            Model model, RedirectAttributes redirectAttributes) {
         Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         if (testSpecification.isPresent()) {
             result.rejectValue("name", "unique", "Specification already exists.");
@@ -113,8 +114,8 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     @GetMapping("/specification/{specificationId}/edit")
-    public String initUpdateForm(@PathVariable("specificationId") int specificationId, Model model,
-                                              RedirectAttributes redirectAttributes) {
+    public String initUpdateForm(
+            @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
         Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
         if (maybeSpecification.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification does not exist.");
@@ -126,8 +127,9 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     @PostMapping("/specification/{specificationId}/edit")
-    public String processUpdateForm(@Valid Specification specification, BindingResult result,
-                                                 @PathVariable("specificationId") int specificationId, Model model) {
+    public String processUpdateForm(
+            @Valid Specification specification, BindingResult result,
+            @PathVariable("specificationId") int specificationId, Model model) {
 
         Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         testSpecification.ifPresent(s-> {

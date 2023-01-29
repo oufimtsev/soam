@@ -36,7 +36,7 @@ public class StakeholderTemplateController implements SoamFormController {
 	@GetMapping("/stakeholder/templates")
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, StakeholderTemplate stakeholderTemplate,
-								  BindingResult result, Model model) {
+		  	BindingResult result, Model model) {
 
 		if (StringUtils.isEmpty(stakeholderTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");

@@ -28,7 +28,8 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     private final ObjectiveTemplateRepository objectiveTemplateRepository;
     private final PriorityRepository priorityRepository;
 
-    public ObjectiveTemplateFormController(ObjectiveTemplateRepository objectiveTemplateRepository, PriorityRepository priorityRepository) {
+    public ObjectiveTemplateFormController(
+            ObjectiveTemplateRepository objectiveTemplateRepository, PriorityRepository priorityRepository) {
         this.objectiveTemplateRepository = objectiveTemplateRepository;
         this.priorityRepository = priorityRepository;
     }
@@ -61,8 +62,8 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/objective/template/{objectiveTemplateId}/edit")
-    public String initUpdateForm(@PathVariable("objectiveTemplateId") int objectiveId, Model model,
-                                          RedirectAttributes redirectAttributes) {
+    public String initUpdateForm(
+            @PathVariable("objectiveTemplateId") int objectiveId, Model model, RedirectAttributes redirectAttributes) {
         Optional<ObjectiveTemplate> maybeObjectiveTemplate = objectiveTemplateRepository.findById(objectiveId);
         if (maybeObjectiveTemplate.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Objective Template does not exist.");
@@ -74,8 +75,9 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     }
 
     @PostMapping("/objective/template/{objectiveTemplateId}/edit")
-    public String processUpdateForm(@Valid ObjectiveTemplate objectiveTemplate, BindingResult result,
-                                                 @PathVariable("objectiveTemplateId") int objectiveTemplateId, Model model) {
+    public String processUpdateForm(
+            @Valid ObjectiveTemplate objectiveTemplate, BindingResult result,
+            @PathVariable("objectiveTemplateId") int objectiveTemplateId, Model model) {
 
         Optional<ObjectiveTemplate> testTemplate = objectiveTemplateRepository.findByNameIgnoreCase(objectiveTemplate.getName());
         if (testTemplate.isPresent() && testTemplate.get().getId() != objectiveTemplateId) {

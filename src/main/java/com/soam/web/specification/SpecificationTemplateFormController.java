@@ -34,8 +34,8 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     private final PriorityRepository priorityRepository;
 
     public SpecificationTemplateFormController(
-            SpecificationTemplateRepository specificationTemplateRepository, TemplateLinkRepository templateLinkRepository,
-            PriorityRepository priorityRepository) {
+            SpecificationTemplateRepository specificationTemplateRepository,
+            TemplateLinkRepository templateLinkRepository, PriorityRepository priorityRepository) {
         this.specificationTemplateRepository = specificationTemplateRepository;
         this.templateLinkRepository = templateLinkRepository;
         this.priorityRepository = priorityRepository;
@@ -84,8 +84,9 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @GetMapping("/specification/template/{specificationTemplateId}/edit")
-    public String initUpdateForm(@PathVariable("specificationTemplateId") int specificationId, Model model,
-                                              RedirectAttributes redirectAttributes) {
+    public String initUpdateForm(
+            @PathVariable("specificationTemplateId") int specificationId, Model model,
+            RedirectAttributes redirectAttributes) {
         Optional<SpecificationTemplate> maybeSpecificationTemplate = specificationTemplateRepository.findById(specificationId);
         if (maybeSpecificationTemplate.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Template does not exist.");
@@ -97,8 +98,9 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @PostMapping("/specification/template/{specificationTemplateId}/edit")
-    public String processUpdateForm(@Valid SpecificationTemplate specificationTemplate, BindingResult result,
-                                                 @PathVariable("specificationTemplateId") int specificationTemplateId, Model model) {
+    public String processUpdateForm(
+            @Valid SpecificationTemplate specificationTemplate, BindingResult result,
+            @PathVariable("specificationTemplateId") int specificationTemplateId, Model model) {
 
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
         if (testTemplate.isPresent() && testTemplate.get().getId() != specificationTemplateId) {
@@ -145,7 +147,8 @@ public class SpecificationTemplateFormController  implements SoamFormController 
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
-    private void deepTemplateCopy(SpecificationTemplate srcSpecificationTemplate, SpecificationTemplate dstSpecificationTemplate) {
+    private void deepTemplateCopy(
+            SpecificationTemplate srcSpecificationTemplate, SpecificationTemplate dstSpecificationTemplate) {
         Collection<TemplateLink> templateLinks = srcSpecificationTemplate.getTemplateLinks();
 
         templateLinks.forEach(templateLink -> {

@@ -35,8 +35,8 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specifications")
-	public String processFindForm(@RequestParam(defaultValue = "1") int page, Specification specification,
-			BindingResult result, Model model) {
+	public String processFindForm(
+			@RequestParam(defaultValue = "1") int page, Specification specification, BindingResult result, Model model) {
 
 		if (StringUtils.isEmpty(specification.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");

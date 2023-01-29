@@ -35,7 +35,8 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     private final PriorityRepository priorityRepository;
 
     public SpecificationObjectiveFormController(
-            SpecificationObjectiveRepository specificationObjectiveRepository, ObjectiveTemplateRepository objectiveTemplateRepository,
+            SpecificationObjectiveRepository specificationObjectiveRepository,
+            ObjectiveTemplateRepository objectiveTemplateRepository,
             SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
         this.specificationObjectiveRepository = specificationObjectiveRepository;
         this.objectiveTemplateRepository = objectiveTemplateRepository;
