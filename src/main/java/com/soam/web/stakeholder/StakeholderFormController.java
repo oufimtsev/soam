@@ -127,7 +127,6 @@ public class StakeholderFormController implements SoamFormController {
         stakeholder.setId(stakeholderId);
 
         if (result.hasErrors()) {
-            model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
             populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
         }

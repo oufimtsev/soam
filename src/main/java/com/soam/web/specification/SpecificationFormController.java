@@ -138,7 +138,6 @@ public class SpecificationFormController implements SoamFormController {
 
         specification.setId(specificationId);
         if (result.hasErrors()) {
-            model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
             populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }

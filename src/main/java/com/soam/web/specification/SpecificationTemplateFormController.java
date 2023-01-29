@@ -107,7 +107,6 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
         if (result.hasErrors()) {
             specificationTemplate.setId(specificationTemplateId);
-            model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
             populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }

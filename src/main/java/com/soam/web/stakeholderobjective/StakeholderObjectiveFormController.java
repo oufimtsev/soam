@@ -152,7 +152,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
 
         if (result.hasErrors()) {
             stakeholderObjective.setId(stakeholderObjectiveId);
-            model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
             populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }

@@ -117,7 +117,6 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         });
         if (result.hasErrors()) {
             specificationObjective.setId(specificationObjectiveId);
-            model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
             populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }

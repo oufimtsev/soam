@@ -53,7 +53,6 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
         if (result.hasErrors()) {
             populateFormModel(model);
-            model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, objectiveTemplate);
             return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -85,7 +84,6 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
         if (result.hasErrors()) {
             objectiveTemplate.setId(objectiveTemplateId);
-            model.addAttribute("objective", objectiveTemplate);
             populateFormModel(model);
             return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
