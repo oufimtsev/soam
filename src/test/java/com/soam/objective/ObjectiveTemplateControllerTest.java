@@ -109,7 +109,7 @@ class ObjectiveTemplateControllerTest {
         Page<ObjectiveTemplate> objectiveTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_1));
         Mockito.when(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(objectiveTemplatesPage);
 
-        mockMvc.perform( get("/objective/template/list"))
+        mockMvc.perform(get("/objective/template/list"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST));

@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", (event) =>{
-    document.querySelectorAll(".dropdown-item.collection-item").forEach( (item) => {
+    document.querySelectorAll(".dropdown-item.collection-item").forEach((item) => {
         item.addEventListener("click", (e) => {
             const dataset = e.target.dataset;
             const collectionType = e.target.parentElement.parentElement.dataset.collectionType;

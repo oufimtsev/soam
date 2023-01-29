@@ -64,7 +64,7 @@ public class SpecificationFormController implements SoamFormController {
     public String initCreationForm(Model model) {
         Specification specification = new Specification();
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-        populateFormModel( model );
+        populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
@@ -131,15 +131,15 @@ public class SpecificationFormController implements SoamFormController {
 
         Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
         testSpecification.ifPresent(s-> {
-            if( testSpecification.get().getId() != specificationId ){
+            if (testSpecification.get().getId() != specificationId) {
                 result.rejectValue("name", "unique", "Specification already exists.");
             }
         });
 
-        specification.setId( specificationId );
+        specification.setId(specificationId);
         if (result.hasErrors()) {
-            model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification );
-            populateFormModel( model );
+            model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
+            populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
@@ -158,16 +158,16 @@ public class SpecificationFormController implements SoamFormController {
 
         Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
 
-        if(maybeSpecification.isPresent()) {
+        if (maybeSpecification.isPresent()) {
             Specification specificationById = maybeSpecification.get();
-            if((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
+            if ((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
                 (specificationById.getSpecificationObjectives() != null && !specificationById.getSpecificationObjectives().isEmpty())) {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Stakeholders and Specification Objectives first.");
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
             }
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", specificationById.getName()));
             specificationRepository.delete(specificationById);
-        }else{
+        } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification.");
         }
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
@@ -251,7 +251,7 @@ public class SpecificationFormController implements SoamFormController {
         });
     }
 
-    private void populateFormModel( Model model ){
+    private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }

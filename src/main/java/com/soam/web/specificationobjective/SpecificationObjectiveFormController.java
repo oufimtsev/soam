@@ -44,7 +44,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
-    public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
+    public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
         Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
         return oSpecification.orElseThrow(IllegalArgumentException::new);
     }
@@ -70,7 +70,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         }
 
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
-        if( testSpecificationObjective.isPresent()) {
+        if (testSpecificationObjective.isPresent()) {
             result.rejectValue("name", "unique", "Specification Objective already exists.");
         }
 

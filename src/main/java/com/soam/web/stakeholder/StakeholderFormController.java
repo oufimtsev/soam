@@ -66,7 +66,7 @@ public class StakeholderFormController implements SoamFormController {
         stakeholder.setSpecification(specification);
 
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
-        populateFormModel( model );
+        populateFormModel(model);
         return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
 
@@ -98,7 +98,7 @@ public class StakeholderFormController implements SoamFormController {
             @PathVariable("stakeholderId") int stakeholderId, Specification specification,
             Model model, RedirectAttributes redirectAttributes) {
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
-        if(maybeStakeholder.isEmpty()) {
+        if (maybeStakeholder.isEmpty()) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder does not exist.");
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
@@ -119,7 +119,7 @@ public class StakeholderFormController implements SoamFormController {
 
         Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
         testStakeholder.ifPresent(s-> {
-            if(testStakeholder.get().getId() != stakeholderId) {
+            if (testStakeholder.get().getId() != stakeholderId) {
                 result.rejectValue("name", "unique", "Stakeholder already exists.");
             }
         });
@@ -128,7 +128,7 @@ public class StakeholderFormController implements SoamFormController {
 
         if (result.hasErrors()) {
             model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
-            populateFormModel( model );
+            populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
         }
 
@@ -158,7 +158,7 @@ public class StakeholderFormController implements SoamFormController {
             }
             stakeholderRepository.delete(stakeholder);
             redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", stakeholder.getName()));
-        }else{
+        } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder.");
         }
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());

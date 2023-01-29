@@ -42,11 +42,11 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @GetMapping("/specification/template/new")
-    public String initCreationForm(Model model ) {
+    public String initCreationForm(Model model) {
 
         SpecificationTemplate specificationTemplate = new SpecificationTemplate();
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
-        populateFormModel( model );
+        populateFormModel(model);
 
         return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
@@ -59,12 +59,12 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             Model model, RedirectAttributes redirectAttributes) {
 
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
-        if (testTemplate.isPresent() ){
+        if (testTemplate.isPresent()) {
             result.rejectValue("name", "unique", "Specification Template already exists.");
         }
 
         if (result.hasErrors()) {
-            populateFormModel( model );
+            populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -92,7 +92,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
         }
         model.addAttribute(maybeSpecificationTemplate.get());
-        populateFormModel( model );
+        populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
@@ -101,14 +101,14 @@ public class SpecificationTemplateFormController  implements SoamFormController 
                                                  @PathVariable("specificationTemplateId") int specificationTemplateId, Model model) {
 
         Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
-        if( testTemplate.isPresent() && testTemplate.get().getId() != specificationTemplateId ){
+        if (testTemplate.isPresent() && testTemplate.get().getId() != specificationTemplateId) {
             result.rejectValue("name", "unique", "Specification Template already exists.");
         }
 
         if (result.hasErrors()) {
-            specificationTemplate.setId( specificationTemplateId );
+            specificationTemplate.setId(specificationTemplateId);
             model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
-            populateFormModel( model );
+            populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -141,7 +141,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
         return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
     }
 
-    private void populateFormModel( Model model ){
+    private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }

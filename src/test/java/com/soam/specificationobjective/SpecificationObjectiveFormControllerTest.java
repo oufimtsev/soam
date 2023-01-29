@@ -85,7 +85,7 @@ class SpecificationObjectiveFormControllerTest {
         TEST_SPECIFICATION_OBJECTIVE_3.setNotes("notes");
         TEST_SPECIFICATION_OBJECTIVE_3.setPriority(lowPriority);
 
-        TEST_SPECIFICATION_1.setSpecificationObjectives( Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE_1, TEST_SPECIFICATION_OBJECTIVE_2, TEST_SPECIFICATION_OBJECTIVE_3));
+        TEST_SPECIFICATION_1.setSpecificationObjectives(Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE_1, TEST_SPECIFICATION_OBJECTIVE_2, TEST_SPECIFICATION_OBJECTIVE_3));
     }
 
     @Autowired
@@ -245,7 +245,7 @@ class SpecificationObjectiveFormControllerTest {
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
-                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
+                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
                         .param("notes", "notes")
                         .param("description", ""))
                 .andExpect(status().isOk())
@@ -255,7 +255,7 @@ class SpecificationObjectiveFormControllerTest {
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("specification", String.valueOf(EMPTY_SPECIFICATION_ID))
-                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
+                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
                         .param("notes", "notes")
                         .param("description", "descr"))
                 .andExpect(status().is3xxRedirection())
@@ -264,7 +264,7 @@ class SpecificationObjectiveFormControllerTest {
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
                         .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
-                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
+                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
                         .param("notes", "notes")
                         .param("description", "descr"))
                 .andExpect(status().isOk())

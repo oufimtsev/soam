@@ -35,7 +35,7 @@ public class Stakeholder extends SoamEntity {
 	@JoinColumn(name = "specification_id")
 	private Specification specification;
 
-	@OneToMany( mappedBy = "stakeholder" )
+	@OneToMany(mappedBy = "stakeholder")
 	@SortComparator(StakeholderObjectiveComparator.class)
 	private SortedSet<StakeholderObjective> stakeholderObjectives;
 

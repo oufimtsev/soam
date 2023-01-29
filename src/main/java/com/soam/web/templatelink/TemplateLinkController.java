@@ -137,7 +137,7 @@ public class TemplateLinkController {
                 redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(maybeTemplateLink.get())));
                 templateLinkRepository.delete(maybeTemplateLink.get());
             }
-        }else{
+        } else {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Template Link.");
         }
         return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;

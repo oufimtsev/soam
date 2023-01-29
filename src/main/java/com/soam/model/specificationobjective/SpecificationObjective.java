@@ -34,7 +34,7 @@ public class SpecificationObjective extends SoamEntity {
 	@JoinColumn(name = "specification_id")
 	private Specification specification;
 
-	@OneToMany( mappedBy = "specificationObjective")
+	@OneToMany(mappedBy = "specificationObjective")
 	private List<StakeholderObjective> stakeholderObjectives;
 
 	public Specification getSpecification() {

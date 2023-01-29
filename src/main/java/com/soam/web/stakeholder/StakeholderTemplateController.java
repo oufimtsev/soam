@@ -38,7 +38,7 @@ public class StakeholderTemplateController implements SoamFormController {
 			@RequestParam(defaultValue = "1") int page, StakeholderTemplate stakeholderTemplate,
 								  BindingResult result, Model model) {
 
-		if ( StringUtils.isEmpty(stakeholderTemplate.getName())) {
+		if (StringUtils.isEmpty(stakeholderTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
@@ -51,7 +51,7 @@ public class StakeholderTemplateController implements SoamFormController {
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 
-		if ( stakeholderResults.getTotalElements() == 1) {
+		if (stakeholderResults.getTotalElements() == 1) {
 			stakeholderTemplate = stakeholderResults.iterator().next();
 			return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_EDIT, stakeholderTemplate.getId());
 		}
@@ -60,11 +60,11 @@ public class StakeholderTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/stakeholder/template/list")
-	public String listAll( @RequestParam(defaultValue = "1") int page, Model model ){
+	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
 
 		Page<StakeholderTemplate> stakeholderTemplateResults =
 				findPaginatedForStakeholderTemplateName(page, "");
-		addPaginationModel( page, model, stakeholderTemplateResults );
+		addPaginationModel(page, model, stakeholderTemplateResults);
 		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
 		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;
 	}

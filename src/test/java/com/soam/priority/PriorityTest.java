@@ -11,7 +11,7 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 class PriorityTest {
 
-    private PriorityType getPriorityLow(){
+    private PriorityType getPriorityLow() {
         PriorityType low = new PriorityType();
         low.setId(1);
         low.setName("Low");
@@ -19,7 +19,7 @@ class PriorityTest {
         return low;
     }
 
-    private PriorityType getPriorityMedium(){
+    private PriorityType getPriorityMedium() {
         PriorityType medium = new PriorityType();
         medium.setId(2);
         medium.setName("Medium");
@@ -27,7 +27,7 @@ class PriorityTest {
         return medium;
     }
 
-    private PriorityType getPriorityHigh(){
+    private PriorityType getPriorityHigh() {
         PriorityType high = new PriorityType();
         high.setId(3);
         high.setName("High");
@@ -40,10 +40,9 @@ class PriorityTest {
         PriorityType low = getPriorityLow();
         PriorityType medium = getPriorityMedium();
         PriorityType high = getPriorityHigh();
-        ArrayList<PriorityType> unsorted = Lists.newArrayList( high, low, medium);
+        ArrayList<PriorityType> unsorted = Lists.newArrayList(high, low, medium);
         Optional<PriorityType> first = unsorted.stream().sorted().findFirst();
 
-        assertEquals("Check your priorities", first.get(), low  );
+        assertEquals("Check your priorities", first.get(), low);
     }
-
 }

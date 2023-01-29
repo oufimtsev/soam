@@ -10,7 +10,7 @@ import jakarta.persistence.UniqueConstraint;
 import java.util.List;
 
 @Entity
-@Table( name="objective_templates", uniqueConstraints = {@UniqueConstraint(columnNames = { "name"})})
+@Table(name="objective_templates", uniqueConstraints = {@UniqueConstraint(columnNames = { "name"})})
 public class ObjectiveTemplate extends SoamEntity {
     @OneToMany(mappedBy = "objectiveTemplate")
     private List<TemplateLink> templateLinks;

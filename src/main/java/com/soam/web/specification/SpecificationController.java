@@ -35,10 +35,10 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specifications")
-	public String processFindForm( @RequestParam(defaultValue = "1") int page, Specification specification,
-			BindingResult result, Model model ) {
+	public String processFindForm(@RequestParam(defaultValue = "1") int page, Specification specification,
+			BindingResult result, Model model) {
 
-		if ( StringUtils.isEmpty(specification.getName())) {
+		if (StringUtils.isEmpty(specification.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
@@ -51,7 +51,7 @@ public class SpecificationController {
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 
-		if ( specificationResults.getTotalElements() == 1) {
+		if (specificationResults.getTotalElements() == 1) {
 			specification = specificationResults.iterator().next();
 			return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
 		}
@@ -60,10 +60,10 @@ public class SpecificationController {
 	}
 
 	@GetMapping("/specification/list")
-	public String listAll( @RequestParam(defaultValue = "1") int page, Model model) {
+	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
 		Page<Specification> specificationResults =
 				findPaginatedForSpecificationName(page, "");
-		addPaginationModel( page, model, specificationResults );
+		addPaginationModel(page, model, specificationResults);
 
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, new Specification()); // for breadcrumb
 		return ViewConstants.VIEW_SPECIFICATION_LIST;
@@ -89,7 +89,7 @@ public class SpecificationController {
 	@GetMapping("/specification/{specificationId}")
 	public String showDetails(@PathVariable("specificationId") int specificationId, Model model) {
 		Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
-		if(maybeSpecification.isEmpty()){
+		if (maybeSpecification.isEmpty()) {
 			return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
 		}
 		model.addAttribute(maybeSpecification.get());

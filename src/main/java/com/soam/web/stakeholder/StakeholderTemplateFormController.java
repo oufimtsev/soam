@@ -34,11 +34,11 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/template/new")
-    public String initCreationForm(Model model ) {
+    public String initCreationForm(Model model) {
 
         StakeholderTemplate stakeholderTemplate = new StakeholderTemplate();
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
-        populateFormModel( model );
+        populateFormModel(model);
 
         return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
@@ -47,12 +47,12 @@ public class StakeholderTemplateFormController implements SoamFormController {
     public String processCreationForm(@Valid StakeholderTemplate stakeholderTemplate, BindingResult result, Model model) {
 
         Optional<StakeholderTemplate> testTemplate = stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName());
-        if( testTemplate.isPresent() ){
+        if (testTemplate.isPresent()) {
             result.rejectValue("name", "unique", "Stakeholder Template already exists.");
         }
 
         if (result.hasErrors()) {
-            populateFormModel( model );
+            populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -69,7 +69,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
             return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
         }
         model.addAttribute(maybeStakeholderTemplate.get());
-        populateFormModel( model );
+        populateFormModel(model);
         return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
@@ -78,14 +78,14 @@ public class StakeholderTemplateFormController implements SoamFormController {
                                                  @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, Model model) {
 
         Optional<StakeholderTemplate> testTemplate = stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName());
-        if( testTemplate.isPresent() && testTemplate.get().getId() != stakeholderTemplateId ){
+        if (testTemplate.isPresent() && testTemplate.get().getId() != stakeholderTemplateId) {
             result.rejectValue("name", "unique", "Stakeholder Template already exists.");
         }
 
         if (result.hasErrors()) {
-            stakeholderTemplate.setId( stakeholderTemplateId );
+            stakeholderTemplate.setId(stakeholderTemplateId);
             model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholderTemplate);
-            populateFormModel( model );
+            populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
@@ -118,7 +118,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
         return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
-    private void populateFormModel( Model model ){
+    private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }

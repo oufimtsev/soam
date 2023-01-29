@@ -140,7 +140,7 @@ class SpecificationFormControllerTest {
         given(specificationRepository.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
                 .willReturn(new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_3)));
 
-        given( specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE.getId()) ).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
+        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
 
         given(specificationRepository.save(any())).will(invocation -> {
             Specification specification = invocation.getArgument(0);
@@ -263,7 +263,7 @@ class SpecificationFormControllerTest {
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION, TEST_SPECIFICATION_1.getId())
-                        .param("name", TEST_SPECIFICATION_1.getName() )
+                        .param("name", TEST_SPECIFICATION_1.getName())
                         .param("notes", "notes")
                         .param("description", ""))
                 .andExpect(status().isOk())
@@ -272,7 +272,7 @@ class SpecificationFormControllerTest {
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION, EMPTY_SPECIFICATION_ID)
-                        .param("name", TEST_SPECIFICATION_1.getName() )
+                        .param("name", TEST_SPECIFICATION_1.getName())
                         .param("notes", "notes")
                         .param("description", "descr"))
                 .andExpect(status().isOk())

@@ -113,7 +113,7 @@ class SpecificationTemplateControllerTest {
         Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
         Mockito.when(specificationTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 
-        mockMvc.perform( get("/specification/template/list"))
+        mockMvc.perform(get("/specification/template/list"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST));

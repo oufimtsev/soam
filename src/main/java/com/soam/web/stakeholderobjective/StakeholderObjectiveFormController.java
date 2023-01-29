@@ -66,7 +66,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             Specification specification, Stakeholder stakeholder,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
         Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
-        if(maybeStakeholderObjective.isEmpty()) {
+        if (maybeStakeholderObjective.isEmpty()) {
             return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
         model.addAttribute(maybeStakeholderObjective.get());

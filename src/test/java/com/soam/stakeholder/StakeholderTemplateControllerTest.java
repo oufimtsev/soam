@@ -109,7 +109,7 @@ class StakeholderTemplateControllerTest {
         Page<StakeholderTemplate> stakeholderTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
         Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 
-        mockMvc.perform( get("/stakeholder/template/list"))
+        mockMvc.perform(get("/stakeholder/template/list"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST));

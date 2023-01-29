@@ -109,7 +109,7 @@ class StakeholderFormControllerTest {
         TEST_STAKEHOLDER_3.setNotes("notes");
         TEST_STAKEHOLDER_3.setPriority(lowPriority);
 
-        TEST_SPECIFICATION_1.setStakeholders( Lists.newArrayList( TEST_STAKEHOLDER_1, TEST_STAKEHOLDER_1,  TEST_STAKEHOLDER_1 ));
+        TEST_SPECIFICATION_1.setStakeholders(Lists.newArrayList(TEST_STAKEHOLDER_1, TEST_STAKEHOLDER_1,  TEST_STAKEHOLDER_1));
     }
 
     @Autowired
@@ -211,7 +211,7 @@ class StakeholderFormControllerTest {
     @Test
     void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_STAKEHOLDER, TEST_SPECIFICATION_1.getId())
-                        .param("specification", String.valueOf( TEST_SPECIFICATION_2.getId()))
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_2.getId()))
                         .param("name", "New stake")
                         .param("notes", "spec notes")
                         .param("description", "Description"))
