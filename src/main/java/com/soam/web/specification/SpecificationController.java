@@ -5,6 +5,7 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,8 @@ import java.util.Optional;
 
 @Controller
 public class SpecificationController {
+	@Value("${soam.pageSize}")
+	private int pageSize;
 	private final SpecificationRepository specificationRepository;
 
 	public SpecificationController(SpecificationRepository specificationRepository) {
@@ -80,7 +83,6 @@ public class SpecificationController {
 	}
 
 	private Page<Specification> findPaginatedForSpecificationName(int page, String name) {
-		int pageSize = 20;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return specificationRepository.findByNameStartsWithIgnoreCase(name, pageable);

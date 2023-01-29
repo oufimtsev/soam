@@ -6,6 +6,7 @@ import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,8 @@ import java.util.List;
 
 @Controller
 public class StakeholderTemplateController implements SoamFormController {
+	@Value("${soam.pageSize}")
+	private int pageSize;
 	private final StakeholderTemplateRepository stakeholderTemplateRepository;
 
 	public StakeholderTemplateController(StakeholderTemplateRepository stakeholderTemplateRepository) {
@@ -80,7 +83,6 @@ public class StakeholderTemplateController implements SoamFormController {
 	}
 
 	private Page<StakeholderTemplate> findPaginatedForStakeholderTemplateName(int page, String name) {
-		int pageSize = 10;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);

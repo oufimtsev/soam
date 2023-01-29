@@ -6,6 +6,7 @@ import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,8 @@ import java.util.List;
 
 @Controller
 public class ObjectiveTemplateController implements SoamFormController {
+	@Value("${soam.pageSize}")
+	private int pageSize;
 	private final ObjectiveTemplateRepository objectiveTemplateRepository;
 
 	public ObjectiveTemplateController(ObjectiveTemplateRepository objectiveTemplateRepository) {
@@ -36,7 +39,7 @@ public class ObjectiveTemplateController implements SoamFormController {
 	@GetMapping("/objective/templates")
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, ObjectiveTemplate objectiveTemplate,
-								  BindingResult result, Model model) {
+		  	BindingResult result, Model model) {
 
 		if (StringUtils.isEmpty(objectiveTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
@@ -80,7 +83,6 @@ public class ObjectiveTemplateController implements SoamFormController {
 	}
 
 	private Page<ObjectiveTemplate> findPaginatedForObjectiveTemplateName(int page, String name) {
-		int pageSize = 10;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return objectiveTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);

@@ -6,6 +6,7 @@ import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,8 @@ import static com.soam.web.ModelConstants.ATTR_SPECIFICATION_TEMPLATE;
 
 @Controller
 public class SpecificationTemplateController implements SoamFormController {
+	@Value("${soam.pageSize}")
+	private int pageSize;
 	private final SpecificationTemplateRepository specificationTemplateRepository;
 
 	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository) {
@@ -82,7 +85,6 @@ public class SpecificationTemplateController implements SoamFormController {
 	}
 
 	private Page<SpecificationTemplate> findPaginatedForSpecificationTemplateName(int page, String name) {
-		int pageSize = 10;
 		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
 		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
 		return specificationTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
