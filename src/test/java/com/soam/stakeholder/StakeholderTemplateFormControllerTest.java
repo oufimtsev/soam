@@ -115,7 +115,7 @@ class StakeholderTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessCreationFormHasErrors() throws Exception {
+    void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_STAKEHOLDER_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
                 .andExpect(status().isOk())
@@ -132,7 +132,7 @@ class StakeholderTemplateFormControllerTest {
     }
 
     @Test
-    void testInitUpdateStakeholderForm() throws Exception {
+    void testInitUpdateForm() throws Exception {
         Mockito.when(this.stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId()))
@@ -150,7 +150,7 @@ class StakeholderTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateStakeholderFormSuccess() throws Exception {
+    void testProcessUpdateFormSuccess() throws Exception {
         Mockito.when(this.stakeholderTemplateRepository.findById(EMPTY_STAKEHOLDER_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())
                         .param("name", "New Test Stakeholder")
@@ -168,7 +168,7 @@ class StakeholderTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateOwnerFormHasErrors() throws Exception {
+    void testProcessUpdateFormError() throws Exception {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())
                         .param("name", "New Test Stakeholder")
                         .param("notes", "notes")
@@ -189,7 +189,7 @@ class StakeholderTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteStakeholderSuccess() throws Exception {
+    void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_1.getId())
                         .param("name", TEST_STAKEHOLDER_1.getName()))
                 .andExpect(status().is3xxRedirection())
@@ -198,7 +198,7 @@ class StakeholderTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteStakeholderError() throws Exception {
+    void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_STAKEHOLDER_ID)
                         .param("name", TEST_STAKEHOLDER_1.getName()))
                 .andExpect(status().is3xxRedirection())

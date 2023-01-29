@@ -141,7 +141,7 @@ class StakeholderObjectiveFormControllerTest {
     }
 
     @Test
-    void testViewStakeholderObjectiveDetails() throws Exception {
+    void testViewDetails() throws Exception {
         mockMvc.perform(get(URL_VIEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId(), TEST_STAKEHOLDER_OBJECTIVE_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE))
@@ -195,7 +195,7 @@ class StakeholderObjectiveFormControllerTest {
     }
 
     @Test
-    void testProcessCreationFormHasErrors() throws Exception {
+    void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_STAKEHOLDER_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_STAKEHOLDER_1.getId())
                         .param("stakeholder", String.valueOf(TEST_STAKEHOLDER_1.getId()))
                         .param("specificationObjective", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_2.getId()))

@@ -31,6 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationTemplateController.class)
 class SpecificationTemplateControllerTest {
+    private static SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
+    private static final int EMPTY_SPECIFICATION_ID = 999;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -43,9 +46,6 @@ class SpecificationTemplateControllerTest {
     @MockBean
     private PriorityRepository priorityRepository;
 
-    private static SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
-    private static final int EMPTY_SPECIFICATION_ID = 999;
-
     private static String URL_NEW_SPECIFICATION = "/specification/new";
     private static String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
     private static String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
@@ -55,7 +55,6 @@ class SpecificationTemplateControllerTest {
         lowPriority.setName("Low");
         lowPriority.setId(1);
         lowPriority.setSequence(1);
-
 
         TEST_SPECIFICATION_1.setId(100);
         TEST_SPECIFICATION_1.setName("Test Spec 1");
@@ -72,7 +71,7 @@ class SpecificationTemplateControllerTest {
     }
 
     @Test
-    void tesInitFind() throws Exception {
+    void tesInitFindForm() throws Exception {
         mockMvc.perform(get("/specification/template/find"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
@@ -110,7 +109,7 @@ class SpecificationTemplateControllerTest {
     }
 
     @Test
-    void testListSpecificationTemplates() throws Exception {
+    void testListAll() throws Exception {
         Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
         Mockito.when(this.specificationTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
 

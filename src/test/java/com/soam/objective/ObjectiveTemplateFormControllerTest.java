@@ -115,7 +115,7 @@ class ObjectiveTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessCreationFormHasErrors() throws Exception {
+    void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_OBJECTIVE_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
                 .andExpect(status().isOk())
@@ -132,7 +132,7 @@ class ObjectiveTemplateFormControllerTest {
     }
 
     @Test
-    void testInitUpdateObjectiveForm() throws Exception {
+    void testInitUpdateForm() throws Exception {
         Mockito.when(this.objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_OBJECTIVE_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId()))
@@ -150,7 +150,7 @@ class ObjectiveTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateObjectiveFormSuccess() throws Exception {
+    void testProcessUpdateFormSuccess() throws Exception {
         Mockito.when(this.objectiveTemplateRepository.findById(EMPTY_OBJECTIVE_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", "New Test Objective")
@@ -168,7 +168,7 @@ class ObjectiveTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateOwnerFormHasErrors() throws Exception {
+    void testProcessUpdateFormError() throws Exception {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", "New Test Objective")
                         .param("notes", "notes")
@@ -189,7 +189,7 @@ class ObjectiveTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteObjectiveSuccess() throws Exception {
+    void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", TEST_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
@@ -198,7 +198,7 @@ class ObjectiveTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteObjectiveError() throws Exception {
+    void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_OBJECTIVE_ID)
                         .param("name", TEST_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())

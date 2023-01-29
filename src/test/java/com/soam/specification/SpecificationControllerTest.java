@@ -73,7 +73,7 @@ class SpecificationControllerTest {
     }
 
     @Test
-    void tesInitFind() throws Exception {
+    void tesInitFindForm() throws Exception {
         mockMvc.perform(get("/specification/find"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));
@@ -121,7 +121,7 @@ class SpecificationControllerTest {
     }
 
     @Test
-    void testViewSpecificationDetails() throws Exception {
+    void testViewDetails() throws Exception {
         mockMvc.perform(get("/specification/{specificationId}", TEST_SPECIFICATION_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))

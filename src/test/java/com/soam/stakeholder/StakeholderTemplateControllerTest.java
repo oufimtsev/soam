@@ -67,7 +67,7 @@ class StakeholderTemplateControllerTest {
     }
 
     @Test
-    void tesInitFind() throws Exception {
+    void tesInitFindForm() throws Exception {
         mockMvc.perform(get("/stakeholder/template/find"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
@@ -105,7 +105,7 @@ class StakeholderTemplateControllerTest {
     }
 
     @Test
-    void testListStakeholderTemplates() throws Exception {
+    void testListAll() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
         Mockito.when(this.stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
 

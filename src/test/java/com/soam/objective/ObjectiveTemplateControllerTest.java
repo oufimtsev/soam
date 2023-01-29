@@ -67,7 +67,7 @@ class ObjectiveTemplateControllerTest {
     }
 
     @Test
-    void tesInitFind() throws Exception {
+    void tesInitFindForm() throws Exception {
         mockMvc.perform(get("/objective/template/find"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
@@ -105,7 +105,7 @@ class ObjectiveTemplateControllerTest {
     }
 
     @Test
-    void testListObjectiveTemplates() throws Exception{
+    void testListAll() throws Exception{
         Page<ObjectiveTemplate> objectiveTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_1));
         Mockito.when(this.objectiveTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(objectiveTemplatesPage);
 
@@ -114,5 +114,4 @@ class ObjectiveTemplateControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST));
     }
-
 }

@@ -114,7 +114,7 @@ class TemplateLinkControllerTest {
     }
 
     @Test
-    void testListAllTemplateLinks() throws Exception {
+    void testListAll() throws Exception {
         mockMvc.perform(get(URL_VIEW_TEMPLATE_LINK_LIST))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_TEMPLATE_LINKS))
@@ -159,7 +159,7 @@ class TemplateLinkControllerTest {
     }
 
     @Test
-    void testProcessDeleteTemplateLinkSuccess() throws Exception {
+    void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK)
                         .param("deleteTemplateLinkId", String.valueOf(TEST_TEMPLATE_LINK.getId())))
                 .andExpect(status().is3xxRedirection())
@@ -169,7 +169,7 @@ class TemplateLinkControllerTest {
     }
 
     @Test
-    void testProcessDeleteTemplateLinkError() throws Exception {
+    void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK, EMPTY_TEMPLATE_LINK_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))

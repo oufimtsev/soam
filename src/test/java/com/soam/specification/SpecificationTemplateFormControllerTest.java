@@ -135,7 +135,7 @@ class SpecificationTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessCreationFormHasErrors() throws Exception {
+    void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_SPECIFICATION_TEMPLATE_1.getName())
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", "")
@@ -164,7 +164,7 @@ class SpecificationTemplateFormControllerTest {
     }
 
     @Test
-    void testInitUpdateSpecificationForm() throws Exception {
+    void testInitUpdateForm() throws Exception {
         Mockito.when(this.specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId()))
@@ -182,7 +182,7 @@ class SpecificationTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateSpecificationFormSuccess() throws Exception {
+    void testProcessUpdateFormSuccess() throws Exception {
         Mockito.when(this.specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                         .param("name", "New Test Specification")
@@ -200,7 +200,7 @@ class SpecificationTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateOwnerFormHasErrors() throws Exception {
+    void testProcessUpdateFormError() throws Exception {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes")
@@ -221,7 +221,7 @@ class SpecificationTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteSpecificationSuccess() throws Exception {
+    void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                         .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName()))
                 .andExpect(status().is3xxRedirection())
@@ -230,7 +230,7 @@ class SpecificationTemplateFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteSpecificationError() throws Exception {
+    void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_SPECIFICATION_ID)
                         .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName()))
                 .andExpect(status().is3xxRedirection())

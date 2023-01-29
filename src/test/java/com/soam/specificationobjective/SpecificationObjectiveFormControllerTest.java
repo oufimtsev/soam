@@ -155,7 +155,7 @@ class SpecificationObjectiveFormControllerTest {
     }
 
     @Test
-    void testProcessCreationFormHasErrors() throws Exception {
+    void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId()).param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
                         .param("notes", "Specification Objective notes").param("description", "Description"))
                         .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
@@ -172,7 +172,7 @@ class SpecificationObjectiveFormControllerTest {
     }
 
     @Test
-    void testInitUpdateSpecificationObjectiveForm() throws Exception {
+    void testInitUpdateForm() throws Exception {
         Mockito.when(this.specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId()))
@@ -196,7 +196,7 @@ class SpecificationObjectiveFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateSpecificationObjectiveFormSuccess() throws Exception {
+    void testProcessUpdateFormSuccess() throws Exception {
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", "New Test Specification Objective")
                         .param("notes", "notes here")
@@ -207,7 +207,7 @@ class SpecificationObjectiveFormControllerTest {
     }
 
     @Test
-    void testProcessUpdateSpecificationObjectiveFormHasErrors() throws Exception {
+    void testProcessUpdateFormError() throws Exception {
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", "New Test Specification Objective")
                         .param("notes", "")
@@ -245,7 +245,7 @@ class SpecificationObjectiveFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteSpecificationObjectiveSuccess() throws Exception {
+    void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())
@@ -260,7 +260,7 @@ class SpecificationObjectiveFormControllerTest {
     }
 
     @Test
-    void testProcessDeleteSpecificationObjectiveError() throws Exception {
+    void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_2.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName()))
                 .andExpect(status().is3xxRedirection())

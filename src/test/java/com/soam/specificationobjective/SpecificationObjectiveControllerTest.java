@@ -74,7 +74,7 @@ class SpecificationObjectiveControllerTest {
     }
 
     @Test
-    void testListAllSpecificationObjectives() throws Exception {
+    void testListAll() throws Exception {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
@@ -83,7 +83,7 @@ class SpecificationObjectiveControllerTest {
     }
 
     @Test
-    void testViewSpecificationObjectiveDetails() throws Exception {
+    void testViewDetails() throws Exception {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),  TEST_SPECIFICATION_OBJECTIVE.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
