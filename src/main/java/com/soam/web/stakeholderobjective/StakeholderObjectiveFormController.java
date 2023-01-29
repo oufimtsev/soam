@@ -167,7 +167,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder,
-            Model model, BindingResult result, RedirectAttributes redirectAttributes) {
+            Model model, RedirectAttributes redirectAttributes) {
 
         Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
 
