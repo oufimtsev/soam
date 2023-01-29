@@ -156,15 +156,30 @@ class SpecificationObjectiveFormControllerTest {
 
     @Test
     void testProcessCreationFormError() throws Exception {
-        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId()).param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
-                        .param("notes", "Specification Objective notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
-                          .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "name"))
+        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_2.getId()))
+                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
+                        .param("notes", "Specification Objective notes")
+                        .param("description", "Description"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+
+        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
+                        .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName())
+                        .param("notes", "Specification Objective notes")
+                        .param("description", "Description"))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "name"))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId()).param("name", "New Test Specification Objective")
-                        .param("notes", "Specification Objective notes").param("description", ""))
+        mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
+                        .param("name", "New Test Specification Objective")
+                        .param("notes", "Specification Objective notes")
+                        .param("description", ""))
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
                 .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "description", "NotBlank"))
                 .andExpect(status().isOk())
@@ -198,6 +213,7 @@ class SpecificationObjectiveFormControllerTest {
     @Test
     void testProcessUpdateFormSuccess() throws Exception {
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
                         .param("name", "New Test Specification Objective")
                         .param("notes", "notes here")
                         .param("description", "description there"))
@@ -209,6 +225,16 @@ class SpecificationObjectiveFormControllerTest {
     @Test
     void testProcessUpdateFormError() throws Exception {
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_2.getId()))
+                        .param("name", "New Test Specification Objective")
+                        .param("notes", "")
+                        .param("description", "descr"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+
+        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
                         .param("name", "New Test Specification Objective")
                         .param("notes", "")
                         .param("description", "descr"))
@@ -218,6 +244,7 @@ class SpecificationObjectiveFormControllerTest {
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
                         .param("notes", "notes")
                         .param("description", ""))
@@ -227,6 +254,7 @@ class SpecificationObjectiveFormControllerTest {
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_SPECIFICATION_OBJECTIVE_1.getId())
+                        .param("specification", String.valueOf(EMPTY_SPECIFICATION_ID))
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
                         .param("notes", "notes")
                         .param("description", "descr"))
@@ -235,6 +263,7 @@ class SpecificationObjectiveFormControllerTest {
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
+                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
                         .param("name", TEST_SPECIFICATION_OBJECTIVE_1.getName() )
                         .param("notes", "notes")
                         .param("description", "descr"))

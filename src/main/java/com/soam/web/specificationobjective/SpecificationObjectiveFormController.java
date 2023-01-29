@@ -61,7 +61,13 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     @PostMapping("/specificationObjective/new")
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
-            @Valid SpecificationObjective specificationObjective, BindingResult result, Model model) {
+            @Valid SpecificationObjective specificationObjective, BindingResult result, Model model,
+            RedirectAttributes redirectAttributes) {
+        if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+        }
+
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
         if( testSpecificationObjective.isPresent()) {
             result.rejectValue("name", "unique", "Specification Objective already exists");
@@ -96,7 +102,12 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             @Valid SpecificationObjective specificationObjective, BindingResult result,
             @ModelAttribute(binding = false) Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
+        if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+        }
+
         Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
         testSpecificationObjective.ifPresent(s-> {
             if (testSpecificationObjective.get().getId() != specificationObjectiveId) {

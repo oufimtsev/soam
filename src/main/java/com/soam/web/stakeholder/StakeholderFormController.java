@@ -72,8 +72,11 @@ public class StakeholderFormController implements SoamFormController {
     @PostMapping("/stakeholder/new")
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
-            @Valid Stakeholder stakeholder, BindingResult result, Model model) {
-        //todo: test specificationId path variable matches bound stakeholder.specificationId
+            @Valid Stakeholder stakeholder, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+        }
 
         Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
         if (testStakeholder.isPresent()) {
@@ -105,8 +108,13 @@ public class StakeholderFormController implements SoamFormController {
 
     @PostMapping("/stakeholder/{stakeholderId}/edit")
     public String processUpdateStakeholderForm(@Valid Stakeholder stakeholder, BindingResult result,
-                                                 Specification specification,
-                                                 @PathVariable("stakeholderId") int stakeholderId, Model model) {
+                                               Specification specification,
+                                               @PathVariable("stakeholderId") int stakeholderId, Model model,
+                                               RedirectAttributes redirectAttributes) {
+        if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+        }
 
         Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
         testStakeholder.ifPresent(s-> {
