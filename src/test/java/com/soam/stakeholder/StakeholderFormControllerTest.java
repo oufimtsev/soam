@@ -291,13 +291,13 @@ class StakeholderFormControllerTest {
     @Test
     void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId())
-                        .param("name",TEST_STAKEHOLDER_1.getName()))
+                        .param("id", String.valueOf(TEST_STAKEHOLDER_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
 
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_3.getId())
-                        .param("name",TEST_STAKEHOLDER_3.getName()))
+                        .param("id", String.valueOf(TEST_STAKEHOLDER_3.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
@@ -306,25 +306,31 @@ class StakeholderFormControllerTest {
     @Test
     void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION_2.getId(), TEST_STAKEHOLDER_1.getId())
-                        .param("name",TEST_STAKEHOLDER_1.getName()))
+                        .param("id", String.valueOf(TEST_STAKEHOLDER_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_2.getId())));
 
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, EMPTY_SPECIFICATION_ID, TEST_STAKEHOLDER_1.getId())
-                        .param("name",TEST_STAKEHOLDER_1.getName()))
+                        .param("id", String.valueOf(TEST_STAKEHOLDER_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), EMPTY_STAKEHOLDER_ID)
-                        .param("name",TEST_STAKEHOLDER_1.getName()))
+                        .param("id", String.valueOf(EMPTY_STAKEHOLDER_ID)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
+
+        mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId())
+                        .param("id", String.valueOf(EMPTY_STAKEHOLDER_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
 
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_2.getId())
-                        .param("name",TEST_STAKEHOLDER_2.getName()))
+                        .param("id", String.valueOf(TEST_STAKEHOLDER_2.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_2.getId())));

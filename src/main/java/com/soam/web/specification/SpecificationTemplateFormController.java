@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collection;
@@ -118,8 +119,12 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
     @PostMapping("/specification/template/{specificationTemplateId}/delete")
     public String processDeleteSpecification(
-            @PathVariable("specificationTemplateId") int specificationTemplateId, SpecificationTemplate specificationTemplate,
-            RedirectAttributes redirectAttributes) {
+            @PathVariable("specificationTemplateId") int specificationTemplateId, @RequestParam("id") int formId,
+            SpecificationTemplate specificationTemplate, RedirectAttributes redirectAttributes) {
+        if (specificationTemplateId != formId) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
+        }
 
         Optional<SpecificationTemplate> specificationTemplateById = specificationTemplateRepository.findById(specificationTemplateId);
 

@@ -191,7 +191,7 @@ class ObjectiveTemplateFormControllerTest {
     @Test
     void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_1.getId())
-                        .param("name", TEST_OBJECTIVE_1.getName()))
+                        .param("id", String.valueOf(TEST_OBJECTIVE_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
@@ -200,13 +200,19 @@ class ObjectiveTemplateFormControllerTest {
     @Test
     void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_OBJECTIVE_ID)
-                        .param("name", TEST_OBJECTIVE_1.getName()))
+                        .param("id", String.valueOf(EMPTY_OBJECTIVE_ID)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
+
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_1.getId())
+                        .param("id", String.valueOf(EMPTY_OBJECTIVE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_2.getId())
-                        .param("name", TEST_OBJECTIVE_2.getName()))
+                        .param("id", String.valueOf(TEST_OBJECTIVE_2.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));

@@ -131,7 +131,11 @@ public class StakeholderFormController implements SoamFormController {
     @Transactional
     public String processDeleteStakeholder(
             @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
-            BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+            @RequestParam("id") int formId, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        if (stakeholderId != formId) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+        }
 
         Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
 

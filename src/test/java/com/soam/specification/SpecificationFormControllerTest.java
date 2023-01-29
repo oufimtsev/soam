@@ -284,13 +284,13 @@ class SpecificationFormControllerTest {
     @Test
     void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_1.getId())
-                        .param("name",TEST_SPECIFICATION_1.getName()))
+                        .param("id", String.valueOf(TEST_SPECIFICATION_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_3.getId())
-                        .param("name",TEST_SPECIFICATION_3.getName()))
+                        .param("id", String.valueOf(TEST_SPECIFICATION_3.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
@@ -299,13 +299,19 @@ class SpecificationFormControllerTest {
     @Test
     void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, EMPTY_SPECIFICATION_ID)
-                        .param("name",TEST_SPECIFICATION_1.getName()))
+                        .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
+
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_1.getId())
+                        .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_2.getId())
-                        .param("name", TEST_SPECIFICATION_2.getName()))
+                        .param("id", String.valueOf(TEST_SPECIFICATION_2.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_2.getId())));

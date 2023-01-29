@@ -16,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
@@ -95,8 +96,12 @@ public class StakeholderTemplateFormController implements SoamFormController {
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/delete")
     public String processDeleteStakeholder(
-            @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, StakeholderTemplate stakeholderTemplate,
-            RedirectAttributes redirectAttributes ){
+            @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, @RequestParam("id") int formId,
+            StakeholderTemplate stakeholderTemplate, RedirectAttributes redirectAttributes) {
+        if (stakeholderTemplateId != formId) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
+        }
 
         Optional<StakeholderTemplate> stakeholderTemplateById = stakeholderTemplateRepository.findById(stakeholderTemplateId);
 

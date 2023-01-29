@@ -223,7 +223,7 @@ class SpecificationTemplateFormControllerTest {
     @Test
     void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
-                        .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName()))
+                        .param("id", String.valueOf(TEST_SPECIFICATION_TEMPLATE_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
@@ -232,13 +232,19 @@ class SpecificationTemplateFormControllerTest {
     @Test
     void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_SPECIFICATION_ID)
-                        .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName()))
+                        .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
+
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
+                        .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_2.getId())
-                        .param("name", TEST_SPECIFICATION_TEMPLATE_2.getName()))
+                        .param("id", String.valueOf(TEST_SPECIFICATION_TEMPLATE_2.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));

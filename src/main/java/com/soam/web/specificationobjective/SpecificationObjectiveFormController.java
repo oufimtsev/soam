@@ -118,9 +118,14 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/delete")
     @Transactional
     public String processDeleteSpecificationObjective(
-            @PathVariable("specificationObjectiveId") int specificationObjectiveId,
+            @PathVariable("specificationObjectiveId") int specificationObjectiveId, @RequestParam("id") int formId,
             @ModelAttribute(binding = false) Specification specification,
             Model model, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (specificationObjectiveId != formId) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+        }
+
         Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
 
         if (maybeSpecificationObjective.isPresent()) {
