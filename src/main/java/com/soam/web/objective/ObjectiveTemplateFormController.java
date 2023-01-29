@@ -100,7 +100,6 @@ public class ObjectiveTemplateFormController implements SoamFormController {
             RedirectAttributes redirectAttributes ){
 
         Optional<ObjectiveTemplate> objectiveTemplateById = objectiveTemplateRepository.findById(objectiveTemplateId);
-        //todo: validate objectiveById's name matches the passed in Objective's name.
 
         if (objectiveTemplateById.isPresent()) {
             if (objectiveTemplateById.get().getTemplateLinks() != null && !objectiveTemplateById.get().getTemplateLinks().isEmpty()) {

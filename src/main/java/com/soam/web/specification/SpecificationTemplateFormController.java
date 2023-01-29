@@ -122,7 +122,6 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             RedirectAttributes redirectAttributes) {
 
         Optional<SpecificationTemplate> specificationTemplateById = specificationTemplateRepository.findById(specificationTemplateId);
-        //todo: validate specificationById's name matches the passed in Specification's name.
 
         if( specificationTemplateById.isPresent()) {
             if (specificationTemplateById.get().getTemplateLinks() != null && !specificationTemplateById.get().getTemplateLinks().isEmpty()) {

@@ -99,7 +99,6 @@ public class StakeholderTemplateFormController implements SoamFormController {
             RedirectAttributes redirectAttributes ){
 
         Optional<StakeholderTemplate> stakeholderTemplateById = stakeholderTemplateRepository.findById(stakeholderTemplateId);
-        //todo: validate stakeholderById's name matches the passed in Stakeholder's name.
 
         if (stakeholderTemplateById.isPresent()) {
             if (stakeholderTemplateById.get().getTemplateLinks() != null && !stakeholderTemplateById.get().getTemplateLinks().isEmpty()) {

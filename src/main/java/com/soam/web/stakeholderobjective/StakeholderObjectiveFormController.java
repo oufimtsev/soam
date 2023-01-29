@@ -170,7 +170,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             Model model, BindingResult result, RedirectAttributes redirectAttributes) {
 
         Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
-        //todo: validate stakeholderObjectiveId's name matches the passed in StakeholderObjective's name.
 
         if (maybeStakeholderObjective.isPresent()) {
             StakeholderObjective stakeholderObjective = maybeStakeholderObjective.get();

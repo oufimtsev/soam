@@ -153,7 +153,6 @@ public class SpecificationFormController implements SoamFormController {
             Model model, RedirectAttributes redirectAttributes) {
 
         Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
-        //todo: validate specificationById's name matches the passed in Specification's name.
 
         if(maybeSpecification.isPresent()) {
             Specification specificationById = maybeSpecification.get();
