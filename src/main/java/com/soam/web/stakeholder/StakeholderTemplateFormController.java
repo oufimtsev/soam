@@ -92,7 +92,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/delete")
     public String processDelete(
             @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, @RequestParam("id") int formId,
-            StakeholderTemplate stakeholderTemplate, RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         if (stakeholderTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
         } else {

@@ -115,7 +115,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     @PostMapping("/specification/template/{specificationTemplateId}/delete")
     public String processDelete(
             @PathVariable("specificationTemplateId") int specificationTemplateId, @RequestParam("id") int formId,
-            SpecificationTemplate specificationTemplate, RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         if (specificationTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
         } else {

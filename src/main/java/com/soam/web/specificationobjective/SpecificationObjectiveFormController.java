@@ -127,7 +127,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     public String processDelete(
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, @RequestParam("id") int formId,
             @ModelAttribute(binding = false) Specification specification,
-            Model model, RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         if (specificationObjectiveId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
