@@ -9,7 +9,6 @@ import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.specificationobjective.SpecificationObjectiveController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,14 +27,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationObjectiveController.class)
 class SpecificationObjectiveControllerTest {
-    private static Specification TEST_SPECIFICATION = new Specification();
-    private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
+    private static final Specification TEST_SPECIFICATION = new Specification();
+    private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
 
     private static final int EMPTY_SPECIFICATION_ID = 99;
     private static final int EMPTY_SPECIFICATION_OBJECTIVE_ID = 999;
 
-    private static String URL_VIEW_SPECIFICATION_OBJECTIVE_LIST = "/specification/{specificationId}/specificationObjective/list";
-    private static String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
+    private static final String URL_VIEW_SPECIFICATION_OBJECTIVE_LIST = "/specification/{specificationId}/specificationObjective/list";
+    private static final String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
 
     static {
         PriorityType lowPriority = new PriorityType();

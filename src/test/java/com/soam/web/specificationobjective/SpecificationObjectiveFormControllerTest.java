@@ -11,7 +11,6 @@ import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.specificationobjective.SpecificationObjectiveFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,18 +33,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationObjectiveFormController.class)
 class SpecificationObjectiveFormControllerTest {
-    private static Specification TEST_SPECIFICATION_1 = new Specification();
-    private static Specification TEST_SPECIFICATION_2 = new Specification();
-    private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_1 = new SpecificationObjective();
-    private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_2 = new SpecificationObjective();
-    private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_3 = new SpecificationObjective();
+    private static final Specification TEST_SPECIFICATION_1 = new Specification();
+    private static final Specification TEST_SPECIFICATION_2 = new Specification();
+    private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_1 = new SpecificationObjective();
+    private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_2 = new SpecificationObjective();
+    private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_3 = new SpecificationObjective();
 
     private static final int EMPTY_SPECIFICATION_ID = 99;
     private static final int EMPTY_SPECIFICATION_OBJECTIVE_ID = 999;
 
-    private static String URL_NEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/new";
-    private static String URL_EDIT_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/edit";
-    private static String URL_DELETE_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/delete";
+    private static final String URL_NEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/new";
+    private static final String URL_EDIT_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/edit";
+    private static final String URL_DELETE_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}/delete";
 
     static {
         PriorityType lowPriority = new PriorityType();

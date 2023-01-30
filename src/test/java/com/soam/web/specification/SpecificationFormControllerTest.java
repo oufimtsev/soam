@@ -16,7 +16,6 @@ import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.specification.SpecificationFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,16 +43,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationFormController.class)
 class SpecificationFormControllerTest {
-    private static Specification TEST_SPECIFICATION_1 = new Specification();
-    private static Specification TEST_SPECIFICATION_2 = new Specification();
-    private static Specification TEST_SPECIFICATION_3 = new Specification();
-    private static SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
+    private static final Specification TEST_SPECIFICATION_1 = new Specification();
+    private static final Specification TEST_SPECIFICATION_2 = new Specification();
+    private static final Specification TEST_SPECIFICATION_3 = new Specification();
+    private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
 
     private static final int EMPTY_SPECIFICATION_ID = 999;
     
-    private static String URL_NEW_SPECIFICATION = "/specification/new";
-    private static String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
-    private static String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
+    private static final String URL_NEW_SPECIFICATION = "/specification/new";
+    private static final String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
+    private static final String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
     
     static {
         PriorityType lowPriority = new PriorityType();

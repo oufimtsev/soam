@@ -7,7 +7,6 @@ import com.soam.model.priority.PriorityType;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.objective.ObjectiveTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,22 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ObjectiveTemplateController.class)
 class ObjectiveTemplateControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-    
-    @MockBean
-    private ObjectiveTemplateRepository objectiveTemplateRepository;
+    private static final ObjectiveTemplate TEST_OBJECTIVE_1 = new ObjectiveTemplate();
 
-    @MockBean
-    private PriorityRepository priorityRepository;
-
-    private static ObjectiveTemplate TEST_OBJECTIVE_1 = new ObjectiveTemplate();
-    private static final int EMPTY_OBJECTIVE_ID = 999;
-
-    private static String URL_NEW_OBJECTIVE = "/objective/new";
-    private static String URL_EDIT_OBJECTIVE = "/objective/{objectiveId}/edit";
-    private static String URL_DELETE_OBJECTIVE = "/objective/{objectiveId}/delete";
-    
     static {
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
@@ -58,6 +43,15 @@ class ObjectiveTemplateControllerTest {
         TEST_OBJECTIVE_1.setNotes("notes");
         TEST_OBJECTIVE_1.setPriority(lowPriority);
     }
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private ObjectiveTemplateRepository objectiveTemplateRepository;
+
+    @MockBean
+    private PriorityRepository priorityRepository;
 
     @BeforeEach
     void setup() {

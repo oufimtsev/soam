@@ -14,7 +14,6 @@ import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.stakeholder.StakeholderFormController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,20 +41,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StakeholderFormController.class)
 class StakeholderFormControllerTest {
-    private static Specification TEST_SPECIFICATION_1 = new Specification();
-    private static Specification TEST_SPECIFICATION_2 = new Specification();
-    private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
-    private static Stakeholder TEST_STAKEHOLDER_1 = new Stakeholder();
-    private static Stakeholder TEST_STAKEHOLDER_2 = new Stakeholder();
-    private static Stakeholder TEST_STAKEHOLDER_3 = new Stakeholder();
-    private static StakeholderObjective TEST_STAKEHOLDER_2_OBJECTIVE = new StakeholderObjective();
+    private static final Specification TEST_SPECIFICATION_1 = new Specification();
+    private static final Specification TEST_SPECIFICATION_2 = new Specification();
+    private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
+    private static final Stakeholder TEST_STAKEHOLDER_1 = new Stakeholder();
+    private static final Stakeholder TEST_STAKEHOLDER_2 = new Stakeholder();
+    private static final Stakeholder TEST_STAKEHOLDER_3 = new Stakeholder();
+    private static final StakeholderObjective TEST_STAKEHOLDER_2_OBJECTIVE = new StakeholderObjective();
 
     private static final int EMPTY_SPECIFICATION_ID = 99;
     private static final int EMPTY_STAKEHOLDER_ID = 999;
 
-    private static String URL_NEW_STAKEHOLDER = "/specification/{specificationId}/stakeholder/new";
-    private static String URL_EDIT_STAKEHOLDER = "/specification/{specificationId}/stakeholder/{stakeholderId}/edit";
-    private static String URL_DELETE_STAKEHOLDER = "/specification/{specificationId}/stakeholder/{stakeholderId}/delete";
+    private static final String URL_NEW_STAKEHOLDER = "/specification/{specificationId}/stakeholder/new";
+    private static final String URL_EDIT_STAKEHOLDER = "/specification/{specificationId}/stakeholder/{stakeholderId}/edit";
+    private static final String URL_DELETE_STAKEHOLDER = "/specification/{specificationId}/stakeholder/{stakeholderId}/delete";
     
     static {
         PriorityType lowPriority = new PriorityType();

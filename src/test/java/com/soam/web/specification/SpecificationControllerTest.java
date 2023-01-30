@@ -8,7 +8,6 @@ import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.specification.SpecificationController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationController.class)
 class SpecificationControllerTest {
-    private static Specification TEST_SPECIFICATION_1 = new Specification();
+    private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final int EMPTY_SPECIFICATION_ID = 999;
 
     static {

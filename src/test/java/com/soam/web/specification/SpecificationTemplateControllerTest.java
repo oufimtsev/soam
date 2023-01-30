@@ -8,7 +8,6 @@ import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.specification.SpecificationTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,25 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(SpecificationTemplateController.class)
 class SpecificationTemplateControllerTest {
-    private static SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
-    private static final int EMPTY_SPECIFICATION_ID = 999;
+    private static final SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private SpecificationRepository specificationRepository;
-
-    @MockBean
-    private SpecificationTemplateRepository specificationTemplateRepository;
-
-    @MockBean
-    private PriorityRepository priorityRepository;
-
-    private static String URL_NEW_SPECIFICATION = "/specification/new";
-    private static String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
-    private static String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
-    
     static {
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
@@ -62,6 +44,18 @@ class SpecificationTemplateControllerTest {
         TEST_SPECIFICATION_1.setNotes("notes");
         TEST_SPECIFICATION_1.setPriority(lowPriority);
     }
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private SpecificationRepository specificationRepository;
+
+    @MockBean
+    private SpecificationTemplateRepository specificationTemplateRepository;
+
+    @MockBean
+    private PriorityRepository priorityRepository;
 
     @BeforeEach
     void setup() {

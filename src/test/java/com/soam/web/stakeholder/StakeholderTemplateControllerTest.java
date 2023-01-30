@@ -7,7 +7,6 @@ import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.stakeholder.StakeholderTemplateController;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,22 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StakeholderTemplateController.class)
 class StakeholderTemplateControllerTest {
-    @Autowired
-    private MockMvc mockMvc;
-    
-    @MockBean
-    private StakeholderTemplateRepository stakeholderTemplateRepository;
+    private static final StakeholderTemplate TEST_STAKEHOLDER_1 = new StakeholderTemplate();
 
-    @MockBean
-    private PriorityRepository priorityRepository;
-
-    private static StakeholderTemplate TEST_STAKEHOLDER_1 = new StakeholderTemplate();
-    private static final int EMPTY_STAKEHOLDER_ID = 999;
-
-    private static String URL_NEW_STAKEHOLDER = "/stakeholder/new";
-    private static String URL_EDIT_STAKEHOLDER = "/stakeholder/{stakeholderId}/edit";
-    private static String URL_DELETE_STAKEHOLDER = "/stakeholder/{stakeholderId}/delete";
-    
     static {
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
@@ -58,6 +43,15 @@ class StakeholderTemplateControllerTest {
         TEST_STAKEHOLDER_1.setNotes("notes");
         TEST_STAKEHOLDER_1.setPriority(lowPriority);
     }
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private StakeholderTemplateRepository stakeholderTemplateRepository;
+
+    @MockBean
+    private PriorityRepository priorityRepository;
 
     @BeforeEach
     void setup() {

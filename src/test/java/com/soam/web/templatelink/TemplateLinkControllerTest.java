@@ -13,7 +13,6 @@ import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import com.soam.web.templatelink.TemplateLinkController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +30,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(TemplateLinkController.class)
 class TemplateLinkControllerTest {
-    private static TemplateLink TEST_TEMPLATE_LINK = new TemplateLink();
-    private static SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
-    private static StakeholderTemplate TEST_STAKEHOLDER_TEMPLATE = new StakeholderTemplate();
-    private static ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_1 = new ObjectiveTemplate();
-    private static ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_2 = new ObjectiveTemplate();
+    private static final TemplateLink TEST_TEMPLATE_LINK = new TemplateLink();
+    private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
+    private static final StakeholderTemplate TEST_STAKEHOLDER_TEMPLATE = new StakeholderTemplate();
+    private static final ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_1 = new ObjectiveTemplate();
+    private static final ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_2 = new ObjectiveTemplate();
 
     private static final int EMPTY_TEMPLATE_LINK_ID = 10000;
 
-    private static String URL_VIEW_TEMPLATE_LINK_LIST = "/templateLink/list";
-    private static String URL_NEW_TEMPLATE_LINK = "/templateLink/new";
-    private static String URL_DELETE_TEMPLATE_LINK = "/templateLink/delete";
+    private static final String URL_VIEW_TEMPLATE_LINK_LIST = "/templateLink/list";
+    private static final String URL_NEW_TEMPLATE_LINK = "/templateLink/new";
+    private static final String URL_DELETE_TEMPLATE_LINK = "/templateLink/delete";
 
     static {
         PriorityType lowPriority = new PriorityType();
