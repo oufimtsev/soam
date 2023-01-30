@@ -96,14 +96,14 @@ public class ObjectiveTemplateFormController implements SoamFormController {
         if (objectiveTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
         } else {
-            Optional<ObjectiveTemplate> objectiveTemplateById = objectiveTemplateRepository.findById(objectiveTemplateId);
+            Optional<ObjectiveTemplate> maybeObjectiveTemplate = objectiveTemplateRepository.findById(objectiveTemplateId);
 
-            if (objectiveTemplateById.isPresent()) {
-                if (objectiveTemplateById.get().getTemplateLinks() != null && !objectiveTemplateById.get().getTemplateLinks().isEmpty()) {
+            if (maybeObjectiveTemplate.isPresent()) {
+                if (maybeObjectiveTemplate.get().getTemplateLinks() != null && !maybeObjectiveTemplate.get().getTemplateLinks().isEmpty()) {
                     redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", objectiveTemplateById.get().getName()));
-                    objectiveTemplateRepository.delete(objectiveTemplateById.get());
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", maybeObjectiveTemplate.get().getName()));
+                    objectiveTemplateRepository.delete(maybeObjectiveTemplate.get());
                 }
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Objective Template.");

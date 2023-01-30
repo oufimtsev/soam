@@ -96,14 +96,14 @@ public class StakeholderTemplateFormController implements SoamFormController {
         if (stakeholderTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
         } else {
-            Optional<StakeholderTemplate> stakeholderTemplateById = stakeholderTemplateRepository.findById(stakeholderTemplateId);
+            Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderTemplateId);
 
-            if (stakeholderTemplateById.isPresent()) {
-                if (stakeholderTemplateById.get().getTemplateLinks() != null && !stakeholderTemplateById.get().getTemplateLinks().isEmpty()) {
+            if (maybeStakeholderTemplate.isPresent()) {
+                if (maybeStakeholderTemplate.get().getTemplateLinks() != null && !maybeStakeholderTemplate.get().getTemplateLinks().isEmpty()) {
                     redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", stakeholderTemplateById.get().getName()));
-                    stakeholderTemplateRepository.delete(stakeholderTemplateById.get());
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", maybeStakeholderTemplate.get().getName()));
+                    stakeholderTemplateRepository.delete(maybeStakeholderTemplate.get());
                 }
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder Template.");

@@ -84,10 +84,10 @@ public class SpecificationFormController implements SoamFormController {
 
         if ("srcSpecification".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification
-            Optional<Specification> srcSpecification = specificationRepository.findById(collectionItemId);
-            if (srcSpecification.isPresent()) {
+            Optional<Specification> maybeSrcSpecification = specificationRepository.findById(collectionItemId);
+            if (maybeSrcSpecification.isPresent()) {
                 specificationRepository.save(specification);
-                deepSpecificationCopy(srcSpecification.get(), specification);
+                deepSpecificationCopy(maybeSrcSpecification.get(), specification);
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist.");
@@ -95,10 +95,10 @@ public class SpecificationFormController implements SoamFormController {
             }
         } else if ("templateDeepCopy".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification Template
-            Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
-            if (srcSpecificationTemplate.isPresent()) {
+            Optional<SpecificationTemplate> maybeSrcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
+            if (maybeSrcSpecificationTemplate.isPresent()) {
                 specificationRepository.save(specification);
-                deepTemplateCopy(srcSpecificationTemplate.get(), specification);
+                deepTemplateCopy(maybeSrcSpecificationTemplate.get(), specification);
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");

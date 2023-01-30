@@ -98,14 +98,14 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @ModelAttribute(binding = false) Stakeholder stakeholder,
             @RequestParam("collectionItemId") int specificationObjectiveId,
             @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model) {
-        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
-        if (testSpecificationObjective.isEmpty()) {
+        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
+        if (maybeSpecificationObjective.isEmpty()) {
             SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
             emptySeSpecificationObjective.setId(-1);
             stakeholderObjective.setSpecificationObjective(emptySeSpecificationObjective);
             result.rejectValue("specificationObjective", "required", "Specification Objective should not be empty.");
         } else {
-            stakeholderObjective.setSpecificationObjective(testSpecificationObjective.get());
+            stakeholderObjective.setSpecificationObjective(maybeSpecificationObjective.get());
 
             stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId).ifPresent(so ->
                     result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists."));

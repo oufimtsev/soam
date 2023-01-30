@@ -66,10 +66,10 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
         if ("templateDeepCopy".equals(collectionType)) {
             //creating new Specification Template as a deep copy of source Specification Template
-            Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
-            if (srcSpecificationTemplate.isPresent()) {
+            Optional<SpecificationTemplate> maybeSrcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
+            if (maybeSrcSpecificationTemplate.isPresent()) {
                 specificationTemplateRepository.save(specificationTemplate);
-                deepTemplateCopy(srcSpecificationTemplate.get(), specificationTemplate);
+                deepTemplateCopy(maybeSrcSpecificationTemplate.get(), specificationTemplate);
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
             }
@@ -119,14 +119,14 @@ public class SpecificationTemplateFormController  implements SoamFormController 
         if (specificationTemplateId != formId) {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
         } else {
-            Optional<SpecificationTemplate> specificationTemplateById = specificationTemplateRepository.findById(specificationTemplateId);
+            Optional<SpecificationTemplate> maybeSpecificationTemplate = specificationTemplateRepository.findById(specificationTemplateId);
 
-            if (specificationTemplateById.isPresent()) {
-                if (specificationTemplateById.get().getTemplateLinks() != null && !specificationTemplateById.get().getTemplateLinks().isEmpty()) {
+            if (maybeSpecificationTemplate.isPresent()) {
+                if (maybeSpecificationTemplate.get().getTemplateLinks() != null && !maybeSpecificationTemplate.get().getTemplateLinks().isEmpty()) {
                     redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", specificationTemplateById.get().getName()));
-                    specificationTemplateRepository.delete(specificationTemplateById.get());
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", maybeSpecificationTemplate.get().getName()));
+                    specificationTemplateRepository.delete(maybeSpecificationTemplate.get());
                 }
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Specification Template.");
