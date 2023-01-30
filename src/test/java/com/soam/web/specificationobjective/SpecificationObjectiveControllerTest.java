@@ -1,4 +1,4 @@
-package com.soam.specificationobjective;
+package com.soam.web.specificationobjective;
 
 import com.soam.Util;
 import com.soam.model.priority.PriorityType;

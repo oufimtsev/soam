@@ -1,4 +1,4 @@
-package com.soam.stakeholder;
+package com.soam.web.stakeholder;
 
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;

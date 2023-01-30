@@ -1,4 +1,4 @@
-package com.soam.priority;
+package com.soam.web.priority;
 
 import com.soam.model.priority.PriorityType;
 import org.assertj.core.util.Lists;

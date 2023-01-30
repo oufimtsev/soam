@@ -1,4 +1,4 @@
-package com.soam.specification;
+package com.soam.web.specification;
 
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;

@@ -1,4 +1,4 @@
-package com.soam.stakeholderobjective;
+package com.soam.web.stakeholderobjective;
 
 import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;

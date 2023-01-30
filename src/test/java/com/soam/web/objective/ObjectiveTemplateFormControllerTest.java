@@ -1,4 +1,4 @@
-package com.soam.objective;
+package com.soam.web.objective;
 
 import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;

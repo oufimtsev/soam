@@ -1,4 +1,4 @@
-package com.soam;
+package com.soam.it;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomElement;

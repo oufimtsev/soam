@@ -1,4 +1,4 @@
-package com.soam.templatelink;
+package com.soam.web.templatelink;
 
 import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;

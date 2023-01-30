@@ -1,4 +1,4 @@
-package com.soam.stakeholder;
+package com.soam.web.stakeholder;
 
 import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
