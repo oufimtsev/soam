@@ -101,13 +101,12 @@ public class SpecificationTemplateFormController  implements SoamFormController 
                 .filter(st -> st.getId() != specificationTemplateId)
                 .ifPresent(st -> result.rejectValue("name", "unique", "Specification Template already exists."));
 
+        specificationTemplate.setId(specificationTemplateId);
         if (result.hasErrors()) {
-            specificationTemplate.setId(specificationTemplateId);
             populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        specificationTemplate.setId(specificationTemplateId);
         specificationTemplateRepository.save(specificationTemplate);
         return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
     }

@@ -78,13 +78,12 @@ public class StakeholderTemplateFormController implements SoamFormController {
                 .filter(st -> st.getId() != stakeholderTemplateId)
                 .ifPresent(st -> result.rejectValue("name", "unique", "Stakeholder Template already exists."));
 
+        stakeholderTemplate.setId(stakeholderTemplateId);
         if (result.hasErrors()) {
-            stakeholderTemplate.setId(stakeholderTemplateId);
             populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        stakeholderTemplate.setId(stakeholderTemplateId);
         stakeholderTemplateRepository.save(stakeholderTemplate);
         return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }

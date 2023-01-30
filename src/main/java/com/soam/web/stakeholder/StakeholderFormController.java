@@ -120,7 +120,6 @@ public class StakeholderFormController implements SoamFormController {
                 .ifPresent(s -> result.rejectValue("name", "unique", "Stakeholder already exists."));
 
         stakeholder.setId(stakeholderId);
-
         if (result.hasErrors()) {
             populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;

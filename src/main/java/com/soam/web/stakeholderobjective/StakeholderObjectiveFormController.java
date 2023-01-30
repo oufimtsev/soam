@@ -142,12 +142,12 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder, Model model) {
+        stakeholderObjective.setId(stakeholderObjectiveId);
         if (result.hasErrors()) {
-            stakeholderObjective.setId(stakeholderObjectiveId);
             populateFormModel(model);
             return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
-        stakeholderObjective.setId(stakeholderObjectiveId);
+
         stakeholderObjectiveRepository.save(stakeholderObjective);
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjectiveId);
     }

@@ -110,13 +110,12 @@ public class SpecificationObjectiveFormController implements SoamFormController 
                 .filter(so -> so.getId() != specificationObjectiveId)
                 .ifPresent(so -> result.rejectValue("name", "unique", "Specification Objective already exists."));
 
+        specificationObjective.setId(specificationObjectiveId);
         if (result.hasErrors()) {
-            specificationObjective.setId(specificationObjectiveId);
             populateFormModel(model);
             return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
-        specificationObjective.setId(specificationObjectiveId);
         specificationObjectiveRepository.save(specificationObjective);
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjectiveId);
     }

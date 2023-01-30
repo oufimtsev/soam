@@ -78,13 +78,12 @@ public class ObjectiveTemplateFormController implements SoamFormController {
                 .filter(ot -> ot.getId() != objectiveTemplateId)
                 .ifPresent(ot -> result.rejectValue("name", "unique", "Objective Template already exists."));
 
+        objectiveTemplate.setId(objectiveTemplateId);
         if (result.hasErrors()) {
-            objectiveTemplate.setId(objectiveTemplateId);
             populateFormModel(model);
             return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        objectiveTemplate.setId(objectiveTemplateId);
         objectiveTemplateRepository.save(objectiveTemplate);
         return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
     }
