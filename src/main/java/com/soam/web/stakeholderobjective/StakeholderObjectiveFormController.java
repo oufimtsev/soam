@@ -14,7 +14,6 @@ import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -153,7 +152,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/delete")
-    @Transactional
     public String processDelete(
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,

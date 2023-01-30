@@ -11,7 +11,6 @@ import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -123,7 +122,6 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     }
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/delete")
-    @Transactional
     public String processDelete(
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, @RequestParam("id") int formId,
             @ModelAttribute(binding = false) Specification specification,
