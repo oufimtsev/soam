@@ -13,7 +13,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="specificationTemplate : ${listSpecificationTemplates}">
+  <tr th:each="specificationTemplate : ${specificationTemplates}">
     <td>
       <a th:href="@{/specification/template/__${specificationTemplate.id}__/edit}" th:text="${specificationTemplate.name}"/></a>
     </td>

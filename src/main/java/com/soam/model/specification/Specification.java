@@ -32,17 +32,16 @@ import java.util.List;
 @Entity
 @Table(name = "specifications")
 public class Specification extends SoamEntity {
-
-	@OneToMany( mappedBy = "specification")
+	@OneToMany(mappedBy = "specification")
 	@OrderBy("LOWER(name)")
 	private List<Stakeholder> stakeholders;
 
-	@OneToMany( mappedBy = "specification")
+	@OneToMany(mappedBy = "specification")
 	@OrderBy("LOWER(name)")
 	private List<SpecificationObjective> specificationObjectives;
 
 	public List<Stakeholder> getStakeholders() {
-		return this.stakeholders;
+		return stakeholders;
 	}
 
 	public void setStakeholders(List<Stakeholder> stakeholders) {
@@ -50,7 +49,7 @@ public class Specification extends SoamEntity {
 	}
 
 	public List<SpecificationObjective> getSpecificationObjectives() {
-		return this.specificationObjectives;
+		return specificationObjectives;
 	}
 
 	public void setSpecificationObjectives(List<SpecificationObjective> specificationObjectives) {
@@ -59,9 +58,9 @@ public class Specification extends SoamEntity {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId()).append("new", this.isNew())
-				.append("name", this.getName())
-				.append("description", this.getDescription()).append("notes", this.getNotes())
+		return new ToStringCreator(this).append("id", getId()).append("new", isNew())
+				.append("name", getName())
+				.append("description", getDescription()).append("notes", getNotes())
 				.toString();
 	}
 }

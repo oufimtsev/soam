@@ -4,7 +4,10 @@ import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
+import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -13,114 +16,104 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
 @Controller
-public class StakeholderTemplateFormController extends SoamFormController {
-
-    private static final String VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM = "stakeholder/template/addUpdateStakeholderTemplate";
-    private static final String REDIRECT_TEMPLATE_LIST = "redirect:/stakeholder/template/list";
-
+public class StakeholderTemplateFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
-    private final StakeholderTemplateRepository stakeholderTemplates;
-    private final PriorityRepository priorities;
+    private final StakeholderTemplateRepository stakeholderTemplateRepository;
+    private final PriorityRepository priorityRepository;
 
-    public StakeholderTemplateFormController(StakeholderTemplateRepository stakeholderTemplates, PriorityRepository priorities) {
-        this.stakeholderTemplates = stakeholderTemplates;
-        this.priorities = priorities;
+    public StakeholderTemplateFormController(
+            StakeholderTemplateRepository stakeholderTemplateRepository, PriorityRepository priorityRepository) {
+        this.stakeholderTemplateRepository = stakeholderTemplateRepository;
+        this.priorityRepository = priorityRepository;
     }
 
     @GetMapping("/stakeholder/template/new")
-    public String initCreationForm(Model model ) {
-
+    public String initCreationForm(Model model) {
         StakeholderTemplate stakeholderTemplate = new StakeholderTemplate();
-        model.addAttribute("stakeholderTemplate", stakeholderTemplate);
-        this.populateFormModel( model );
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
+        populateFormModel(model);
 
-        return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholder/template/new")
     public String processCreationForm(@Valid StakeholderTemplate stakeholderTemplate, BindingResult result, Model model) {
-
-        Optional<StakeholderTemplate> testTemplate = stakeholderTemplates.findByNameIgnoreCase(stakeholderTemplate.getName());
-        if( testTemplate.isPresent() ){
-            result.rejectValue("name", "unique", "Template already exists");
-        }
+        stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName()).ifPresent(st ->
+                result.rejectValue("name", "unique", "Stakeholder Template already exists."));
 
         if (result.hasErrors()) {
-            this.populateFormModel( model );
-            return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        this.stakeholderTemplates.save(stakeholderTemplate);
-        return REDIRECT_TEMPLATE_LIST;
+        stakeholderTemplateRepository.save(stakeholderTemplate);
+        return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
     @GetMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
-    public String initUpdateStakeholderForm(@PathVariable("stakeholderTemplateId") int stakeholderId, Model model) {
-        Optional<StakeholderTemplate> maybeStakeholderTemplate = this.stakeholderTemplates.findById(stakeholderId);
-        if(maybeStakeholderTemplate.isEmpty()){
-            //todo: pass error message
-            return REDIRECT_TEMPLATE_LIST;
+    public String initUpdateForm(
+            @PathVariable("stakeholderTemplateId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
+        Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderId);
+        if (maybeStakeholderTemplate.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Template does not exist.");
+            return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
         }
-        model.addAttribute(maybeStakeholderTemplate.get());
-        this.populateFormModel( model );
-        return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, maybeStakeholderTemplate.get());
+        populateFormModel(model);
+        return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
-    public String processUpdateStakeholderForm(@Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
-                                                 @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, Model model) {
-
-        Optional<StakeholderTemplate> testTemplate = stakeholderTemplates.findByNameIgnoreCase(stakeholderTemplate.getName());
-        if( testTemplate.isPresent() && testTemplate.get().getId() != stakeholderTemplateId ){
-            result.rejectValue("name", "unique", "Template already exists");
-        }
-
-        if (result.hasErrors()) {
-            stakeholderTemplate.setId( stakeholderTemplateId );
-            model.addAttribute("stakeholder", stakeholderTemplate );
-            this.populateFormModel( model );
-            return VIEWS_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
-        }
-
+    public String processUpdateForm(
+            @Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
+            @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, Model model) {
+        stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName())
+                .filter(st -> st.getId() != stakeholderTemplateId)
+                .ifPresent(st -> result.rejectValue("name", "unique", "Stakeholder Template already exists."));
 
         stakeholderTemplate.setId(stakeholderTemplateId);
-        this.stakeholderTemplates.save(stakeholderTemplate);
-        return REDIRECT_TEMPLATE_LIST;
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
+        }
+
+        stakeholderTemplateRepository.save(stakeholderTemplate);
+        return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
     @PostMapping("/stakeholder/template/{stakeholderTemplateId}/delete")
-    public String processDeleteStakeholder(
-            @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, StakeholderTemplate stakeholderTemplate,
-            RedirectAttributes redirectAttributes ){
+    public String processDelete(
+            @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, @RequestParam("id") int formId,
+            RedirectAttributes redirectAttributes) {
+        if (stakeholderTemplateId != formId) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+        } else {
+            Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderTemplateId);
 
-        Optional<StakeholderTemplate> stakeholderTemplateById = stakeholderTemplates.findById(stakeholderTemplateId);
-        //todo: validate stakeholderById's name matches the passed in Stakeholder's name.
-
-        if (stakeholderTemplateById.isPresent()) {
-            if (stakeholderTemplateById.get().getTemplateLinks() != null && !stakeholderTemplateById.get().getTemplateLinks().isEmpty()) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any template links first.");
+            if (maybeStakeholderTemplate.isPresent()) {
+                if (maybeStakeholderTemplate.get().getTemplateLinks() != null && !maybeStakeholderTemplate.get().getTemplateLinks().isEmpty()) {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
+                } else {
+                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", maybeStakeholderTemplate.get().getName()));
+                    stakeholderTemplateRepository.delete(maybeStakeholderTemplate.get());
+                }
             } else {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", stakeholderTemplateById.get().getName()));
-                stakeholderTemplates.delete(stakeholderTemplateById.get());
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder Template.");
             }
-        }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template");
         }
 
-        return REDIRECT_TEMPLATE_LIST;
-
+        return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
     }
 
-    private void populateFormModel( Model model ){
-        model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("stakeholderTemplates", stakeholderTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+    private void populateFormModel(Model model) {
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
-
-
 }

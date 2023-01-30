@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StakeholderTemplateRepository extends CrudRepository<StakeholderTemplate, Integer> {
-
     List<StakeholderTemplate> findAll(Sort sort);
     Page<StakeholderTemplate> findAll(Pageable pageable);
-    Optional<StakeholderTemplate> findByName(String name );
+    Optional<StakeholderTemplate> findByName(String name);
     Optional<StakeholderTemplate> findByNameIgnoreCase(String name);
     Page<StakeholderTemplate> findByNameStartsWithIgnoreCase(String name, Pageable pageable);
 }

@@ -10,8 +10,10 @@ import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
+import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
-import jakarta.transaction.Transactional;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,70 +21,61 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/specification/{specificationId}/stakeholder/{stakeholderId}")
-public class StakeholderObjectiveFormController extends SoamFormController {
-    private static final String VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM = "stakeholderObjective/addUpdateStakeholderObjective";
-    private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
-    private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
-    private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
-    private static final String REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS = "redirect:/specification/%s/stakeholder/%s/stakeholderObjective/%s";
-
-    private final StakeholderObjectiveRepository stakeholderObjectives;
+public class StakeholderObjectiveFormController implements SoamFormController {
+    private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
     private final SpecificationRepository specificationRepository;
     private final StakeholderRepository stakeholderRepository;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
-    private final PriorityRepository priorities;
+    private final PriorityRepository priorityRepository;
 
     public StakeholderObjectiveFormController(
-            StakeholderObjectiveRepository stakeholderObjectives, SpecificationRepository specificationRepository,
+            StakeholderObjectiveRepository stakeholderObjectiveRepository, SpecificationRepository specificationRepository,
             StakeholderRepository stakeholderRepository,
-            SpecificationObjectiveRepository specificationObjectiveRepository, PriorityRepository priorities) {
-        this.stakeholderObjectives = stakeholderObjectives;
+            SpecificationObjectiveRepository specificationObjectiveRepository, PriorityRepository priorityRepository) {
+        this.stakeholderObjectiveRepository = stakeholderObjectiveRepository;
         this.specificationRepository = specificationRepository;
         this.stakeholderRepository = stakeholderRepository;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
-        this.priorities = priorities;
+        this.priorityRepository = priorityRepository;
     }
 
-    @ModelAttribute("specification")
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElse(null);
+        return specificationRepository.findById(specificationId)
+                .orElseThrow(IllegalSpecificationIdException::new);
     }
 
-    @ModelAttribute("stakeholder")
-    public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId) {
-        Optional<Stakeholder> oStakeholder = stakeholderRepository.findById(stakeholderId);
-        return oStakeholder.orElse(null);
+    @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER)
+    public Stakeholder populateStakeholder(
+            @PathVariable("stakeholderId") int stakeholderId, @ModelAttribute Specification specification) {
+        return stakeholderRepository.findById(stakeholderId)
+                .filter(stakeholder1 -> stakeholder1.getSpecification().getId().equals(specification.getId()))
+                .orElseThrow(() -> new IllegalStakeholderIdException(specification));
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}")
-    public String showStakeholderObjective(
+    public String showDetails(
             Specification specification, Stakeholder stakeholder,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
-        Optional<StakeholderObjective> maybeStakeholderObjective = this.stakeholderObjectives.findById(stakeholderObjectiveId);
-        if(maybeStakeholderObjective.isEmpty()) {
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
-        }
-        model.addAttribute(maybeStakeholderObjective.get());
-        return "stakeholderObjective/stakeholderObjectiveDetails";
+        return stakeholderObjectiveRepository.findById(stakeholderObjectiveId)
+                .map(stakeholderObjective -> {
+                    model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
+                    return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
+                })
+                .orElse(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId()));
     }
 
     @GetMapping("/stakeholderObjective/new")
     public String initCreationForm(
             Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
-        if (specification == null) {
-            return REDIRECT_SPECIFICATION_LIST;
-        }
-        if (stakeholder == null) {
-            return String.format(REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-        }
         if (specification.getSpecificationObjectives().isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Specification does not have any Specification Objectives");
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Specification does not have any Specification Objectives.");
+            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
 
         SpecificationObjective specificationObjective = new SpecificationObjective();
@@ -94,9 +87,9 @@ public class StakeholderObjectiveFormController extends SoamFormController {
         stakeholderObjective.setNotes(specificationObjective.getNotes());
         stakeholderObjective.setPriority(specificationObjective.getPriority());
 
-        model.addAttribute("stakeholderObjective", stakeholderObjective);
-        this.populateFormModel(model);
-        return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
+        populateFormModel(model);
+        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholderObjective/new")
@@ -105,87 +98,106 @@ public class StakeholderObjectiveFormController extends SoamFormController {
             @ModelAttribute(binding = false) Stakeholder stakeholder,
             @RequestParam("collectionItemId") int specificationObjectiveId,
             @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model) {
-
-        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
-        if (testSpecificationObjective.isEmpty()) {
+        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
+        if (maybeSpecificationObjective.isEmpty()) {
             SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
             emptySeSpecificationObjective.setId(-1);
             stakeholderObjective.setSpecificationObjective(emptySeSpecificationObjective);
-            result.rejectValue("specificationObjective", "required", "Specification Objective should not be empty");
+            result.rejectValue("specificationObjective", "required", "Specification Objective should not be empty.");
         } else {
-            stakeholderObjective.setSpecificationObjective(testSpecificationObjective.get());
+            stakeholderObjective.setSpecificationObjective(maybeSpecificationObjective.get());
 
-            Optional<StakeholderObjective> testStakeholderObjective = stakeholderObjectives.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId);
-            if (testStakeholderObjective.isPresent()) {
-                testStakeholderObjective.get().setSpecificationObjective(testSpecificationObjective.get());
-                result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists");
-            }
+            stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId).ifPresent(so ->
+                    result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists."));
         }
 
         if (result.hasErrors()) {
-            this.populateFormModel(model);
-            return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
-        stakeholderObjectives.save(stakeholderObjective);
+        stakeholderObjectiveRepository.save(stakeholderObjective);
 
-        return String.format(REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
-    public String initUpdateStakeholderObjectiveForm(
+    public String initUpdateForm(
             Specification specification, Stakeholder stakeholder,
-            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
-        Optional<StakeholderObjective> maybeStakeholderObjective = this.stakeholderObjectives.findById(stakeholderObjectiveId);
-        if(maybeStakeholderObjective.isEmpty()) {
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model,
+            RedirectAttributes redirectAttributes) {
+        Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
+        if (maybeStakeholderObjective.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Objective does not exist.");
+            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
-        model.addAttribute(maybeStakeholderObjective.get());
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, maybeStakeholderObjective.get());
         populateFormModel(model);
-        return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
-    public String processUpdateStakeholderObjectiveForm(
+    public String processUpdateForm(
             @Valid StakeholderObjective stakeholderObjective, BindingResult result,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder, Model model) {
-
-        if (result.hasErrors()) {
-            stakeholderObjective.setId(stakeholderObjectiveId);
-            model.addAttribute("stakeholderObjective", stakeholderObjective);
-            this.populateFormModel(model);
-            return VIEWS_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
-        }
         stakeholderObjective.setId(stakeholderObjectiveId);
-        this.stakeholderObjectives.save(stakeholderObjective);
-        return String.format(REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjectiveId);
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
+        }
+
+        stakeholderObjectiveRepository.save(stakeholderObjective);
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjectiveId);
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/delete")
-    @Transactional
-    public String processDeleteStakeholderObjective(
+    public String processDelete(
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder,
-            Model model, BindingResult result, RedirectAttributes redirectAttributes) {
-
-        Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectives.findById(stakeholderObjectiveId);
-        //todo: validate stakeholderObjectiveId's name matches the passed in StakeholderObjective's name.
+            RedirectAttributes redirectAttributes) {
+        Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
 
         if (maybeStakeholderObjective.isPresent()) {
-            StakeholderObjective fetchedStakeholderObjective = maybeStakeholderObjective.get();
-            stakeholderObjectives.delete(fetchedStakeholderObjective);
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholderObjective.getSpecificationObjective().getName()));
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            StakeholderObjective stakeholderObjective = maybeStakeholderObjective.get();
+            if (!Objects.equals(stakeholder.getId(), stakeholderObjective.getStakeholder().getId())) {
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            } else {
+                stakeholderObjectiveRepository.delete(stakeholderObjective);
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", stakeholderObjective.getSpecificationObjective().getName()));
+            }
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder objective");
-            return String.format(REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder Objective.");
         }
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+    }
+
+    @ExceptionHandler(IllegalSpecificationIdException.class)
+    public String errorHandlerSpecification(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
+        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
+    }
+
+    @ExceptionHandler(IllegalStakeholderIdException.class)
+    public String errorHandlerStakeholder(RedirectAttributes redirectAttributes, IllegalStakeholderIdException e) {
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, e.specification.getId());
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute("priorities", priorities.findAll());
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+    }
+
+    static class IllegalSpecificationIdException extends IllegalArgumentException {
+    }
+
+    static class IllegalStakeholderIdException extends IllegalArgumentException {
+        private final Specification specification;
+
+        IllegalStakeholderIdException(Specification specification) {
+            this.specification = specification;
+        }
     }
 }

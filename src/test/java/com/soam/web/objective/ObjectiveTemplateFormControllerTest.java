@@ -1,4 +1,4 @@
-package com.soam.objective;
+package com.soam.web.objective;
 
 import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
@@ -8,7 +8,9 @@ import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
-import com.soam.web.objective.ObjectiveTemplateFormController;
+import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
+import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ObjectiveTemplateFormController.class)
-public class ObjectiveTemplateFormControllerTest {
-
+class ObjectiveTemplateFormControllerTest {
     private static final ObjectiveTemplate TEST_OBJECTIVE_1 = new ObjectiveTemplate();
     private static final ObjectiveTemplate TEST_OBJECTIVE_2 = new ObjectiveTemplate();
     private static final int EMPTY_OBJECTIVE_ID = 200;
@@ -37,17 +38,12 @@ public class ObjectiveTemplateFormControllerTest {
     private static final String URL_NEW_TEMPLATE =  "/objective/template/new";
     private static final String URL_EDIT_TEMPLATE =  "/objective/template/{objectiveId}/edit";
     private static final String URL_DELETE_TEMPLATE =  "/objective/template/{objectiveId}/delete";
-    
-    private static final String VIEW_ADD_UPDATE_TEMPLATE = "objective/template/addUpdateObjectiveTemplate";
-    private static final String VIEW_REDIRECT_LIST_TEMPLATE = "redirect:/objective/template/list";
 
     static {
-
         PriorityType lowPriority = new PriorityType();
         lowPriority.setName("Low");
         lowPriority.setId(1);
         lowPriority.setSequence(1);
-
 
         TEST_OBJECTIVE_1.setId(100);
         TEST_OBJECTIVE_1.setName("Test Spec 1");
@@ -87,134 +83,137 @@ public class ObjectiveTemplateFormControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ObjectiveTemplateRepository objectiveTemplates;
+    private ObjectiveTemplateRepository objectiveTemplateRepository;
 
     @MockBean
-    private PriorityRepository priorities;
-
+    private PriorityRepository priorityRepository;
 
     @BeforeEach
     void setup() {
-        given( this.objectiveTemplates.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplates.findByNameIgnoreCase(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplates.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
-        given( this.objectiveTemplates.findById(EMPTY_OBJECTIVE_ID)).willReturn(Optional.empty());
-
+        given(objectiveTemplateRepository.findByName(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findByNameIgnoreCase(TEST_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_OBJECTIVE_1));
+        given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_1));
     }
 
     @Test
     void testInitCreationForm() throws Exception {
-        mockMvc.perform(get(URL_NEW_TEMPLATE)).andExpect(status().isOk())
-                .andExpect(model().attributeExists("objectiveTemplate"))
-                .andExpect(model().attributeExists("priorities"))
-                .andExpect(model().attributeExists("objectiveTemplates"))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+        mockMvc.perform(get(URL_NEW_TEMPLATE))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_PRIORITIES))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATES))
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
     }
 
     @Test
     void testProcessCreationFormSuccess() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
-    void testProcessCreationFormHasErrors() throws Exception {
+    void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_OBJECTIVE_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
-                        .andExpect(model().attributeHasErrors("objectiveTemplate"))
-                          .andExpect(model().attributeHasFieldErrors("objectiveTemplate", "name"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", ""))
-                .andExpect(model().attributeHasErrors("objectiveTemplate"))
-                .andExpect(model().attributeHasFieldErrorCode("objectiveTemplate", "description", "NotBlank"))
                 .andExpect(status().isOk())
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrorCode(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "description", "NotBlank"))
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
     }
 
     @Test
-    void testInitUpdateObjectiveForm() throws Exception {
-        Mockito.when(this.objectiveTemplates.findById(TEST_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_OBJECTIVE_1));
+    void testInitUpdateForm() throws Exception {
+        Mockito.when(objectiveTemplateRepository.findById(TEST_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_OBJECTIVE_1));
 
-        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())).andExpect(status().isOk())
-                .andExpect(model().attributeExists("objectiveTemplate"))
-                .andExpect(model().attribute("objectiveTemplate", hasProperty("name", is(TEST_OBJECTIVE_1.getName()))))
-                .andExpect(model().attribute("objectiveTemplate", hasProperty("description", is("desc"))))
-                .andExpect(model().attribute("objectiveTemplate", hasProperty("notes", is("notes"))))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("name", is(TEST_OBJECTIVE_1.getName()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("description", is("desc"))))
+                .andExpect(model().attribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, hasProperty("notes", is("notes"))))
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
-    void testProcessUpdateObjectiveFormSuccess() throws Exception {
-        Mockito.when(this.objectiveTemplates.findById(EMPTY_OBJECTIVE_ID)).thenReturn(Optional.empty());
+    void testProcessUpdateFormSuccess() throws Exception {
+        Mockito.when(objectiveTemplateRepository.findById(EMPTY_OBJECTIVE_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", "New Test Objective")
                         .param("notes", "notes here")
-                        .param("description", "description there")
-                        )
-                    .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
-
+                        .param("description", "description there"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                                 .param("name", TEST_OBJECTIVE_1.getName())
                                 .param("notes", "notes here")
-                                .param("description", "description there")
-                )
+                                .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
-    void testProcessUpdateOwnerFormHasErrors() throws Exception {
+    void testProcessUpdateFormError() throws Exception {
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("name", "New Test Objective")
                         .param("notes", "notes")
-                        .param("description", "")
-                ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("objectiveTemplate"))
-                .andExpect(model().attributeHasFieldErrors("objectiveTemplate", "description"))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                        .param("description", ""))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "description"))
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID)
                         .param("name", TEST_OBJECTIVE_1.getName())
                         .param("notes", "notes")
-                        .param("description", "")
-                ).andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors("objectiveTemplate"))
-                .andExpect(model().attributeHasFieldErrors("objectiveTemplate", "name"))
-                .andExpect(view().name(VIEW_ADD_UPDATE_TEMPLATE));
+                        .param("description", ""))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
+                .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM));
     }
 
     @Test
-    void testProcessDeleteObjectiveSuccess() throws Exception {
+    void testProcessDeleteSuccess() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_1.getId())
-                        .param("name", TEST_OBJECTIVE_1.getName()))
+                        .param("id", String.valueOf(TEST_OBJECTIVE_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.SUB_FLASH))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
-
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
-    void testProcessDeleteObjectiveError() throws Exception {
+    void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_OBJECTIVE_ID)
-                        .param("name", TEST_OBJECTIVE_1.getName()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect( flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
-
-        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_2.getId())
-                        .param("name", TEST_OBJECTIVE_2.getName()))
+                        .param("id", String.valueOf(EMPTY_OBJECTIVE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(Util.DANGER))
-                .andExpect(view().name(VIEW_REDIRECT_LIST_TEMPLATE));
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
+
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_1.getId())
+                        .param("id", String.valueOf(EMPTY_OBJECTIVE_ID)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
+
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_2.getId())
+                        .param("id", String.valueOf(TEST_OBJECTIVE_2.getId())))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 }

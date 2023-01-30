@@ -58,7 +58,7 @@ public class TemplateLink extends BaseEntity {
 
     @Override
     public String toString() {
-        return new ToStringCreator(this).append("id", this.getId()).append("new", this.isNew())
+        return new ToStringCreator(this).append("id", getId()).append("new", isNew())
                 .toString();
     }
 }

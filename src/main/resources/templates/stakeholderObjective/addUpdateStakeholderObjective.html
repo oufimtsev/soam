@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 <html xmlns:th="https://www.thymeleaf.org"
   th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'stakeholderObjectives')}">
 <head>
@@ -59,7 +61,6 @@
   </form>
   <form th:if="${!stakeholderObjective['new']}" id="deleteForm" th:object="${stakeholderObjective}" th:action="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective/__${stakeholderObjective.id}__/delete}" method="post">
     <input type="hidden" th:field="*{id}"/>
-    <input type="hidden" id="delete-name"  th:field="*{specificationObjective.name}"/>
   </form>
 </body>
 </html>

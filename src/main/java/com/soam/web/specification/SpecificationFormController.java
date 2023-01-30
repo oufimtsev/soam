@@ -15,7 +15,10 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
+import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -29,148 +32,140 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class SpecificationFormController extends SoamFormController {
-    private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
-    private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/";
-
+public class SpecificationFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
-    private final SpecificationRepository specifications;
+    private final SpecificationRepository specificationRepository;
     private final StakeholderRepository stakeholderRepository;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
     private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
-    private final SpecificationTemplateRepository specificationTemplates;
-    private final PriorityRepository priorities;
+    private final SpecificationTemplateRepository specificationTemplateRepository;
+    private final PriorityRepository priorityRepository;
 
     public SpecificationFormController(
-            SpecificationRepository specifications, StakeholderRepository stakeholderRepository,
+            SpecificationRepository specificationRepository, StakeholderRepository stakeholderRepository,
             SpecificationObjectiveRepository specificationObjectiveRepository,
             StakeholderObjectiveRepository stakeholderObjectiveRepository,
-            SpecificationTemplateRepository specificationTemplates, PriorityRepository priorities) {
-        this.specifications = specifications;
+            SpecificationTemplateRepository specificationTemplateRepository, PriorityRepository priorityRepository) {
+        this.specificationRepository = specificationRepository;
         this.stakeholderRepository = stakeholderRepository;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
         this.stakeholderObjectiveRepository = stakeholderObjectiveRepository;
-        this.specificationTemplates = specificationTemplates;
-        this.priorities = priorities;
+        this.specificationTemplateRepository = specificationTemplateRepository;
+        this.priorityRepository = priorityRepository;
     }
 
-    @ModelAttribute("specifications")
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATIONS)
     public List<Specification> populateSpecifications() {
-        return specifications.findAll(NAME_CASE_INSENSITIVE_SORT);
+        return specificationRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
     @GetMapping("/specification/new")
     public String initCreationForm(Model model) {
         Specification specification = new Specification();
-        model.addAttribute("specification", specification);
-        this.populateFormModel( model );
-        return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
+        populateFormModel(model);
+        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/specification/new")
-    public String processCreationForm(@Valid Specification specification, BindingResult result,
-                                      @ModelAttribute("collectionType") String collectionType,
-                                      @ModelAttribute("collectionItemId") int collectionItemId,
-                                      Model model, RedirectAttributes redirectAttributes) {
-        Optional<Specification> testSpecification = specifications.findByNameIgnoreCase(specification.getName());
-        if (testSpecification.isPresent()) {
-            result.rejectValue("name", "unique", "Specification already exists");
-        }
+    public String processCreationForm(
+            @Valid Specification specification, BindingResult result,
+            @ModelAttribute("collectionType") String collectionType,
+            @ModelAttribute("collectionItemId") int collectionItemId,
+            Model model, RedirectAttributes redirectAttributes) {
+        specificationRepository.findByNameIgnoreCase(specification.getName()).ifPresent(s ->
+                result.rejectValue("name", "unique", "Specification already exists."));
 
         if (result.hasErrors()) {
-            this.populateFormModel(model);
-            return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+            populateFormModel(model);
+            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
         if ("srcSpecification".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification
-            Optional<Specification> srcSpecification = specifications.findById(collectionItemId);
-            if (srcSpecification.isPresent()) {
-                this.specifications.save(specification);
-                deepSpecificationCopy(srcSpecification.get(), specification);
-                return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
+            Optional<Specification> maybeSrcSpecification = specificationRepository.findById(collectionItemId);
+            if (maybeSrcSpecification.isPresent()) {
+                specificationRepository.save(specification);
+                deepSpecificationCopy(maybeSrcSpecification.get(), specification);
+                return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist");
-                return "redirect:/specification/list";
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist.");
+                return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
         } else if ("templateDeepCopy".equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification Template
-            Optional<SpecificationTemplate> srcSpecificationTemplate = specificationTemplates.findById(collectionItemId);
-            if (srcSpecificationTemplate.isPresent()) {
-                this.specifications.save(specification);
-                deepTemplateCopy(srcSpecificationTemplate.get(), specification);
-                return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
+            Optional<SpecificationTemplate> maybeSrcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
+            if (maybeSrcSpecificationTemplate.isPresent()) {
+                specificationRepository.save(specification);
+                deepTemplateCopy(maybeSrcSpecificationTemplate.get(), specification);
+                return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist");
-                return "redirect:/specification/list";
+                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
+                return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
-
         } else {
             //creating new Specification manually or as a shall copy of existing Specification Template
-            this.specifications.save(specification);
-            return REDIRECT_SPECIFICATION_DETAILS + specification.getId();
+            specificationRepository.save(specification);
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
     }
 
     @GetMapping("/specification/{specificationId}/edit")
-    public String initUpdateSpecificationForm(@PathVariable("specificationId") int specificationId, Model model) {
-        Optional<Specification> maybeSpecification = this.specifications.findById(specificationId);
-        if(maybeSpecification.isEmpty()){
-            return "redirect:/specification/find";
+    public String initUpdateForm(
+            @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
+        if (maybeSpecification.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification does not exist.");
+            return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
         }
-        model.addAttribute(maybeSpecification.get());
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, maybeSpecification.get());
         populateFormModel(model);
-        return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
-
-
     @PostMapping("/specification/{specificationId}/edit")
-    public String processUpdateSpecificationForm(@Valid Specification specification, BindingResult result,
-                                                 @PathVariable("specificationId") int specificationId, Model model) {
+    public String processUpdateForm(
+            @Valid Specification specification, BindingResult result,
+            @PathVariable("specificationId") int specificationId, Model model) {
+        specificationRepository.findByNameIgnoreCase(specification.getName())
+                .filter(s -> s.getId() != specificationId)
+                .ifPresent(s -> result.rejectValue("name", "unique", "Specification already exists."));
 
-        Optional<Specification> testSpecification = specifications.findByNameIgnoreCase(specification.getName());
-        testSpecification.ifPresent(s-> {
-            if( testSpecification.get().getId() != specificationId ){
-                result.rejectValue("name", "unique", "Specification already exists");
-            }
-        });
-
-        specification.setId( specificationId );
+        specification.setId(specificationId);
         if (result.hasErrors()) {
-
-            model.addAttribute("specification", specification );
-            this.populateFormModel( model );
-            return VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM;
+            populateFormModel(model);
+            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
-        this.specifications.save(specification);
-        return "redirect:/specification/{specificationId}";
+        specificationRepository.save(specification);
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
     }
 
     @PostMapping("/specification/{specificationId}/delete")
-    public String processDeleteSpecification(
-            @PathVariable("specificationId") int specificationId,
-            Model model, RedirectAttributes redirectAttributes) {
-
-        Optional<Specification> maybeSpecification = specifications.findById(specificationId);
-        //todo: validate specificationById's name matches the passed in Specification's name.
-
-        if(maybeSpecification.isPresent()) {
-            Specification specificationById = maybeSpecification.get();
-            if((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
-                (specificationById.getSpecificationObjectives() != null && !specificationById.getSpecificationObjectives().isEmpty())) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholders and specification objectives first.");
-                return REDIRECT_SPECIFICATION_DETAILS+ specificationId;
-            }
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", specificationById.getName()));
-            specifications.delete(specificationById);
-        }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification");
+    public String processDelete(
+            @PathVariable("specificationId") int specificationId, @RequestParam("id") int formId,
+            RedirectAttributes redirectAttributes) {
+        if (specificationId != formId) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
         }
-        return "redirect:/specification/list";
 
+        Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
+
+        if (maybeSpecification.isPresent()) {
+            Specification specificationById = maybeSpecification.get();
+            if ((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
+                (specificationById.getSpecificationObjectives() != null && !specificationById.getSpecificationObjectives().isEmpty())) {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Stakeholders and Specification Objectives first.");
+                return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
+            }
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", specificationById.getName()));
+            specificationRepository.delete(specificationById);
+        } else {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification.");
+        }
+        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
     private void deepSpecificationCopy(Specification srcSpecification, Specification dstSpecification) {
@@ -192,18 +187,16 @@ public class SpecificationFormController extends SoamFormController {
             dstStakeholder.setSpecification(dstSpecification);
             stakeholderRepository.save(dstStakeholder);
 
-            srcStakeholder.getStakeholderObjectives().forEach(srcStakeholderObjective -> {
-                Optional<SpecificationObjective> maybeDstSpecificationObjective = specificationObjectiveRepository
-                        .findBySpecificationAndNameIgnoreCase(dstSpecification, srcStakeholderObjective.getSpecificationObjective().getName());
-                if (maybeDstSpecificationObjective.isPresent()) {
-                    StakeholderObjective dstStakeholderObjective = new StakeholderObjective();
-                    dstStakeholderObjective.setStakeholder(dstStakeholder);
-                    dstStakeholderObjective.setSpecificationObjective(maybeDstSpecificationObjective.get());
-                    dstStakeholderObjective.setNotes(srcStakeholderObjective.getNotes());
-                    dstStakeholderObjective.setPriority(srcStakeholderObjective.getPriority());
-                    stakeholderObjectiveRepository.save(dstStakeholderObjective);
-                }
-            });
+            srcStakeholder.getStakeholderObjectives().forEach(srcStakeholderObjective ->
+                    specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(dstSpecification, srcStakeholderObjective.getSpecificationObjective().getName())
+                    .ifPresent(so -> {
+                        StakeholderObjective dstStakeholderObjective = new StakeholderObjective();
+                        dstStakeholderObjective.setStakeholder(dstStakeholder);
+                        dstStakeholderObjective.setSpecificationObjective(so);
+                        dstStakeholderObjective.setNotes(srcStakeholderObjective.getNotes());
+                        dstStakeholderObjective.setPriority(srcStakeholderObjective.getPriority());
+                        stakeholderObjectiveRepository.save(dstStakeholderObjective);
+                    }));
         });
     }
 
@@ -251,8 +244,8 @@ public class SpecificationFormController extends SoamFormController {
         });
     }
 
-    private void populateFormModel( Model model ){
-        model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("specificationTemplates", specificationTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+    private void populateFormModel(Model model) {
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

@@ -1,10 +1,12 @@
-package com.soam;
+package com.soam.it;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,6 +36,17 @@ public final class ITUtils {
     private static final Pattern REDIRECT_SPECIFICATION_TEMPLATE_EDIT = Pattern.compile("^http://localhost/specification/template/(\\d+)/edit$");
     private static final Pattern REDIRECT_STAKEHOLDER_TEMPLATE_EDIT = Pattern.compile("^http://localhost/stakeholder/template/(\\d+)/edit$");
     private static final Pattern REDIRECT_OBJECTIVE_TEMPLATE_EDIT = Pattern.compile("^http://localhost/objective/template/(\\d+)/edit$");
+
+    public static WebClient prepareWebClient(WebApplicationContext context) {
+        WebClient webClient = MockMvcWebClientBuilder
+                .webAppContextSetup(context)
+                .build();
+        //HtmlUnit is unable to execute Bootstrap JavaScript. We don't need JS processing for simple HTML-based IT,
+        //so can safely disable JS processing in HtmlUnit
+        //https://github.com/HtmlUnit/htmlunit/issues/232
+        webClient.getOptions().setJavaScriptEnabled(false);
+        return webClient;
+    }
 
     public static int addSpecification(WebClient webClient, String name, String description, String notes, String collectionType, int collectionItemId) throws IOException {
         return addSoamObject(webClient, URL_NEW_SPECIFICATION, REDIRECT_SPECIFICATION_DETAILS,
@@ -99,7 +112,7 @@ public final class ITUtils {
         addButton.click();
     }
 
-    public static int addSoamObject(
+    private static int addSoamObject(
             WebClient webClient, String addPageUrl, Pattern detailsPagePattern, String name, String description,
             String notes, String collectionType, int collectionItemId) throws IOException {
         HtmlPage page = webClient.getPage(addPageUrl);

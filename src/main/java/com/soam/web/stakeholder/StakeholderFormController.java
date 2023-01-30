@@ -7,8 +7,10 @@ import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
+import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
-import jakarta.transaction.Transactional;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -17,149 +19,151 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/specification/{specificationId}")
-public class StakeholderFormController extends SoamFormController {
-    private static final String VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM = "stakeholder/addUpdateStakeholder";
-    private static final String REDIRECT_STAKEHOLDER_DETAILS = "redirect:/specification/%s/stakeholder/%s";
-
+public class StakeholderFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
+    private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
-    private final StakeholderRepository stakeholders;
-    private final StakeholderTemplateRepository stakeholderTemplates;
+    private final StakeholderRepository stakeholderRepository;
+    private final StakeholderTemplateRepository stakeholderTemplateRepository;
 
     private final SpecificationRepository specificationRepository;
 
-    private final PriorityRepository priorities;
+    private final PriorityRepository priorityRepository;
 
-    public StakeholderFormController(StakeholderRepository stakeholders, StakeholderTemplateRepository stakeholderTemplates, SpecificationRepository specificationRepository, PriorityRepository priorities) {
-        this.stakeholders = stakeholders;
-        this.stakeholderTemplates = stakeholderTemplates;
+    public StakeholderFormController(
+            StakeholderRepository stakeholderRepository, StakeholderTemplateRepository stakeholderTemplateRepository,
+            SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
+        this.stakeholderRepository = stakeholderRepository;
+        this.stakeholderTemplateRepository = stakeholderTemplateRepository;
         this.specificationRepository = specificationRepository;
-        this.priorities = priorities;
+        this.priorityRepository = priorityRepository;
     }
 
-    @ModelAttribute("specification")
-    public Specification populateSpecification(@PathVariable("specificationId") int specificationId){
-        Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElse(null);
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
+    public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
+        return specificationRepository.findById(specificationId).orElseThrow(IllegalArgumentException::new);
     }
-
 
     @GetMapping("/stakeholder/{stakeholderId}")
-    public String showStakeholder( @PathVariable("specificationId") int specificationId,
-                                   @PathVariable("stakeholderId") int stakeholderId, Model model) {
-        Optional<Stakeholder> maybeStakeholder = this.stakeholders.findById(stakeholderId);
-        if(maybeStakeholder.isEmpty()){
-            return "redirect:/specification/"+specificationId;
-        }
-        model.addAttribute(maybeStakeholder.get());
-        return "stakeholder/stakeholderDetails";
+    public String showDetails(
+            @PathVariable("specificationId") int specificationId, @PathVariable("stakeholderId") int stakeholderId,
+            Model model) {
+        return stakeholderRepository.findById(stakeholderId)
+                .map(stakeholder -> {
+                    model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
+                    return ViewConstants.VIEW_STAKEHOLDER_DETAILS;
+                })
+                .orElse(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId));
     }
 
     @GetMapping("/stakeholder/new")
-    public String initCreationForm(@PathVariable("specificationId") int specificationId, Model model) {
-        Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
-        if( maybeSpecification.isEmpty() ){
-            //todo: throw error!
-            return "redirect:/specification/list";
-        }
-
+    public String initCreationForm(Specification specification, Model model) {
         Stakeholder stakeholder = new Stakeholder();
-        stakeholder.setSpecification( maybeSpecification.get() );
+        stakeholder.setSpecification(specification);
 
-        model.addAttribute("stakeholder", stakeholder);
-        this.populateFormModel( model );
-        return VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM;
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
+        populateFormModel(model);
+        return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
 
     @PostMapping("/stakeholder/new")
     public String processCreationForm(
-            @PathVariable("specificationId") int specificationId,
-            @Valid Stakeholder stakeholder, BindingResult result, Model model) {
-        //todo: test specificationId path variable matches bound stakeholder.specificationId
-
-        Optional<Stakeholder> testStakeholder = stakeholders.findByNameIgnoreCase(stakeholder.getName());
-        if( testStakeholder.isPresent() ){
-            result.rejectValue("name", "unique", "Stakeholder already exists");
+            @ModelAttribute(binding = false) Specification specification,
+            @Valid Stakeholder stakeholder, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
+
+        stakeholderRepository.findByNameIgnoreCase(stakeholder.getName()).ifPresent(s ->
+                result.rejectValue("name", "unique", "Stakeholder already exists."));
 
         if (result.hasErrors()) {
-            this.populateFormModel(model);
-            return VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM;
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
         }
 
-        this.stakeholders.save(stakeholder);
-        return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholder.getId() );
+        stakeholderRepository.save(stakeholder);
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
     }
 
     @GetMapping("/stakeholder/{stakeholderId}/edit")
-    public String initUpdateStakeholderForm(
-            @PathVariable("stakeholderId") int stakeholderId, @PathVariable("specificationId") int specificationId, Model model) {
-        Optional<Stakeholder> maybeStakeholder = this.stakeholders.findById(stakeholderId);
-        if(maybeStakeholder.isEmpty()){
-            return "redirect:/specification/"+specificationId;
+    public String initUpdateForm(
+            @PathVariable("stakeholderId") int stakeholderId, Specification specification,
+            Model model, RedirectAttributes redirectAttributes) {
+        Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
+        if (maybeStakeholder.isEmpty()) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder does not exist.");
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
-        model.addAttribute(maybeStakeholder.get());
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, maybeStakeholder.get());
         populateFormModel(model);
-        return VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM;
+        return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
 
-
-
     @PostMapping("/stakeholder/{stakeholderId}/edit")
-    public String processUpdateStakeholderForm(@Valid Stakeholder stakeholder, BindingResult result,
-                                                 @PathVariable("specificationId") int specificationId,
-                                                 @PathVariable("stakeholderId") int stakeholderId, Model model) {
-
-        Optional<Stakeholder> testStakeholder = stakeholders.findByNameIgnoreCase(stakeholder.getName());
-        testStakeholder.ifPresent(s-> {
-            if( testStakeholder.get().getId() != stakeholderId ){
-                result.rejectValue("name", "unique", "Stakeholder already exists");
-            }
-        });
-
-        stakeholder.setId( stakeholderId );
-
-        if (result.hasErrors()) {
-            model.addAttribute("stakeholder", stakeholder );
-            this.populateFormModel( model );
-            return VIEWS_STAKEHOLDER_ADD_OR_UPDATE_FORM;
+    public String processUpdateForm(
+            @Valid Stakeholder stakeholder, BindingResult result, Specification specification,
+            @PathVariable("stakeholderId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
+        if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
+        stakeholderRepository.findByNameIgnoreCase(stakeholder.getName())
+                .filter(s -> s.getId() != stakeholderId)
+                .ifPresent(s -> result.rejectValue("name", "unique", "Stakeholder already exists."));
 
-        this.stakeholders.save(stakeholder);
-        return String.format(REDIRECT_STAKEHOLDER_DETAILS,specificationId, stakeholderId);
+        stakeholder.setId(stakeholderId);
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
+        }
+
+        stakeholderRepository.save(stakeholder);
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholderId);
     }
 
     @PostMapping("/stakeholder/{stakeholderId}/delete")
-    @Transactional
-    public String processDeleteStakeholder(
-            @PathVariable("specificationId") int specificationId, @PathVariable("stakeholderId") int stakeholderId, Stakeholder stakeholder,
-            BindingResult result, Model model, RedirectAttributes redirectAttributes ){
-
-        Optional<Stakeholder> maybeStakeholder = stakeholders.findById(stakeholderId);
-        //todo: validate stakeholderById's name matches the passed in Stakeholder's name.
-
-        if(maybeStakeholder.isPresent()) {
-            Stakeholder fetchedStakeholder = maybeStakeholder.get();
-            if(fetchedStakeholder.getStakeholderObjectives() != null && !fetchedStakeholder.getStakeholderObjectives().isEmpty()) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any stakeholder objectives first.");
-                return String.format(REDIRECT_STAKEHOLDER_DETAILS, specificationId, stakeholderId);
-            }
-            stakeholders.delete(fetchedStakeholder);
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s", fetchedStakeholder.getName()));
-            return "redirect:/specification/"+fetchedStakeholder.getSpecification().getId();
-        }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting stakeholder");
-            return String.format("redirect:/specification/%s", specificationId );
+    public String processDelete(
+            @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
+            @RequestParam("id") int formId, RedirectAttributes redirectAttributes) {
+        if (stakeholderId != formId) {
+            redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
+
+        Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
+
+        if (maybeStakeholder.isPresent()) {
+            Stakeholder stakeholder = maybeStakeholder.get();
+            if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+                redirectAttributes.addFlashAttribute(Util.DANGER, MSG_MALFORMED_REQUEST);
+            } else if (stakeholder.getStakeholderObjectives() != null && !stakeholder.getStakeholderObjectives().isEmpty()) {
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Stakeholder Objectives first.");
+                return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholderId);
+            }
+            stakeholderRepository.delete(stakeholder);
+            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", stakeholder.getName()));
+        } else {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder.");
+        }
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
     }
 
-    private void populateFormModel( Model model ){
-        model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("stakeholderTemplates", stakeholderTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String errorHandler(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
+        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
+    }
+
+    private void populateFormModel(Model model) {
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

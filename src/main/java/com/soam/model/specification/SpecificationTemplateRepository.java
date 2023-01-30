@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SpecificationTemplateRepository extends CrudRepository<SpecificationTemplate, Integer> {
-
     List<SpecificationTemplate> findAll(Sort sort);
     Page<SpecificationTemplate> findAll(Pageable pageable);
     Optional<SpecificationTemplate> findByName(String name);

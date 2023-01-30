@@ -35,7 +35,7 @@ public class Stakeholder extends SoamEntity {
 	@JoinColumn(name = "specification_id")
 	private Specification specification;
 
-	@OneToMany( mappedBy = "stakeholder" )
+	@OneToMany(mappedBy = "stakeholder")
 	@SortComparator(StakeholderObjectiveComparator.class)
 	private SortedSet<StakeholderObjective> stakeholderObjectives;
 
@@ -55,12 +55,11 @@ public class Stakeholder extends SoamEntity {
 		this.specification = specification;
 	}
 
-
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId()).append("new", this.isNew())
-				.append("name", this.getName())
-				.append("description", this.getDescription()).append("notes", this.getNotes())
+		return new ToStringCreator(this).append("id", getId()).append("new", isNew())
+				.append("name", getName())
+				.append("description", getDescription()).append("notes", getNotes())
 				.toString();
 	}
 }

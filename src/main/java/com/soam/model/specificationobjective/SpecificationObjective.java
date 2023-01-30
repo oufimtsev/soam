@@ -29,12 +29,11 @@ import java.util.List;
 @Entity
 @Table(name = "specification_objectives")
 public class SpecificationObjective extends SoamEntity {
-
 	@ManyToOne
 	@JoinColumn(name = "specification_id")
 	private Specification specification;
 
-	@OneToMany( mappedBy = "specificationObjective")
+	@OneToMany(mappedBy = "specificationObjective")
 	private List<StakeholderObjective> stakeholderObjectives;
 
 	public Specification getSpecification() {
@@ -55,9 +54,9 @@ public class SpecificationObjective extends SoamEntity {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId()).append("new", this.isNew())
-				.append("name", this.getName())
-				.append("description", this.getDescription()).append("notes", this.getNotes())
+		return new ToStringCreator(this).append("id", getId()).append("new", isNew())
+				.append("name", getName())
+				.append("description", getDescription()).append("notes", getNotes())
 				.toString();
 	}
 }

@@ -1,6 +1,6 @@
-INSERT INTO priority_types VALUES (default, 'Low', 1 );
-INSERT INTO priority_types VALUES (default, 'Medium', 2 );
-INSERT INTO priority_types VALUES (default, 'High', 3 );
+INSERT INTO priority_types VALUES (default, 'Low', 1);
+INSERT INTO priority_types VALUES (default, 'Medium', 2);
+INSERT INTO priority_types VALUES (default, 'High', 3);
 
 INSERT INTO specifications VALUES (default, 'Accounts Receivable', 'Describe system', 'Notes on the new ERP system', 1);
 INSERT INTO specifications VALUES (default, 'Accounts Payable', 'Describe system', 'Notes on the new ERP system', 1);
@@ -39,8 +39,8 @@ INSERT INTO stakeholder_objectives VALUES (default, 4, 9, 'Additional notes', 1)
 INSERT INTO stakeholder_objectives VALUES (default, 4, 10, 'Additional notes', 1);
 
 
-INSERT INTO specification_templates VALUES ( default, 'Major Product', 'Describe product here', 'Notes on major product', 1);
-INSERT INTO specification_templates VALUES ( default, 'Minor Product', 'Describe product here', 'Notes on minor product', 1);
+INSERT INTO specification_templates VALUES (default, 'Major Product', 'Describe product here', 'Notes on major product', 1);
+INSERT INTO specification_templates VALUES (default, 'Minor Product', 'Describe product here', 'Notes on minor product', 1);
 
 INSERT INTO stakeholder_templates VALUES (default, 'Clerk', 'Describe Clerk', 'Notes on Clerk', 1);
 INSERT INTO stakeholder_templates VALUES (default, 'Customer', 'Describe Customer', 'Notes on Customer', 1);

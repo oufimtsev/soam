@@ -9,6 +9,9 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
+import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -22,8 +25,6 @@ import java.util.Optional;
 
 @Controller
 public class TemplateLinkController {
-    private static final String VIEWS_TEMPLATE_LINK_LIST = "templateLink/templateLinkList";
-    private static final String REDIRECT_TEMPLATE_LINK_LIST = "redirect:/templateLink/list";
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
     private static final String TEMPLATE_LINK_TITLE = "%s / %s / %s";
 
@@ -50,23 +51,24 @@ public class TemplateLinkController {
         this.objectiveTemplateRepository = objectiveTemplateRepository;
     }
 
-    @ModelAttribute("specificationTemplates")
+    @ModelAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES)
     public List<SpecificationTemplate> populateSpecificationTemplates() {
         return specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
-    @ModelAttribute("stakeholderTemplates")
+    @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES)
     public List<StakeholderTemplate> populateStakeholderTemplates() {
         return stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
-    @ModelAttribute("objectiveTemplates")
+    @ModelAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES)
     public List<ObjectiveTemplate> populateObjectiveTemplates() {
         return objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
-    @ModelAttribute("templateLinks")
-    public Iterable<TemplateLink> populateTemplateLinks(@ModelAttribute("templateLinkForm") TemplateLinkFormDto templateLinkForm) {
+    @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINKS)
+    public Iterable<TemplateLink> populateTemplateLinks(
+            @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm) {
         if (templateLinkForm.getFilterSpecificationTemplate() != null && templateLinkForm.getFilterStakeholderTemplate() != null) {
             return templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplate(
                     templateLinkForm.getFilterSpecificationTemplate(), templateLinkForm.getFilterStakeholderTemplate(), TEMPLATE_LINK_SORT);
@@ -79,8 +81,14 @@ public class TemplateLinkController {
         }
     }
 
-    @RequestMapping(value = "/templateLink/list", method = {RequestMethod.GET, RequestMethod.POST})
-    public String listTemplateLinks(@ModelAttribute("templateLinkForm") TemplateLinkFormDto templateLinkForm, Model model) {
+    @GetMapping("/templateLink/list")
+    public String listAll() {
+        return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
+    }
+
+    @PostMapping("/templateLink/list")
+    public String listFiltered(
+            @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
         if (templateLinkForm.getNewTemplateLink() != null) {
             if (templateLinkForm.getFilterSpecificationTemplate() != null) {
                 templateLinkForm.getNewTemplateLink().setSpecificationTemplate(
@@ -91,50 +99,50 @@ public class TemplateLinkController {
                         templateLinkForm.getFilterStakeholderTemplate());
             }
         }
-        return VIEWS_TEMPLATE_LINK_LIST;
+        return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
     @PostMapping("/templateLink/new")
-    public String processCreateForm(@Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult,
-                                    RedirectAttributes redirectAttributes) {
+    public String processCreateForm(
+            @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         TemplateLink templateLink = templateLinkForm.getNewTemplateLink();
         Optional<TemplateLink> maybeExistingTemplateLink =
                 templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
                         templateLink.getSpecificationTemplate(), templateLink.getStakeholderTemplate(),
                         templateLink.getObjectiveTemplate());
-        redirectAttributes.addFlashAttribute("templateLinkForm", templateLinkForm);
+        redirectAttributes.addFlashAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM, templateLinkForm);
         if (maybeExistingTemplateLink.isEmpty()) {
             if (bindingResult.hasErrors()) {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST
-                redirectAttributes.addFlashAttribute(Util.DANGER, "New template link data is not complete.");
+                redirectAttributes.addFlashAttribute(Util.DANGER, "New Template Link data is not complete.");
             } else {
                 templateLinkRepository.save(templateLink);
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully created template link %s.", getTemplateLinkTitle(templateLink)));
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully created Template Link %s.", getTemplateLinkTitle(templateLink)));
             }
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, String.format("Template link %s already exists.", getTemplateLinkTitle(templateLink)));
+            redirectAttributes.addFlashAttribute(Util.DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
         }
-        return REDIRECT_TEMPLATE_LINK_LIST;
+        return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }
 
     @PostMapping("/templateLink/delete")
-    public String processDeleteTemplateLink(@Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult,
-                                            RedirectAttributes redirectAttributes) {
+    public String processDelete(
+            @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Optional<TemplateLink> maybeTemplateLink = templateLinkRepository.findById(templateLinkForm.getDeleteTemplateLinkId());
 
-        redirectAttributes.addFlashAttribute("templateLinkForm", templateLinkForm);
+        redirectAttributes.addFlashAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM, templateLinkForm);
         if (maybeTemplateLink.isPresent()) {
             if (bindingResult.hasErrors()) {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST
                 redirectAttributes.addFlashAttribute(Util.DANGER, "New form data is malformed.");
             } else {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted template link %s.", getTemplateLinkTitle(maybeTemplateLink.get())));
+                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(maybeTemplateLink.get())));
                 templateLinkRepository.delete(maybeTemplateLink.get());
             }
-        }else{
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting template link.");
+        } else {
+            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Template Link.");
         }
-        return REDIRECT_TEMPLATE_LINK_LIST;
+        return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }
 
     private static String getTemplateLinkTitle(TemplateLink templateLink) {

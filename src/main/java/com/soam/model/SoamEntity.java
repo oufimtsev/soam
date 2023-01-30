@@ -14,7 +14,6 @@ import org.hibernate.validator.constraints.Length;
  */
 @MappedSuperclass
 public abstract class SoamEntity extends BaseEntity  {
-
     @Column(name = "name")
     @NotBlank
     @Length(max = 40)
@@ -33,7 +32,6 @@ public abstract class SoamEntity extends BaseEntity  {
     @ManyToOne
     @JoinColumn(name = "priority_id")
     private PriorityType priority;
-
 
     public String getName() {
         return name;

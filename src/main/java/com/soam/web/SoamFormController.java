@@ -4,10 +4,9 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
-public abstract class SoamFormController {
-
+public interface SoamFormController {
     @InitBinder
-    public void setAllowedFields(WebDataBinder dataBinder) {
+    default void setAllowedFields(WebDataBinder dataBinder) {
         dataBinder.setDisallowedFields("id");
     }
 
@@ -16,9 +15,8 @@ public abstract class SoamFormController {
      * @param dataBinder
      */
     @InitBinder
-    public void initBinder(WebDataBinder dataBinder) {
+    default void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(false);
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
-
 }

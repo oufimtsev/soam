@@ -13,7 +13,7 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="specification : ${listSpecifications}">
+  <tr th:each="specification : ${specifications}">
     <td>
       <a th:href="@{/specification/__${specification.id}__}" th:text="${specification.name}"/></a>
     </td>

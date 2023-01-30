@@ -1,11 +1,14 @@
-package com.soam.specificationobjective;
+package com.soam.web.specificationobjective;
 
+import com.soam.Util;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
-import com.soam.web.specificationobjective.SpecificationObjectiveController;
+import com.soam.web.ModelConstants;
+import com.soam.web.RedirectConstants;
+import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,19 +26,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationObjectiveController.class)
-public class SpecificationObjectiveControllerTest {
-    private static Specification TEST_SPECIFICATION = new Specification();
-    private static SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
+class SpecificationObjectiveControllerTest {
+    private static final Specification TEST_SPECIFICATION = new Specification();
+    private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();
 
+    private static final int EMPTY_SPECIFICATION_ID = 99;
     private static final int EMPTY_SPECIFICATION_OBJECTIVE_ID = 999;
 
-    private static String URL_VIEW_SPECIFICATION_OBJECTIVE_LIST = "/specification/{specificationId}/specificationObjective/list";
-    private static String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
-
-    private static String VIEW_SPECIFICATION_OBJECTIVE_LIST = "specificationObjective/specificationObjectiveList";
-    private static String VIEW_SPECIFICATION_OBJECTIVE_DETAILS = "specificationObjective/specificationObjectiveDetails";
-
-    private static String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
+    private static final String URL_VIEW_SPECIFICATION_OBJECTIVE_LIST = "/specification/{specificationId}/specificationObjective/list";
+    private static final String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
 
     static {
         PriorityType lowPriority = new PriorityType();
@@ -63,36 +62,42 @@ public class SpecificationObjectiveControllerTest {
     private SpecificationRepository specificationRepository;
 
     @MockBean
-    private SpecificationObjectiveRepository specificationObjectives;
+    private SpecificationObjectiveRepository specificationObjectiveRepository;
 
     @BeforeEach
     void setup() {
-        given(this.specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
+        given(specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
 
-        given(this.specificationObjectives.findAll()).willReturn(Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE));
-        given(this.specificationObjectives.findById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE));
+        given(specificationObjectiveRepository.findAll()).willReturn(Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE));
+        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE));
     }
 
     @Test
-    void testListAllSpecificationObjectives() throws Exception {
+    void testListAll() throws Exception {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("specification"))
-                .andExpect(model().attributeExists("specificationObjectives"))
-                .andExpect(view().name(VIEW_SPECIFICATION_OBJECTIVE_LIST));
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVES))
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_LIST));
     }
 
     @Test
-    void testViewSpecificationObjectiveDetails() throws Exception {
+    void testViewDetails() throws Exception {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),  TEST_SPECIFICATION_OBJECTIVE.getId()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("specificationObjective"))
-                .andExpect(model().attribute("specificationObjective", hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE.getName()))))
-                .andExpect(view().name(VIEW_SPECIFICATION_OBJECTIVE_DETAILS));
+                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
+                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE.getName()))))
+                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS));
+
+        mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID,
+                        TEST_SPECIFICATION_OBJECTIVE.getId()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),
                         EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
     }
 }

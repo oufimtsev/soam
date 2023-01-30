@@ -11,16 +11,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 @WebMvcTest(WelcomeController.class)
-public class WelcomeControllerTest {
-
+class WelcomeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @Test
     void testInitCreationForm() throws Exception {
-        mockMvc.perform(get("/")).andExpect(status().isOk())
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
                 .andExpect(view().name("welcome"));
     }
-
 }
