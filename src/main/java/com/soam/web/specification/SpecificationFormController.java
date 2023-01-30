@@ -187,18 +187,16 @@ public class SpecificationFormController implements SoamFormController {
             dstStakeholder.setSpecification(dstSpecification);
             stakeholderRepository.save(dstStakeholder);
 
-            srcStakeholder.getStakeholderObjectives().forEach(srcStakeholderObjective -> {
-                specificationObjectiveRepository
-                        .findBySpecificationAndNameIgnoreCase(dstSpecification, srcStakeholderObjective.getSpecificationObjective().getName())
-                        .ifPresent(so -> {
-                            StakeholderObjective dstStakeholderObjective = new StakeholderObjective();
-                            dstStakeholderObjective.setStakeholder(dstStakeholder);
-                            dstStakeholderObjective.setSpecificationObjective(so);
-                            dstStakeholderObjective.setNotes(srcStakeholderObjective.getNotes());
-                            dstStakeholderObjective.setPriority(srcStakeholderObjective.getPriority());
-                            stakeholderObjectiveRepository.save(dstStakeholderObjective);
-                        });
-            });
+            srcStakeholder.getStakeholderObjectives().forEach(srcStakeholderObjective ->
+                    specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(dstSpecification, srcStakeholderObjective.getSpecificationObjective().getName())
+                    .ifPresent(so -> {
+                        StakeholderObjective dstStakeholderObjective = new StakeholderObjective();
+                        dstStakeholderObjective.setStakeholder(dstStakeholder);
+                        dstStakeholderObjective.setSpecificationObjective(so);
+                        dstStakeholderObjective.setNotes(srcStakeholderObjective.getNotes());
+                        dstStakeholderObjective.setPriority(srcStakeholderObjective.getPriority());
+                        stakeholderObjectiveRepository.save(dstStakeholderObjective);
+                    }));
         });
     }
 
