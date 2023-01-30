@@ -51,7 +51,8 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     }
 
     @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER)
-    public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId, Specification specification) {
+    public Stakeholder populateStakeholder(
+            @PathVariable("stakeholderId") int stakeholderId, @ModelAttribute Specification specification) {
         return stakeholderRepository.findById(stakeholderId)
                 .filter(stakeholder1 -> stakeholder1.getSpecification().getId().equals(specification.getId()))
                 .orElseThrow(() -> new IllegalStakeholderIdException(specification));

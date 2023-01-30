@@ -3,12 +3,12 @@ package com.soam.it.specification;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.soam.it.ITUtils;
+import com.soam.it.ITValidationUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
@@ -23,13 +23,7 @@ class SpecificationTemplateTest {
 
     @BeforeEach
     void setup(WebApplicationContext context) {
-        webClient = MockMvcWebClientBuilder
-                .webAppContextSetup(context)
-                .build();
-        //HtmlUnit is unable to execute Bootstrap JavaScript. We don't need JS processing for simple HTML-based IT,
-        //so can safely disable JS processing in HtmlUnit
-        //https://github.com/HtmlUnit/htmlunit/issues/232
-        webClient.getOptions().setJavaScriptEnabled(false);
+        webClient = ITUtils.prepareWebClient(context);
     }
 
     @AfterEach
@@ -54,11 +48,11 @@ class SpecificationTemplateTest {
                 specificationTemplateId);
 
         HtmlPage specificationTemplateCopyPage = webClient.getPage(String.format(URL_SPECIFICATION_TEMPLATE_EDIT, specificationTemplateCopyId));
-        ITUtils.validateSpecificationTemplateEdit(specificationTemplateCopyPage, "Copy of Test Specification Template",
+        ITValidationUtils.validateSpecificationTemplateEdit(specificationTemplateCopyPage, "Copy of Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes");
 
         HtmlPage templateLinkPage = webClient.getPage(URL_TEMPLATE_LINK_LIST);
-        ITUtils.validateTemplateLink(templateLinkPage, specificationTemplateCopyId, new String[][] {
+        ITValidationUtils.validateTemplateLink(templateLinkPage, specificationTemplateCopyId, new String[][] {
                 {"Copy of Test Specification Template", "Test Stakeholder Template", "Test Objective Template"}
         });
     }

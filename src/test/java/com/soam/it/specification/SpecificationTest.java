@@ -4,12 +4,12 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.soam.it.ITUtils;
+import com.soam.it.ITValidationUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
@@ -27,13 +27,7 @@ class SpecificationTest {
 
     @BeforeEach
     void setup(WebApplicationContext context) {
-        webClient = MockMvcWebClientBuilder
-                .webAppContextSetup(context)
-                .build();
-        //HtmlUnit is unable to execute Bootstrap JavaScript. We don't need JS processing for simple HTML-based IT,
-        //so can safely disable JS processing in HtmlUnit
-        //https://github.com/HtmlUnit/htmlunit/issues/232
-        webClient.getOptions().setJavaScriptEnabled(false);
+        webClient = ITUtils.prepareWebClient(context);
     }
 
     @AfterEach
@@ -61,17 +55,17 @@ class SpecificationTest {
         assertNotEquals(srcSpecificationId, dstSpecificationId);
 
         HtmlPage dstSpecificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, dstSpecificationId));
-        ITUtils.validateSpecificationDetails(dstSpecificationDetailsPage, "Copy of Test Specification",
+        ITValidationUtils.validateSpecificationDetails(dstSpecificationDetailsPage, "Copy of Test Specification",
                 "Test Specification Description", "Test Specification Notes", List.of("Test Stakeholder"));
 
         //verify Specification Objectives list
         HtmlPage dstSpecificationObjectiveListPage = webClient.getPage(String.format(URL_SPECIFICATION_OBJECTIVE_LIST, dstSpecificationId));
-        ITUtils.validateSpecificationObjectiveList(dstSpecificationObjectiveListPage, List.of("Test Specification Objective"));
+        ITValidationUtils.validateSpecificationObjectiveList(dstSpecificationObjectiveListPage, List.of("Test Specification Objective"));
 
         //verify Stakeholder Objectives list
         HtmlAnchor dstStakeholderAnchor = dstSpecificationDetailsPage.querySelector("#stakeholders tbody tr:nth-of-type(1) td a");
         HtmlPage dstStakeholderDetailsPage = (HtmlPage) dstStakeholderAnchor.openLinkInNewWindow();
-        ITUtils.validateStakeholderDetails(dstStakeholderDetailsPage, "Test Stakeholder",
+        ITValidationUtils.validateStakeholderDetails(dstStakeholderDetailsPage, "Test Stakeholder",
                 "Test Stakeholder Description", "Test Stakeholder Notes", List.of("Test Specification Objective"));
     }
 
@@ -95,18 +89,18 @@ class SpecificationTest {
                 "templateDeepCopy", specificationTemplateId);
 
         HtmlPage specificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, specificationId));
-        ITUtils.validateSpecificationDetails(specificationDetailsPage, "Copy of Test Specification Template",
+        ITValidationUtils.validateSpecificationDetails(specificationDetailsPage, "Copy of Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes",
                 List.of("Test Stakeholder Template 1", "Test Stakeholder Template 2"));
 
         //verify Specification Objectives list
         HtmlPage specificationObjectiveListPage = webClient.getPage(String.format(URL_SPECIFICATION_OBJECTIVE_LIST, specificationId));
-        ITUtils.validateSpecificationObjectiveList(specificationObjectiveListPage, List.of("Test Objective Template"));
+        ITValidationUtils.validateSpecificationObjectiveList(specificationObjectiveListPage, List.of("Test Objective Template"));
 
         //verify Stakeholder Objectives list
         HtmlAnchor stakeholderAnchor = specificationDetailsPage.querySelector("#stakeholders tbody tr:nth-of-type(1) td a");
         HtmlPage stakeholderDetailsPage = (HtmlPage) stakeholderAnchor.openLinkInNewWindow();
-        ITUtils.validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder Template 1",
+        ITValidationUtils.validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder Template 1",
                 "Test Stakeholder Template 1 Description", "Test Stakeholder Template 1 Notes",
                 List.of("Test Objective Template"));
     }
