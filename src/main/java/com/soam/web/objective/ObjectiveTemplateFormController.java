@@ -6,6 +6,7 @@ import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,9 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
     private static final String VIEWS_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM = "objective/template/addUpdateObjectiveTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/objective/template/list";
+
+    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
+
     private final ObjectiveTemplateRepository objectiveTemplates;
     private final PriorityRepository priorities;
 
@@ -116,7 +120,7 @@ public class ObjectiveTemplateFormController extends SoamFormController {
 
     private void populateFormModel( Model model ){
         model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("objectiveTemplates", objectiveTemplates.findAll());
+        model.addAttribute("objectiveTemplates", objectiveTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
 

@@ -8,6 +8,7 @@ import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,8 @@ public class SpecificationTemplateFormController  extends SoamFormController {
 
     private static final String VIEWS_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM = "specification/template/addUpdateSpecificationTemplate";
     private static final String REDIRECT_TEMPLATE_LIST = "redirect:/specification/template/list";
+
+    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationTemplateRepository specificationTemplates;
     private final TemplateLinkRepository templateLinkRepository;
@@ -139,7 +142,7 @@ public class SpecificationTemplateFormController  extends SoamFormController {
 
     private void populateFormModel( Model model ){
         model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("specificationTemplates", specificationTemplates.findAll());
+        model.addAttribute("specificationTemplates", specificationTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 
     private void deepTemplateCopy(SpecificationTemplate srcSpecificationTemplate, SpecificationTemplate dstSpecificationTemplate) {

@@ -10,6 +10,7 @@ import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.SoamFormController;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,8 @@ public class SpecificationObjectiveFormController extends SoamFormController {
     private static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";
     private static final String REDIRECT_SPECIFICATION_OBJECTIVE_LIST = "redirect:/specification/%s/specificationObjective/list";
     private static final String REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS = "redirect:/specification/%s/specificationObjective/%s";
+
+    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationObjectiveRepository specificationObjectives;
     private final ObjectiveTemplateRepository objectiveTemplates;
@@ -139,6 +142,6 @@ public class SpecificationObjectiveFormController extends SoamFormController {
 
     private void populateFormModel(Model model) {
         model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("objectiveTemplates", objectiveTemplates.findAll());
+        model.addAttribute("objectiveTemplates", objectiveTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }

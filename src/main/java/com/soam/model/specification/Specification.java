@@ -34,11 +34,11 @@ import java.util.List;
 public class Specification extends SoamEntity {
 
 	@OneToMany( mappedBy = "specification")
-	@OrderBy("name")
+	@OrderBy("LOWER(name)")
 	private List<Stakeholder> stakeholders;
 
 	@OneToMany( mappedBy = "specification")
-	@OrderBy("name")
+	@OrderBy("LOWER(name)")
 	private List<SpecificationObjective> specificationObjectives;
 
 	public List<Stakeholder> getStakeholders() {

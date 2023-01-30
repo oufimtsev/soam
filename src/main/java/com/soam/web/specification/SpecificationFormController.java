@@ -17,6 +17,7 @@ import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.SoamFormController;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,8 @@ import java.util.Optional;
 public class SpecificationFormController extends SoamFormController {
     private static final String VIEWS_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
     private static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/";
+
+    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final SpecificationRepository specifications;
     private final StakeholderRepository stakeholderRepository;
@@ -54,7 +57,7 @@ public class SpecificationFormController extends SoamFormController {
 
     @ModelAttribute("specifications")
     public List<Specification> populateSpecifications() {
-        return specifications.findAllByOrderByName();
+        return specifications.findAll(NAME_CASE_INSENSITIVE_SORT);
     }
 
     @GetMapping("/specification/new")
@@ -250,6 +253,6 @@ public class SpecificationFormController extends SoamFormController {
 
     private void populateFormModel( Model model ){
         model.addAttribute("priorities", priorities.findAll());
-        model.addAttribute("specificationTemplates", specificationTemplates.findAll());
+        model.addAttribute("specificationTemplates", specificationTemplates.findAll(NAME_CASE_INSENSITIVE_SORT));
     }
 }
