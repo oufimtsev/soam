@@ -47,8 +47,8 @@ public class SpecificationObjectiveController {
     public String showDetails(
             Specification specification, @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
         return specificationObjectiveRepository.findById(specificationObjectiveId)
-                .map(so -> {
-                    model.addAttribute(so);
+                .map(specificationObjective -> {
+                    model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
                     return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;
                 })
                 .orElse(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId()));

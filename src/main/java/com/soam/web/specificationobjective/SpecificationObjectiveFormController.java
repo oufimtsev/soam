@@ -90,7 +90,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Objective does not exist.");
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
-        model.addAttribute(maybeSpecificationObjective.get());
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, maybeSpecificationObjective.get());
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }

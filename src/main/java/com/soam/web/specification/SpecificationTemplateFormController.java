@@ -88,7 +88,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Template does not exist.");
             return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
         }
-        model.addAttribute(maybeSpecificationTemplate.get());
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, maybeSpecificationTemplate.get());
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
     }

@@ -65,7 +65,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Template does not exist.");
             return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
         }
-        model.addAttribute(maybeStakeholderTemplate.get());
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, maybeStakeholderTemplate.get());
         populateFormModel(model);
         return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM;
     }

@@ -110,7 +110,7 @@ public class TemplateLinkController {
                 templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
                         templateLink.getSpecificationTemplate(), templateLink.getStakeholderTemplate(),
                         templateLink.getObjectiveTemplate());
-        redirectAttributes.addFlashAttribute("templateLinkForm", templateLinkForm);
+        redirectAttributes.addFlashAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM, templateLinkForm);
         if (maybeExistingTemplateLink.isEmpty()) {
             if (bindingResult.hasErrors()) {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST
@@ -130,7 +130,7 @@ public class TemplateLinkController {
             @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         Optional<TemplateLink> maybeTemplateLink = templateLinkRepository.findById(templateLinkForm.getDeleteTemplateLinkId());
 
-        redirectAttributes.addFlashAttribute("templateLinkForm", templateLinkForm);
+        redirectAttributes.addFlashAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM, templateLinkForm);
         if (maybeTemplateLink.isPresent()) {
             if (bindingResult.hasErrors()) {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST

@@ -65,7 +65,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Objective Template does not exist.");
             return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
         }
-        model.addAttribute(maybeObjectiveTemplate.get());
+        model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, maybeObjectiveTemplate.get());
         populateFormModel(model);
         return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_ADD_OR_UPDATE_FORM;
     }

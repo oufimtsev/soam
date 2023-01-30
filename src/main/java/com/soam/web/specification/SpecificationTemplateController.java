@@ -20,8 +20,6 @@ import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
-import static com.soam.web.ModelConstants.ATTR_SPECIFICATION_TEMPLATE;
-
 @Controller
 public class SpecificationTemplateController implements SoamFormController {
 	@Value("${soam.pageSize}")
@@ -65,7 +63,7 @@ public class SpecificationTemplateController implements SoamFormController {
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
 		Page<SpecificationTemplate> specificationTemplateResults = findPaginatedForSpecificationTemplateName(page, "");
 		addPaginationModel(page, model, specificationTemplateResults);
-		model.addAttribute(ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
+		model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
 		return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST;
 	}
 

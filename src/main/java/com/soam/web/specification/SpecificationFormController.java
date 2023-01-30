@@ -119,7 +119,7 @@ public class SpecificationFormController implements SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Specification does not exist.");
             return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
         }
-        model.addAttribute(maybeSpecification.get());
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, maybeSpecification.get());
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }

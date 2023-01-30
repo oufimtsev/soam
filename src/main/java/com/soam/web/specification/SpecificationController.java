@@ -86,8 +86,8 @@ public class SpecificationController {
 	@GetMapping("/specification/{specificationId}")
 	public String showDetails(@PathVariable("specificationId") int specificationId, Model model) {
 		return specificationRepository.findById(specificationId)
-				.map(s -> {
-					model.addAttribute(s);
+				.map(specification -> {
+					model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
 					return ViewConstants.VIEW_SPECIFICATION_DETAILS;
 				})
 				.orElse(RedirectConstants.REDIRECT_FIND_SPECIFICATION);

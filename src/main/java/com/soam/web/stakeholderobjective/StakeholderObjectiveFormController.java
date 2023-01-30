@@ -62,8 +62,8 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             Specification specification, Stakeholder stakeholder,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
         return stakeholderObjectiveRepository.findById(stakeholderObjectiveId)
-                .map(so -> {
-                    model.addAttribute(so);
+                .map(stakeholderObjective -> {
+                    model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
                     return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
                 })
                 .orElse(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId()));
@@ -130,7 +130,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Objective does not exist.");
             return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
         }
-        model.addAttribute(maybeStakeholderObjective.get());
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, maybeStakeholderObjective.get());
         populateFormModel(model);
         return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
