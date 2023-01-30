@@ -86,11 +86,11 @@ public class SpecificationController {
 
 	@GetMapping("/specification/{specificationId}")
 	public String showDetails(@PathVariable("specificationId") int specificationId, Model model) {
-		Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
-		if (maybeSpecification.isEmpty()) {
-			return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
-		}
-		model.addAttribute(maybeSpecification.get());
-		return ViewConstants.VIEW_SPECIFICATION_DETAILS;
+		return specificationRepository.findById(specificationId)
+				.map(s -> {
+					model.addAttribute(s);
+					return ViewConstants.VIEW_SPECIFICATION_DETAILS;
+				})
+				.orElse(RedirectConstants.REDIRECT_FIND_SPECIFICATION);
 	}
 }

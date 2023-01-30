@@ -45,10 +45,8 @@ public class StakeholderTemplateFormController implements SoamFormController {
 
     @PostMapping("/stakeholder/template/new")
     public String processCreationForm(@Valid StakeholderTemplate stakeholderTemplate, BindingResult result, Model model) {
-        Optional<StakeholderTemplate> testTemplate = stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName());
-        if (testTemplate.isPresent()) {
-            result.rejectValue("name", "unique", "Stakeholder Template already exists.");
-        }
+        stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName()).ifPresent(st ->
+                result.rejectValue("name", "unique", "Stakeholder Template already exists."));
 
         if (result.hasErrors()) {
             populateFormModel(model);
@@ -76,10 +74,9 @@ public class StakeholderTemplateFormController implements SoamFormController {
     public String processUpdateForm(
             @Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
             @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, Model model) {
-        Optional<StakeholderTemplate> testTemplate = stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName());
-        if (testTemplate.isPresent() && testTemplate.get().getId() != stakeholderTemplateId) {
-            result.rejectValue("name", "unique", "Stakeholder Template already exists.");
-        }
+        stakeholderTemplateRepository.findByNameIgnoreCase(stakeholderTemplate.getName())
+                .filter(st -> st.getId() != stakeholderTemplateId)
+                .ifPresent(st -> result.rejectValue("name", "unique", "Stakeholder Template already exists."));
 
         if (result.hasErrors()) {
             stakeholderTemplate.setId(stakeholderTemplateId);

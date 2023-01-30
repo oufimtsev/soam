@@ -74,10 +74,8 @@ public class SpecificationFormController implements SoamFormController {
             @ModelAttribute("collectionType") String collectionType,
             @ModelAttribute("collectionItemId") int collectionItemId,
             Model model, RedirectAttributes redirectAttributes) {
-        Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
-        if (testSpecification.isPresent()) {
-            result.rejectValue("name", "unique", "Specification already exists.");
-        }
+        specificationRepository.findByNameIgnoreCase(specification.getName()).ifPresent(s ->
+                result.rejectValue("name", "unique", "Specification already exists."));
 
         if (result.hasErrors()) {
             populateFormModel(model);
@@ -130,12 +128,9 @@ public class SpecificationFormController implements SoamFormController {
     public String processUpdateForm(
             @Valid Specification specification, BindingResult result,
             @PathVariable("specificationId") int specificationId, Model model) {
-        Optional<Specification> testSpecification = specificationRepository.findByNameIgnoreCase(specification.getName());
-        testSpecification.ifPresent(s-> {
-            if (testSpecification.get().getId() != specificationId) {
-                result.rejectValue("name", "unique", "Specification already exists.");
-            }
-        });
+        specificationRepository.findByNameIgnoreCase(specification.getName())
+                .filter(s -> s.getId() != specificationId)
+                .ifPresent(s -> result.rejectValue("name", "unique", "Specification already exists."));
 
         specification.setId(specificationId);
         if (result.hasErrors()) {
@@ -193,16 +188,16 @@ public class SpecificationFormController implements SoamFormController {
             stakeholderRepository.save(dstStakeholder);
 
             srcStakeholder.getStakeholderObjectives().forEach(srcStakeholderObjective -> {
-                Optional<SpecificationObjective> maybeDstSpecificationObjective = specificationObjectiveRepository
-                        .findBySpecificationAndNameIgnoreCase(dstSpecification, srcStakeholderObjective.getSpecificationObjective().getName());
-                if (maybeDstSpecificationObjective.isPresent()) {
-                    StakeholderObjective dstStakeholderObjective = new StakeholderObjective();
-                    dstStakeholderObjective.setStakeholder(dstStakeholder);
-                    dstStakeholderObjective.setSpecificationObjective(maybeDstSpecificationObjective.get());
-                    dstStakeholderObjective.setNotes(srcStakeholderObjective.getNotes());
-                    dstStakeholderObjective.setPriority(srcStakeholderObjective.getPriority());
-                    stakeholderObjectiveRepository.save(dstStakeholderObjective);
-                }
+                specificationObjectiveRepository
+                        .findBySpecificationAndNameIgnoreCase(dstSpecification, srcStakeholderObjective.getSpecificationObjective().getName())
+                        .ifPresent(so -> {
+                            StakeholderObjective dstStakeholderObjective = new StakeholderObjective();
+                            dstStakeholderObjective.setStakeholder(dstStakeholder);
+                            dstStakeholderObjective.setSpecificationObjective(so);
+                            dstStakeholderObjective.setNotes(srcStakeholderObjective.getNotes());
+                            dstStakeholderObjective.setPriority(srcStakeholderObjective.getPriority());
+                            stakeholderObjectiveRepository.save(dstStakeholderObjective);
+                        });
             });
         });
     }

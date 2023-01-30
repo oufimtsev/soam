@@ -34,8 +34,7 @@ public class SpecificationObjectiveController {
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElseThrow(IllegalArgumentException::new);
+        return specificationRepository.findById(specificationId).orElseThrow(IllegalArgumentException::new);
     }
 
     @GetMapping("/specificationObjective/list")
@@ -47,12 +46,12 @@ public class SpecificationObjectiveController {
     @GetMapping("/specificationObjective/{specificationObjectiveId}")
     public String showDetails(
             Specification specification, @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
-        if (maybeSpecificationObjective.isEmpty()) {
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-        }
-        model.addAttribute(maybeSpecificationObjective.get());
-        return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;
+        return specificationObjectiveRepository.findById(specificationObjectiveId)
+                .map(so -> {
+                    model.addAttribute(so);
+                    return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;
+                })
+                .orElse(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

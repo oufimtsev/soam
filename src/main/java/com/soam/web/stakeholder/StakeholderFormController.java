@@ -47,20 +47,19 @@ public class StakeholderFormController implements SoamFormController {
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElseThrow(IllegalArgumentException::new);
+        return specificationRepository.findById(specificationId).orElseThrow(IllegalArgumentException::new);
     }
 
     @GetMapping("/stakeholder/{stakeholderId}")
     public String showDetails(
             @PathVariable("specificationId") int specificationId, @PathVariable("stakeholderId") int stakeholderId,
             Model model) {
-        Optional<Stakeholder> maybeStakeholder = stakeholderRepository.findById(stakeholderId);
-        if (maybeStakeholder.isEmpty()) {
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
-        }
-        model.addAttribute(maybeStakeholder.get());
-        return ViewConstants.VIEW_STAKEHOLDER_DETAILS;
+        return stakeholderRepository.findById(stakeholderId)
+                .map(s -> {
+                    model.addAttribute(s);
+                    return ViewConstants.VIEW_STAKEHOLDER_DETAILS;
+                })
+                .orElse(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId));
     }
 
     @GetMapping("/stakeholder/new")
@@ -82,10 +81,8 @@ public class StakeholderFormController implements SoamFormController {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
-        Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
-        if (testStakeholder.isPresent()) {
-            result.rejectValue("name", "unique", "Stakeholder already exists.");
-        }
+        stakeholderRepository.findByNameIgnoreCase(stakeholder.getName()).ifPresent(s ->
+                result.rejectValue("name", "unique", "Stakeholder already exists."));
 
         if (result.hasErrors()) {
             populateFormModel(model);
@@ -119,12 +116,9 @@ public class StakeholderFormController implements SoamFormController {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
-        Optional<Stakeholder> testStakeholder = stakeholderRepository.findByNameIgnoreCase(stakeholder.getName());
-        testStakeholder.ifPresent(s-> {
-            if (testStakeholder.get().getId() != stakeholderId) {
-                result.rejectValue("name", "unique", "Stakeholder already exists.");
-            }
-        });
+        stakeholderRepository.findByNameIgnoreCase(stakeholder.getName())
+                .filter(s -> s.getId() != stakeholderId)
+                .ifPresent(s -> result.rejectValue("name", "unique", "Stakeholder already exists."));
 
         stakeholder.setId(stakeholderId);
 

@@ -46,8 +46,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElseThrow(IllegalArgumentException::new);
+        return specificationRepository.findById(specificationId).orElseThrow(IllegalArgumentException::new);
     }
 
     @GetMapping("/specificationObjective/new")
@@ -70,10 +69,8 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
-        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
-        if (testSpecificationObjective.isPresent()) {
-            result.rejectValue("name", "unique", "Specification Objective already exists.");
-        }
+        specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName()).ifPresent(so ->
+                result.rejectValue("name", "unique", "Specification Objective already exists."));
 
         if (result.hasErrors()) {
             populateFormModel(model);
@@ -110,12 +107,10 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
-        Optional<SpecificationObjective> testSpecificationObjective = specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName());
-        testSpecificationObjective.ifPresent(s-> {
-            if (testSpecificationObjective.get().getId() != specificationObjectiveId) {
-                result.rejectValue("name", "unique", "Specification Objective already exists.");
-            }
-        });
+        specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName())
+                .filter(so -> so.getId() != specificationObjectiveId)
+                .ifPresent(so -> result.rejectValue("name", "unique", "Specification Objective already exists."));
+
         if (result.hasErrors()) {
             specificationObjective.setId(specificationObjectiveId);
             populateFormModel(model);

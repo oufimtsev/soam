@@ -56,10 +56,8 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,
             @ModelAttribute(ModelConstants.ATTR_COLLECTION_ITEM_ID) int collectionItemId,
             Model model, RedirectAttributes redirectAttributes) {
-        Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
-        if (testTemplate.isPresent()) {
-            result.rejectValue("name", "unique", "Specification Template already exists.");
-        }
+        specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName()).ifPresent(st ->
+                result.rejectValue("name", "unique", "Specification Template already exists."));
 
         if (result.hasErrors()) {
             populateFormModel(model);
@@ -99,10 +97,9 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     public String processUpdateForm(
             @Valid SpecificationTemplate specificationTemplate, BindingResult result,
             @PathVariable("specificationTemplateId") int specificationTemplateId, Model model) {
-        Optional<SpecificationTemplate> testTemplate = specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName());
-        if (testTemplate.isPresent() && testTemplate.get().getId() != specificationTemplateId) {
-            result.rejectValue("name", "unique", "Specification Template already exists.");
-        }
+        specificationTemplateRepository.findByNameIgnoreCase(specificationTemplate.getName())
+                .filter(st -> st.getId() != specificationTemplateId)
+                .ifPresent(st -> result.rejectValue("name", "unique", "Specification Template already exists."));
 
         if (result.hasErrors()) {
             specificationTemplate.setId(specificationTemplateId);

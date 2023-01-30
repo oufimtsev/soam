@@ -47,30 +47,27 @@ public class StakeholderObjectiveFormController implements SoamFormController {
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        Optional<Specification> oSpecification = specificationRepository.findById(specificationId);
-        return oSpecification.orElseThrow(IllegalSpecificationIdException::new);
+        return specificationRepository.findById(specificationId)
+                .orElseThrow(IllegalSpecificationIdException::new);
     }
 
     @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER)
     public Stakeholder populateStakeholder(@PathVariable("stakeholderId") int stakeholderId, Specification specification) {
-        Optional<Stakeholder> oStakeholder = stakeholderRepository.findById(stakeholderId);
-        Stakeholder stakeholder = oStakeholder.orElseThrow(() -> new IllegalStakeholderIdException(specification));
-        if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
-            throw new IllegalStakeholderIdException(specification);
-        }
-        return stakeholder;
+        return stakeholderRepository.findById(stakeholderId)
+                .filter(stakeholder1 -> stakeholder1.getSpecification().getId().equals(specification.getId()))
+                .orElseThrow(() -> new IllegalStakeholderIdException(specification));
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}")
     public String showDetails(
             Specification specification, Stakeholder stakeholder,
             @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
-        Optional<StakeholderObjective> maybeStakeholderObjective = stakeholderObjectiveRepository.findById(stakeholderObjectiveId);
-        if (maybeStakeholderObjective.isEmpty()) {
-            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
-        }
-        model.addAttribute(maybeStakeholderObjective.get());
-        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
+        return stakeholderObjectiveRepository.findById(stakeholderObjectiveId)
+                .map(so -> {
+                    model.addAttribute(so);
+                    return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
+                })
+                .orElse(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId()));
     }
 
     @GetMapping("/stakeholderObjective/new")
@@ -110,11 +107,8 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         } else {
             stakeholderObjective.setSpecificationObjective(testSpecificationObjective.get());
 
-            Optional<StakeholderObjective> testStakeholderObjective = stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId);
-            if (testStakeholderObjective.isPresent()) {
-                testStakeholderObjective.get().setSpecificationObjective(testSpecificationObjective.get());
-                result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists.");
-            }
+            stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId).ifPresent(so ->
+                    result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists."));
         }
 
         if (result.hasErrors()) {
