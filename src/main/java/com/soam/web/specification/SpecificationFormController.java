@@ -13,6 +13,7 @@ import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
+import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.ModelConstants;
@@ -27,9 +28,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 
 @Controller
 public class SpecificationFormController implements SoamFormController {
@@ -88,6 +91,10 @@ public class SpecificationFormController implements SoamFormController {
             if (maybeSrcSpecification.isPresent()) {
                 specificationRepository.save(specification);
                 deepSpecificationCopy(maybeSrcSpecification.get(), specification);
+                redirectAttributes.addFlashAttribute(
+                        Util.SUCCESS,
+                        String.format("Copied %s", getSpecificationOverviewMessage(specification))
+                );
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist.");
@@ -99,6 +106,10 @@ public class SpecificationFormController implements SoamFormController {
             if (maybeSrcSpecificationTemplate.isPresent()) {
                 specificationRepository.save(specification);
                 deepTemplateCopy(maybeSrcSpecificationTemplate.get(), specification);
+                redirectAttributes.addFlashAttribute(
+                        Util.SUCCESS,
+                        String.format("Created %s", getSpecificationOverviewMessage(specification))
+                );
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
@@ -169,6 +180,9 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     private void deepSpecificationCopy(Specification srcSpecification, Specification dstSpecification) {
+        dstSpecification.setStakeholders(new ArrayList<>());
+        dstSpecification.setSpecificationObjectives(new ArrayList<>());
+
         srcSpecification.getSpecificationObjectives().forEach(srcSpecificationObjective -> {
             SpecificationObjective dstSpecificationObjective = new SpecificationObjective();
             dstSpecificationObjective.setName(srcSpecificationObjective.getName());
@@ -176,6 +190,7 @@ public class SpecificationFormController implements SoamFormController {
             dstSpecificationObjective.setNotes(srcSpecificationObjective.getNotes());
             dstSpecificationObjective.setPriority(srcSpecificationObjective.getPriority());
             dstSpecificationObjective.setSpecification(dstSpecification);
+            dstSpecification.getSpecificationObjectives().add(dstSpecificationObjective);
             specificationObjectiveRepository.save(dstSpecificationObjective);
         });
         srcSpecification.getStakeholders().forEach(srcStakeholder -> {
@@ -185,6 +200,8 @@ public class SpecificationFormController implements SoamFormController {
             dstStakeholder.setNotes(srcStakeholder.getNotes());
             dstStakeholder.setPriority(srcStakeholder.getPriority());
             dstStakeholder.setSpecification(dstSpecification);
+            dstStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
+            dstSpecification.getStakeholders().add(dstStakeholder);
             stakeholderRepository.save(dstStakeholder);
 
             srcStakeholder.getStakeholderObjectives().forEach(srcStakeholderObjective ->
@@ -195,12 +212,16 @@ public class SpecificationFormController implements SoamFormController {
                         dstStakeholderObjective.setSpecificationObjective(so);
                         dstStakeholderObjective.setNotes(srcStakeholderObjective.getNotes());
                         dstStakeholderObjective.setPriority(srcStakeholderObjective.getPriority());
+                        dstStakeholder.getStakeholderObjectives().add(dstStakeholderObjective);
                         stakeholderObjectiveRepository.save(dstStakeholderObjective);
                     }));
         });
     }
 
     private void deepTemplateCopy(SpecificationTemplate srcSpecificationTemplate, Specification dstSpecification) {
+        dstSpecification.setStakeholders(new ArrayList<>());
+        dstSpecification.setSpecificationObjectives(new ArrayList<>());
+
         Collection<TemplateLink> templateLinks = srcSpecificationTemplate.getTemplateLinks();
 
         //in the loop below we sacrifice the performance somewhat in favour of predictable memory consumption.
@@ -216,7 +237,9 @@ public class SpecificationFormController implements SoamFormController {
                 newStakeholder.setNotes(stakeholderTemplate.getNotes());
                 newStakeholder.setPriority(stakeholderTemplate.getPriority());
                 newStakeholder.setSpecification(dstSpecification);
+                newStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
                 stakeholderRepository.save(newStakeholder);
+                dstSpecification.getStakeholders().add(newStakeholder);
                 return newStakeholder;
             });
 
@@ -232,6 +255,7 @@ public class SpecificationFormController implements SoamFormController {
                 newSpecificationObjective.setPriority(objectiveTemplate.getPriority());
                 newSpecificationObjective.setSpecification(dstSpecification);
                 specificationObjectiveRepository.save(newSpecificationObjective);
+                dstSpecification.getSpecificationObjectives().add(newSpecificationObjective);
                 return newSpecificationObjective;
             });
 
@@ -240,8 +264,22 @@ public class SpecificationFormController implements SoamFormController {
             stakeholderObjective.setSpecificationObjective(specificationObjective);
             stakeholderObjective.setNotes(specificationObjective.getNotes());
             stakeholderObjective.setPriority(specificationObjective.getPriority());
+            stakeholder.getStakeholderObjectives().add(stakeholderObjective);
             stakeholderObjectiveRepository.save(stakeholderObjective);
         });
+    }
+
+    private String getSpecificationOverviewMessage(Specification specification) {
+        int stakeholderObjectiveCount = specification.getStakeholders().stream()
+                .mapToInt(stakeholder -> stakeholder.getStakeholderObjectives().size())
+                .sum();
+        return String.format(
+                        "Specification %s with %d Stakeholder(s), %d Specification Objective(s) and total of %d Stakeholder Objective(s)",
+                        specification.getName(),
+                        specification.getStakeholders().size(),
+                        specification.getSpecificationObjectives().size(),
+                        stakeholderObjectiveCount
+        );
     }
 
     private void populateFormModel(Model model) {

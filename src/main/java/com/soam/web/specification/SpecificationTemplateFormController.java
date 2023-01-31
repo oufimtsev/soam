@@ -2,6 +2,7 @@ package com.soam.web.specification;
 
 import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
+import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Optional;
 
 @Controller
@@ -70,6 +72,10 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             if (maybeSrcSpecificationTemplate.isPresent()) {
                 specificationTemplateRepository.save(specificationTemplate);
                 deepTemplateCopy(maybeSrcSpecificationTemplate.get(), specificationTemplate);
+                redirectAttributes.addFlashAttribute(
+                        Util.SUCCESS,
+                        String.format("Created %s", getSpecificationTemplateOverviewMessage(specificationTemplate))
+                );
             } else {
                 redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
             }
@@ -142,6 +148,8 @@ public class SpecificationTemplateFormController  implements SoamFormController 
 
     private void deepTemplateCopy(
             SpecificationTemplate srcSpecificationTemplate, SpecificationTemplate dstSpecificationTemplate) {
+        dstSpecificationTemplate.setTemplateLinks(new LinkedList<>());
+
         Collection<TemplateLink> templateLinks = srcSpecificationTemplate.getTemplateLinks();
 
         templateLinks.forEach(templateLink -> {
@@ -149,7 +157,16 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             newTemplateLink.setSpecificationTemplate(dstSpecificationTemplate);
             newTemplateLink.setStakeholderTemplate(templateLink.getStakeholderTemplate());
             newTemplateLink.setObjectiveTemplate(templateLink.getObjectiveTemplate());
+            dstSpecificationTemplate.getTemplateLinks().add(newTemplateLink);
             templateLinkRepository.save(newTemplateLink);
         });
+    }
+
+    private String getSpecificationTemplateOverviewMessage(SpecificationTemplate specificationTemplate) {
+        return String.format(
+                "Specification Template %s with %d Template Link(s)",
+                specificationTemplate.getName(),
+                specificationTemplate.getTemplateLinks().size()
+        );
     }
 }

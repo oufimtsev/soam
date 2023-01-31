@@ -129,7 +129,8 @@ class SpecificationTemplateFormControllerTest {
                         .param("collectionType", "templateDeepCopy")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE_2.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeCount(0))
+                .andExpect(flash().attributeCount(1))
+                .andExpect(flash().attributeExists(Util.SUCCESS))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
     }
 
