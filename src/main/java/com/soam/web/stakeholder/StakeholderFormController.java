@@ -107,7 +107,8 @@ public class StakeholderFormController implements SoamFormController {
 
     @PostMapping("/stakeholder/{stakeholderId}/edit")
     public String processUpdateForm(
-            @Valid Stakeholder stakeholder, BindingResult result, Specification specification,
+            @Valid Stakeholder stakeholder, BindingResult result,
+            @ModelAttribute(binding = false) Specification specification,
             @PathVariable("stakeholderId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
