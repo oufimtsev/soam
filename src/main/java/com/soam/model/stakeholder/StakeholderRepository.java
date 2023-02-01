@@ -12,6 +12,5 @@ import java.util.Optional;
 public interface StakeholderRepository extends CrudRepository<Stakeholder, Integer> {
     Page<Stakeholder> findByNameStartsWithIgnoreCase(String name, Pageable pageable);
     Optional<Stakeholder> findBySpecificationAndNameIgnoreCase(Specification specification, String name);
-    Optional<Stakeholder> findByNameIgnoreCase(String name);
     Optional<Stakeholder> findByName(String name);
 }

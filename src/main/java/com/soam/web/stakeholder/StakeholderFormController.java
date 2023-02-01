@@ -79,7 +79,7 @@ public class StakeholderFormController implements SoamFormController {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
-        stakeholderRepository.findByNameIgnoreCase(stakeholder.getName()).ifPresent(s ->
+        stakeholderRepository.findBySpecificationAndNameIgnoreCase(specification, stakeholder.getName()).ifPresent(s ->
                 result.rejectValue("name", "unique", "Stakeholder already exists."));
 
         if (result.hasErrors()) {
@@ -115,7 +115,7 @@ public class StakeholderFormController implements SoamFormController {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
 
-        stakeholderRepository.findByNameIgnoreCase(stakeholder.getName())
+        stakeholderRepository.findBySpecificationAndNameIgnoreCase(specification, stakeholder.getName())
                 .filter(s -> s.getId() != stakeholderId)
                 .ifPresent(s -> result.rejectValue("name", "unique", "Stakeholder already exists."));
 
