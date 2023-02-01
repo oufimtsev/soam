@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.core.style.ToStringCreator;
 
 /**
  * Domain object that contains the replicated member data across the SOAM system.
@@ -63,5 +64,13 @@ public abstract class SoamEntity extends BaseEntity  {
 
     public void setPriority(PriorityType priority) {
         this.priority = priority;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringCreator(this).append("id", getId()).append("new", isNew())
+                .append("name", getName())
+                .append("description", getDescription()).append("notes", getNotes())
+                .toString();
     }
 }

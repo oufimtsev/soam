@@ -22,7 +22,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import org.springframework.core.style.ToStringCreator;
 
 import java.util.List;
 
@@ -54,13 +53,5 @@ public class Specification extends SoamEntity {
 
 	public void setSpecificationObjectives(List<SpecificationObjective> specificationObjectives) {
 		this.specificationObjectives = specificationObjectives;
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringCreator(this).append("id", getId()).append("new", isNew())
-				.append("name", getName())
-				.append("description", getDescription()).append("notes", getNotes())
-				.toString();
 	}
 }

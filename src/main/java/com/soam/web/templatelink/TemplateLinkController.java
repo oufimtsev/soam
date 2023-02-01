@@ -1,6 +1,5 @@
 package com.soam.web.templatelink;
 
-import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.specification.SpecificationTemplate;
@@ -11,6 +10,7 @@ import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
+import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class TemplateLinkController {
+public class TemplateLinkController implements SoamFormController {
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
     private static final String TEMPLATE_LINK_TITLE = "%s / %s / %s";
 
@@ -114,13 +114,13 @@ public class TemplateLinkController {
         if (maybeExistingTemplateLink.isEmpty()) {
             if (bindingResult.hasErrors()) {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST
-                redirectAttributes.addFlashAttribute(Util.DANGER, "New Template Link data is not complete.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "New Template Link data is not complete.");
             } else {
                 templateLinkRepository.save(templateLink);
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully created Template Link %s.", getTemplateLinkTitle(templateLink)));
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully created Template Link %s.", getTemplateLinkTitle(templateLink)));
             }
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
         }
         return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }
@@ -134,13 +134,13 @@ public class TemplateLinkController {
         if (maybeTemplateLink.isPresent()) {
             if (bindingResult.hasErrors()) {
                 //the UI should never cause this error. This is protection mostly from malformed programmatic POST
-                redirectAttributes.addFlashAttribute(Util.DANGER, "New form data is malformed.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "New form data is malformed.");
             } else {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(maybeTemplateLink.get())));
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(maybeTemplateLink.get())));
                 templateLinkRepository.delete(maybeTemplateLink.get());
             }
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Template Link.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Error deleting Template Link.");
         }
         return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
     }

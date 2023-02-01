@@ -1,11 +1,11 @@
 package com.soam.web.specificationobjective;
 
-import com.soam.Util;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
+import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,7 +53,7 @@ public class SpecificationObjectiveController {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public String errorHandler(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(Util.DANGER, "Incorrect request parameters.");
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Incorrect request parameters.");
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 }

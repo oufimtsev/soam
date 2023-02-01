@@ -1,6 +1,5 @@
 package com.soam.web.specificationobjective;
 
-import com.soam.Util;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
@@ -8,6 +7,7 @@ import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
+import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,7 +92,7 @@ class SpecificationObjectiveControllerTest {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID,
                         TEST_SPECIFICATION_OBJECTIVE.getId()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),

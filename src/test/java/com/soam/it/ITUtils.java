@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.soam.web.specification.SpecificationTemplateFormController;
 import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -88,7 +89,7 @@ public final class ITUtils {
             WebClient webClient, String name, String description, String notes,
             int srcSpecificationTemplateId) throws IOException {
         return addTemplateObject(webClient, URL_NEW_SPECIFICATION_TEMPLATE, REDIRECT_SPECIFICATION_TEMPLATE_EDIT, name,
-                description, notes, "templateDeepCopy", srcSpecificationTemplateId);
+                description, notes, SpecificationTemplateFormController.CREATE_MODE_FROM_TEMPLATE, srcSpecificationTemplateId);
     }
 
     public static int addStakeholderTemplate(WebClient webClient, String name, String description, String notes) throws IOException {

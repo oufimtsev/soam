@@ -19,7 +19,6 @@ import com.soam.model.SoamEntity;
 import com.soam.model.specification.Specification;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import jakarta.persistence.*;
-import org.springframework.core.style.ToStringCreator;
 
 import java.util.List;
 
@@ -50,13 +49,5 @@ public class SpecificationObjective extends SoamEntity {
 
 	public void setStakeholderObjectives(List<StakeholderObjective> stakeholderObjectives) {
 		this.stakeholderObjectives = stakeholderObjectives;
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringCreator(this).append("id", getId()).append("new", isNew())
-				.append("name", getName())
-				.append("description", getDescription()).append("notes", getNotes())
-				.toString();
 	}
 }

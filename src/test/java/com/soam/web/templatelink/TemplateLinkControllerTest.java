@@ -1,6 +1,5 @@
 package com.soam.web.templatelink;
 
-import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityType;
@@ -12,6 +11,7 @@ import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
+import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -132,7 +132,7 @@ class TemplateLinkControllerTest {
                         .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_2.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(flash().attributeExists(Util.SUB_FLASH))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 
@@ -143,7 +143,7 @@ class TemplateLinkControllerTest {
                         .param("newTemplateLink.stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
                         .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
 
@@ -153,7 +153,7 @@ class TemplateLinkControllerTest {
                         .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 
@@ -162,7 +162,7 @@ class TemplateLinkControllerTest {
         mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK)
                         .param("deleteTemplateLinkId", String.valueOf(TEST_TEMPLATE_LINK.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.SUB_FLASH))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
@@ -171,7 +171,7 @@ class TemplateLinkControllerTest {
     void testProcessDeleteError() throws Exception {
         mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK, EMPTY_TEMPLATE_LINK_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }

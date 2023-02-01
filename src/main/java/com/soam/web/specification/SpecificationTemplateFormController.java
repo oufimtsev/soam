@@ -1,8 +1,6 @@
 package com.soam.web.specification;
 
-import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
-import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
@@ -14,6 +12,7 @@ import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +27,10 @@ import java.util.LinkedList;
 import java.util.Optional;
 
 @Controller
-public class SpecificationTemplateFormController  implements SoamFormController {
+public class SpecificationTemplateFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
+
+    public static String CREATE_MODE_FROM_TEMPLATE = "templateDeepCopy";
 
     private final SpecificationTemplateRepository specificationTemplateRepository;
     private final TemplateLinkRepository templateLinkRepository;
@@ -53,6 +54,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
     }
 
     @PostMapping("/specification/template/new")
+    @Transactional
     public String processCreationForm(
             @Valid SpecificationTemplate specificationTemplate, BindingResult result,
             @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,
@@ -66,18 +68,18 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        if ("templateDeepCopy".equals(collectionType)) {
+        if (CREATE_MODE_FROM_TEMPLATE.equals(collectionType)) {
             //creating new Specification Template as a deep copy of source Specification Template
             Optional<SpecificationTemplate> maybeSrcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
             if (maybeSrcSpecificationTemplate.isPresent()) {
                 specificationTemplateRepository.save(specificationTemplate);
                 deepTemplateCopy(maybeSrcSpecificationTemplate.get(), specificationTemplate);
                 redirectAttributes.addFlashAttribute(
-                        Util.SUCCESS,
+                        SoamFormController.FLASH_SUCCESS,
                         String.format("Created %s", getSpecificationTemplateOverviewMessage(specificationTemplate))
                 );
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Source Specification Template does not exist.");
             }
         } else {
             specificationTemplateRepository.save(specificationTemplate);
@@ -91,7 +93,7 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             RedirectAttributes redirectAttributes) {
         Optional<SpecificationTemplate> maybeSpecificationTemplate = specificationTemplateRepository.findById(specificationId);
         if (maybeSpecificationTemplate.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification Template does not exist.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Specification Template does not exist.");
             return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
         }
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, maybeSpecificationTemplate.get());
@@ -122,19 +124,19 @@ public class SpecificationTemplateFormController  implements SoamFormController 
             @PathVariable("specificationTemplateId") int specificationTemplateId, @RequestParam("id") int formId,
             RedirectAttributes redirectAttributes) {
         if (specificationTemplateId != formId) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Malformed request.");
         } else {
             Optional<SpecificationTemplate> maybeSpecificationTemplate = specificationTemplateRepository.findById(specificationTemplateId);
 
             if (maybeSpecificationTemplate.isPresent()) {
                 if (maybeSpecificationTemplate.get().getTemplateLinks() != null && !maybeSpecificationTemplate.get().getTemplateLinks().isEmpty()) {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", maybeSpecificationTemplate.get().getName()));
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", maybeSpecificationTemplate.get().getName()));
                     specificationTemplateRepository.delete(maybeSpecificationTemplate.get());
                 }
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Specification Template.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Error deleting Specification Template.");
             }
         }
 

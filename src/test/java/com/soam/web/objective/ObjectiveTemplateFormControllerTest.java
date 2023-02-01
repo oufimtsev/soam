@@ -1,6 +1,5 @@
 package com.soam.web.objective;
 
-import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
@@ -10,6 +9,7 @@ import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
+import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -144,7 +144,7 @@ class ObjectiveTemplateFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
@@ -192,7 +192,7 @@ class ObjectiveTemplateFormControllerTest {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("id", String.valueOf(TEST_OBJECTIVE_1.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.SUB_FLASH))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 
@@ -201,19 +201,19 @@ class ObjectiveTemplateFormControllerTest {
         mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_OBJECTIVE_ID)
                         .param("id", String.valueOf(EMPTY_OBJECTIVE_ID)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_1.getId())
                         .param("id", String.valueOf(EMPTY_OBJECTIVE_ID)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_OBJECTIVE_2.getId())
                         .param("id", String.valueOf(TEST_OBJECTIVE_2.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST));
     }
 }

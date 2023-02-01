@@ -1,6 +1,5 @@
 package com.soam.web.stakeholder;
 
-import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
@@ -62,7 +61,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
             @PathVariable("stakeholderTemplateId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
         Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderId);
         if (maybeStakeholderTemplate.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Stakeholder Template does not exist.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Stakeholder Template does not exist.");
             return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
         }
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, maybeStakeholderTemplate.get());
@@ -93,19 +92,19 @@ public class StakeholderTemplateFormController implements SoamFormController {
             @PathVariable("stakeholderTemplateId") int stakeholderTemplateId, @RequestParam("id") int formId,
             RedirectAttributes redirectAttributes) {
         if (stakeholderTemplateId != formId) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Malformed request.");
         } else {
             Optional<StakeholderTemplate> maybeStakeholderTemplate = stakeholderTemplateRepository.findById(stakeholderTemplateId);
 
             if (maybeStakeholderTemplate.isPresent()) {
                 if (maybeStakeholderTemplate.get().getTemplateLinks() != null && !maybeStakeholderTemplate.get().getTemplateLinks().isEmpty()) {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", maybeStakeholderTemplate.get().getName()));
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", maybeStakeholderTemplate.get().getName()));
                     stakeholderTemplateRepository.delete(maybeStakeholderTemplate.get());
                 }
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Stakeholder Template.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Error deleting Stakeholder Template.");
             }
         }
 
