@@ -173,7 +173,8 @@ class SpecificationFormControllerTest {
                         .param("collectionType", "srcSpecification")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeCount(0))
+                .andExpect(flash().attributeCount(1))
+                .andExpect(flash().attributeExists(Util.SUCCESS))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 400)));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
@@ -181,7 +182,8 @@ class SpecificationFormControllerTest {
                         .param("collectionType", "templateDeepCopy")
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeCount(0))
+                .andExpect(flash().attributeCount(1))
+                .andExpect(flash().attributeExists(Util.SUCCESS))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 400)));
     }
 
