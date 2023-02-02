@@ -1,6 +1,5 @@
 package com.soam.web.objective;
 
-import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
@@ -62,7 +61,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
             @PathVariable("objectiveTemplateId") int objectiveId, Model model, RedirectAttributes redirectAttributes) {
         Optional<ObjectiveTemplate> maybeObjectiveTemplate = objectiveTemplateRepository.findById(objectiveId);
         if (maybeObjectiveTemplate.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Objective Template does not exist.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Objective Template does not exist.");
             return RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_LIST;
         }
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, maybeObjectiveTemplate.get());
@@ -93,19 +92,19 @@ public class ObjectiveTemplateFormController implements SoamFormController {
             @PathVariable("objectiveTemplateId") int objectiveTemplateId, @RequestParam("id") int formId,
             RedirectAttributes redirectAttributes) {
         if (objectiveTemplateId != formId) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Malformed request.");
         } else {
             Optional<ObjectiveTemplate> maybeObjectiveTemplate = objectiveTemplateRepository.findById(objectiveTemplateId);
 
             if (maybeObjectiveTemplate.isPresent()) {
                 if (maybeObjectiveTemplate.get().getTemplateLinks() != null && !maybeObjectiveTemplate.get().getTemplateLinks().isEmpty()) {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Template Links first.");
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Template Links first.");
                 } else {
-                    redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", maybeObjectiveTemplate.get().getName()));
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", maybeObjectiveTemplate.get().getName()));
                     objectiveTemplateRepository.delete(maybeObjectiveTemplate.get());
                 }
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting Objective Template.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Error deleting Objective Template.");
             }
         }
 

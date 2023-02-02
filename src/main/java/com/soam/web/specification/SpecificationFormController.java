@@ -1,6 +1,5 @@
 package com.soam.web.specification;
 
-import com.soam.Util;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
@@ -23,6 +22,7 @@ import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +37,9 @@ import java.util.TreeSet;
 @Controller
 public class SpecificationFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
+
+    public static String CREATE_MODE_COPY_SPECIFICATION = "srcSpecification";
+    public static String CREATE_MODE_FROM_TEMPLATE = "templateDeepCopy";
 
     private final SpecificationRepository specificationRepository;
     private final StakeholderRepository stakeholderRepository;
@@ -72,6 +75,7 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     @PostMapping("/specification/new")
+    @Transactional
     public String processCreationForm(
             @Valid Specification specification, BindingResult result,
             @ModelAttribute("collectionType") String collectionType,
@@ -85,34 +89,34 @@ public class SpecificationFormController implements SoamFormController {
             return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
         }
 
-        if ("srcSpecification".equals(collectionType)) {
+        if (CREATE_MODE_COPY_SPECIFICATION.equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification
             Optional<Specification> maybeSrcSpecification = specificationRepository.findById(collectionItemId);
             if (maybeSrcSpecification.isPresent()) {
                 specificationRepository.save(specification);
                 deepSpecificationCopy(maybeSrcSpecification.get(), specification);
                 redirectAttributes.addFlashAttribute(
-                        Util.SUCCESS,
+                        SoamFormController.FLASH_SUCCESS,
                         String.format("Copied %s", getSpecificationOverviewMessage(specification))
                 );
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification does not exist.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Source Specification does not exist.");
                 return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
-        } else if ("templateDeepCopy".equals(collectionType)) {
+        } else if (CREATE_MODE_FROM_TEMPLATE.equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification Template
             Optional<SpecificationTemplate> maybeSrcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
             if (maybeSrcSpecificationTemplate.isPresent()) {
                 specificationRepository.save(specification);
                 deepTemplateCopy(maybeSrcSpecificationTemplate.get(), specification);
                 redirectAttributes.addFlashAttribute(
-                        Util.SUCCESS,
+                        SoamFormController.FLASH_SUCCESS,
                         String.format("Created %s", getSpecificationOverviewMessage(specification))
                 );
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
             } else {
-                redirectAttributes.addFlashAttribute(Util.DANGER, "Source Specification Template does not exist.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Source Specification Template does not exist.");
                 return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
             }
         } else {
@@ -127,7 +131,7 @@ public class SpecificationFormController implements SoamFormController {
             @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
         Optional<Specification> maybeSpecification = specificationRepository.findById(specificationId);
         if (maybeSpecification.isEmpty()) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Specification does not exist.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Specification does not exist.");
             return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
         }
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION, maybeSpecification.get());
@@ -158,7 +162,7 @@ public class SpecificationFormController implements SoamFormController {
             @PathVariable("specificationId") int specificationId, @RequestParam("id") int formId,
             RedirectAttributes redirectAttributes) {
         if (specificationId != formId) {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Malformed request.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Malformed request.");
             return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
         }
 
@@ -168,13 +172,13 @@ public class SpecificationFormController implements SoamFormController {
             Specification specificationById = maybeSpecification.get();
             if ((specificationById.getStakeholders() != null && !specificationById.getStakeholders().isEmpty()) ||
                 (specificationById.getSpecificationObjectives() != null && !specificationById.getSpecificationObjectives().isEmpty())) {
-                redirectAttributes.addFlashAttribute(Util.SUB_FLASH, "Please delete any Stakeholders and Specification Objectives first.");
+                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Stakeholders and Specification Objectives first.");
                 return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
             }
-            redirectAttributes.addFlashAttribute(Util.SUB_FLASH, String.format("Successfully deleted %s.", specificationById.getName()));
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", specificationById.getName()));
             specificationRepository.delete(specificationById);
         } else {
-            redirectAttributes.addFlashAttribute(Util.DANGER, "Error deleting specification.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Error deleting specification.");
         }
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
@@ -183,6 +187,7 @@ public class SpecificationFormController implements SoamFormController {
         dstSpecification.setStakeholders(new ArrayList<>());
         dstSpecification.setSpecificationObjectives(new ArrayList<>());
 
+        //in the loop below we sacrifice the performance somewhat in favour of predictable memory consumption.
         srcSpecification.getSpecificationObjectives().forEach(srcSpecificationObjective -> {
             SpecificationObjective dstSpecificationObjective = new SpecificationObjective();
             dstSpecificationObjective.setName(srcSpecificationObjective.getName());

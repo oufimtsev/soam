@@ -21,7 +21,6 @@ import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import jakarta.persistence.*;
 import org.hibernate.annotations.SortComparator;
-import org.springframework.core.style.ToStringCreator;
 
 import java.util.SortedSet;
 
@@ -53,13 +52,5 @@ public class Stakeholder extends SoamEntity {
 
 	public void setSpecification(Specification specification) {
 		this.specification = specification;
-	}
-
-	@Override
-	public String toString() {
-		return new ToStringCreator(this).append("id", getId()).append("new", isNew())
-				.append("name", getName())
-				.append("description", getDescription()).append("notes", getNotes())
-				.toString();
 	}
 }

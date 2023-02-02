@@ -1,6 +1,5 @@
 package com.soam.web.specification;
 
-import com.soam.Util;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
@@ -15,6 +14,7 @@ import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
+import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -170,20 +170,20 @@ class SpecificationFormControllerTest {
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
-                        .param("collectionType", "srcSpecification")
+                        .param("collectionType", SpecificationFormController.CREATE_MODE_COPY_SPECIFICATION)
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_2.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeCount(1))
-                .andExpect(flash().attributeExists(Util.SUCCESS))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUCCESS))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 400)));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
-                        .param("collectionType", "templateDeepCopy")
+                        .param("collectionType", SpecificationFormController.CREATE_MODE_FROM_TEMPLATE)
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeCount(1))
-                .andExpect(flash().attributeExists(Util.SUCCESS))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUCCESS))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 400)));
     }
 
@@ -209,18 +209,18 @@ class SpecificationFormControllerTest {
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "desc")
-                        .param("collectionType", "srcSpecification")
+                        .param("collectionType", SpecificationFormController.CREATE_MODE_COPY_SPECIFICATION)
                         .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "desc")
-                        .param("collectionType", "templateDeepCopy")
+                        .param("collectionType", SpecificationFormController.CREATE_MODE_FROM_TEMPLATE)
                         .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
@@ -238,7 +238,7 @@ class SpecificationFormControllerTest {
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_FIND_SPECIFICATION));
     }
 
@@ -287,13 +287,13 @@ class SpecificationFormControllerTest {
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_1.getId())
                         .param("id", String.valueOf(TEST_SPECIFICATION_1.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.SUB_FLASH))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_3.getId())
                         .param("id", String.valueOf(TEST_SPECIFICATION_3.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.SUB_FLASH))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
@@ -302,19 +302,19 @@ class SpecificationFormControllerTest {
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, EMPTY_SPECIFICATION_ID)
                         .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_1.getId())
                         .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_SPECIFICATION, TEST_SPECIFICATION_2.getId())
                         .param("id", String.valueOf(TEST_SPECIFICATION_2.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(Util.SUB_FLASH))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_2.getId())));
     }
 }

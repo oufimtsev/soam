@@ -5,6 +5,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.soam.it.ITUtils;
 import com.soam.it.ITValidationUtils;
+import com.soam.web.specification.SpecificationFormController;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,13 +45,13 @@ class SpecificationTest {
                 "Test Stakeholder Description", "Test Stakeholder Notes");
         int srcSpecificationObjectiveId = ITUtils.addSpecificationObjective(webClient, srcSpecificationId, "Test Specification Objective",
                 "Test Specification Objective Description", "Test Specification Objective Notes");
-        int srcStakeholderObjectiveId = ITUtils.addStakeholderObjective(webClient, srcSpecificationId, srcStakeholderId,
+        ITUtils.addStakeholderObjective(webClient, srcSpecificationId, srcStakeholderId,
                 srcSpecificationObjectiveId, "Test Stakeholder Objective Notes");
 
         //execute "copy existing specification"
         int dstSpecificationId = ITUtils.addSpecification(webClient, "Copy of Test Specification",
                 "Test Specification Description", "Test Specification Notes",
-                "srcSpecification", srcSpecificationId);
+                SpecificationFormController.CREATE_MODE_COPY_SPECIFICATION, srcSpecificationId);
 
         assertNotEquals(srcSpecificationId, dstSpecificationId);
 
@@ -86,7 +87,7 @@ class SpecificationTest {
         //execute "create from template"
         int specificationId = ITUtils.addSpecification(webClient, "Copy of Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes",
-                "templateDeepCopy", specificationTemplateId);
+                SpecificationFormController.CREATE_MODE_FROM_TEMPLATE, specificationTemplateId);
 
         HtmlPage specificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, specificationId));
         ITValidationUtils.validateSpecificationDetails(specificationDetailsPage, "Copy of Test Specification Template",
