@@ -30,22 +30,22 @@
     </span>
   <span>]&nbsp;</span>
   <span>
-      <a th:if="${currentPage > 1}" th:href="@{'/specification?page=1'}" title="First"
+      <a th:if="${currentPage > 1}" th:href="@{'/specification/list?page=1'}" title="First"
          class="fa fa-fast-backward"></a>
       <span th:unless="${currentPage > 1}" title="First" class="fa fa-fast-backward"></span>
     </span>
   <span>
-      <a th:if="${currentPage > 1}" th:href="@{'/specification?page=__${currentPage - 1}__'}" title="Previous"
+      <a th:if="${currentPage > 1}" th:href="@{'/specification/list?page=__${currentPage - 1}__'}" title="Previous"
          class="fa fa-step-backward"></a>
       <span th:unless="${currentPage > 1}" title="Previous" class="fa fa-step-backward"></span>
     </span>
   <span>
-      <a th:if="${currentPage < totalPages}" th:href="@{'/specification?page=__${currentPage + 1}__'}" title="Next"
+      <a th:if="${currentPage < totalPages}" th:href="@{'/specification/list?page=__${currentPage + 1}__'}" title="Next"
          class="fa fa-step-forward"></a>
       <span th:unless="${currentPage < totalPages}" title="Next" class="fa fa-step-forward"></span>
     </span>
   <span>
-      <a th:if="${currentPage < totalPages}" th:href="@{'/specification?page=__${totalPages}__'}" title="Last"
+      <a th:if="${currentPage < totalPages}" th:href="@{'/specification/list?page=__${totalPages}__'}" title="Last"
          class="fa fa-fast-forward"></a>
       <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-step-forward"></span>
     </span>
