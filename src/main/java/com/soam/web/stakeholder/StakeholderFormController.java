@@ -51,13 +51,16 @@ public class StakeholderFormController implements SoamFormController {
     @GetMapping("/stakeholder/{stakeholderId}")
     public String showDetails(
             @PathVariable("specificationId") int specificationId, @PathVariable("stakeholderId") int stakeholderId,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
         return stakeholderRepository.findById(stakeholderId)
                 .map(stakeholder -> {
                     model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
                     return ViewConstants.VIEW_STAKEHOLDER_DETAILS;
                 })
-                .orElse(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId));
+                .orElseGet(() -> {
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Stakeholder does not exist.");
+                    return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
+                });
     }
 
     @GetMapping("/stakeholder/new")

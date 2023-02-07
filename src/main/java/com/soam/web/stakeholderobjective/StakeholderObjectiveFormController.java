@@ -60,13 +60,17 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}")
     public String showDetails(
             Specification specification, Stakeholder stakeholder,
-            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
+            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
+            Model model, RedirectAttributes redirectAttributes) {
         return stakeholderObjectiveRepository.findById(stakeholderObjectiveId)
                 .map(stakeholderObjective -> {
                     model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
                     return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
                 })
-                .orElse(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId()));
+                .orElseGet(() -> {
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Stakeholder Objective does not exist.");
+                    return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+                });
     }
 
     @GetMapping("/stakeholderObjective/new")
