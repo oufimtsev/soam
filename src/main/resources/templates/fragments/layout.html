@@ -81,20 +81,23 @@
           <span th:if="${specificationActive && !specification['new']}" th:text="${specification.name}">Specification Name</span>
         </li>
         <li class="breadcrumb-item"  th:with="stakeholderActive=${stakeholderObjective == null}"  th:if="${stakeholder != null}" th:classappend="${stakeholderActive ? 'active' : ''}"  >
-          <a th:if="${stakeholder.name == null}">Stakeholder</a>
-          <a th:if="${!stakeholderActive && stakeholder.name != null }" th:text="${stakeholder.name}"
+          <a th:if="${stakeholder['new']}">Stakeholder</a>
+
+          <a th:if="${!stakeholderActive && !stakeholder['new']}" th:text="${stakeholder.name}"
              th:href="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__}">Stakeholder Name</a>
-          <span th:if="${stakeholderActive && stakeholder.name != null }" th:text="${stakeholder.name}">StakeholderName</span>
+          <span th:if="${stakeholderActive && !stakeholder['new']}" th:text="${stakeholder.name}">StakeholderName</span>
         </li>
         <li class="breadcrumb-item active" th:if="${specificationObjectives != null}">
           <span>Specification Objectives</span>
         </li>
         <li class="breadcrumb-item active" th:if="${specificationObjective != null}">
-          <a th:if="${specificationObjective.name == null}">Specification Objective</a>
-          <a th:if="${specificationObjective.name != null }" th:text="${specificationObjective.name}">Specification Objective Name</a>
+          <a th:if="${specificationObjective['new']}">Specification Objective</a>
+
+          <a th:if="${!specificationObjective['new']}" th:text="${specificationObjective.name}">Specification Objective Name</a>
         </li>
         <li class="breadcrumb-item active" th:if="${stakeholderObjective != null}">
           <a th:if="${stakeholderObjective['new']}">Stakeholder Objective</a>
+
           <a th:if="${!stakeholderObjective['new']}" th:text="${stakeholderObjective.specificationObjective.name}">Stakeholder Objective Name</a>
         </li>
       </ol>
