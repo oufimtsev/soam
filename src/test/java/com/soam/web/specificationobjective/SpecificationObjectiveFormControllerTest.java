@@ -226,21 +226,11 @@ class SpecificationObjectiveFormControllerTest {
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("specification", String.valueOf(TEST_SPECIFICATION_2.getId()))
                         .param("name", "New Test Specification Objective")
-                        .param("notes", "")
+                        .param("notes", "notes here")
                         .param("description", "descr"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
-
-        mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
-                        .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
-                        .param("name", "New Test Specification Objective")
-                        .param("notes", "")
-                        .param("description", "descr"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
-                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, "notes"))
-                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))

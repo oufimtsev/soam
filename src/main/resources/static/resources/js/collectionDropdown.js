@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", (event) =>{
             }
             document.getElementById("name").value = dataset.itemName;
             document.getElementById("description").value = dataset.itemDescription;
-            document.getElementById("notes").value = dataset.itemNotes;
+            document.getElementById("notes").value = dataset.itemNotes ? dataset.itemNotes : '';
             document.getElementById("priority").value = dataset.itemPriority;
         });
     })
