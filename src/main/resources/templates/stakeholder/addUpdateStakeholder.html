@@ -36,7 +36,7 @@
       </div>
     </div>
   </form>
-  <form th:if="${!stakeholder['new']}" id="deleteForm" th:object="${stakeholder}" th:action="@{/stakeholder/__${stakeholder.id}__/delete}" method="post">
+  <form th:if="${!stakeholder['new']}" id="deleteForm" th:object="${stakeholder}" th:action="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/delete}" method="post">
     <input type="hidden" th:field="*{id}"/>
     <input type="hidden" th:field="*{specification}"/>
   </form>
