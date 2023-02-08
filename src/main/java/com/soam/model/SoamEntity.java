@@ -26,7 +26,6 @@ public abstract class SoamEntity extends BaseEntity  {
     private String description;
 
     @Column(name = "notes")
-    @NotBlank
     @Length(max = 255)
     private String notes;
 

@@ -42,13 +42,17 @@ public class SpecificationObjectiveController {
 
     @GetMapping("/specificationObjective/{specificationObjectiveId}")
     public String showDetails(
-            Specification specification, @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model) {
+            Specification specification, @PathVariable("specificationObjectiveId") int specificationObjectiveId,
+            Model model, RedirectAttributes redirectAttributes) {
         return specificationObjectiveRepository.findById(specificationObjectiveId)
                 .map(specificationObjective -> {
                     model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
                     return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;
                 })
-                .orElse(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId()));
+                .orElseGet(() -> {
+                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Specification Objective does not exist.");
+                    return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+                });
     }
 
     @ExceptionHandler(IllegalArgumentException.class)

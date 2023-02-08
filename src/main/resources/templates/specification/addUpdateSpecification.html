@@ -18,7 +18,7 @@
       <span th:if="${specification['new']}" class="ms-2">
         <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${specificationTemplates}, 'Create from Template', 'No Specification Templates defined', 'templateDeepCopy')}" />
       </span>
-      <span th:if="${!#lists.isEmpty(specificationTemplates)}" class="ms-2">
+      <span class="ms-2">
           <div th:replace="~{fragments/templateDropdown :: templateDropdown(${specificationTemplates})}" />
       </span>
       <a th:if="${!specification['new']}" class="btn btn-sm btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this specification?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>
