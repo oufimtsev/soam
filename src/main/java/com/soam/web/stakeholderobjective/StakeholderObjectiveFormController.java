@@ -3,12 +3,12 @@ package com.soam.web.stakeholderobjective;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
-import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
+import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.service.stakeholder.StakeholderService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
@@ -29,18 +29,18 @@ import java.util.Optional;
 public class StakeholderObjectiveFormController implements SoamFormController {
     private final SpecificationService specificationService;
     private final StakeholderService stakeholderService;
+    private final SpecificationObjectiveService specificationObjectiveService;
     private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
-    private final SpecificationObjectiveRepository specificationObjectiveRepository;
     private final PriorityRepository priorityRepository;
 
     public StakeholderObjectiveFormController(
             SpecificationService specificationService, StakeholderService stakeholderService,
-            StakeholderObjectiveRepository stakeholderObjectiveRepository,
-            SpecificationObjectiveRepository specificationObjectiveRepository, PriorityRepository priorityRepository) {
+            SpecificationObjectiveService specificationObjectiveService,
+            StakeholderObjectiveRepository stakeholderObjectiveRepository, PriorityRepository priorityRepository) {
         this.specificationService = specificationService;
         this.stakeholderService = stakeholderService;
+        this.specificationObjectiveService = specificationObjectiveService;
         this.stakeholderObjectiveRepository = stakeholderObjectiveRepository;
-        this.specificationObjectiveRepository = specificationObjectiveRepository;
         this.priorityRepository = priorityRepository;
     }
 
@@ -104,14 +104,14 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @ModelAttribute(binding = false) Stakeholder stakeholder,
             @RequestParam("collectionItemId") int specificationObjectiveId,
             @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
-        if (maybeSpecificationObjective.isEmpty()) {
+        if (specificationObjectiveId == -1) {
             SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
             emptySeSpecificationObjective.setId(-1);
             stakeholderObjective.setSpecificationObjective(emptySeSpecificationObjective);
             result.rejectValue("specificationObjective", "required", "Specification Objective should not be empty.");
         } else {
-            stakeholderObjective.setSpecificationObjective(maybeSpecificationObjective.get());
+            SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
+            stakeholderObjective.setSpecificationObjective(specificationObjective);
 
             stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(stakeholder, specificationObjectiveId).ifPresent(so ->
                     result.rejectValue("specificationObjective", "unique", "Stakeholder Objective already exists."));

@@ -4,12 +4,12 @@ import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
-import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
+import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.service.stakeholder.StakeholderService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
@@ -105,7 +105,7 @@ class StakeholderObjectiveFormControllerTest {
     private StakeholderService stakeholderService;
 
     @MockBean
-    private SpecificationObjectiveRepository specificationObjectiveRepository;
+    private SpecificationObjectiveService specificationObjectiveService;
 
     @MockBean
     private StakeholderObjectiveRepository stakeholderObjectiveRepository;
@@ -126,14 +126,15 @@ class StakeholderObjectiveFormControllerTest {
         given(stakeholderService.getById(TEST_STAKEHOLDER_2.getId())).willReturn(TEST_STAKEHOLDER_2);
         given(stakeholderService.getById(EMPTY_STAKEHOLDER_ID)).willThrow(new EntityNotFoundException("Stakeholder", EMPTY_SPECIFICATION_ID));
 
-        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
-        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
+        given(specificationObjectiveService.getById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(TEST_SPECIFICATION_OBJECTIVE_1);
+        given(specificationObjectiveService.getById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(TEST_SPECIFICATION_OBJECTIVE_2);
+        given(specificationObjectiveService.getById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willThrow(new EntityNotFoundException("Specification Objective", EMPTY_SPECIFICATION_ID));
 
         given(stakeholderObjectiveRepository.findById(TEST_STAKEHOLDER_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_OBJECTIVE_1));
         given(stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(TEST_STAKEHOLDER_1, TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_OBJECTIVE_1));
 
         conversionService.addConverter(String.class, Stakeholder.class, source -> stakeholderService.getById(Integer.parseInt(source)));
-        conversionService.addConverter(String.class, SpecificationObjective.class, source -> specificationObjectiveRepository.findById(Integer.parseInt(source)).orElse(null));
+        conversionService.addConverter(String.class, SpecificationObjective.class, source -> specificationObjectiveService.getById(Integer.parseInt(source)));
 
         given(stakeholderObjectiveRepository.save(any())).will(invocation -> {
             StakeholderObjective stakeholderObjective = invocation.getArgument(0);
@@ -216,8 +217,8 @@ class StakeholderObjectiveFormControllerTest {
 
         mockMvc.perform(post(URL_NEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId())
                         .param("stakeholder", String.valueOf(TEST_STAKEHOLDER_1.getId()))
-                        .param("specificationObjective", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID))
-                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))
+                        .param("specificationObjective", String.valueOf(-1))
+                        .param("collectionItemId", String.valueOf(-1)))
                 .andExpect(status().isOk())
                 .andExpect(model().hasErrors())
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, "specificationObjective"))
