@@ -2,13 +2,14 @@ package com.soam.web.stakeholderobjective;
 
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -26,18 +27,18 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/specification/{specificationId}/stakeholder/{stakeholderId}")
 public class StakeholderObjectiveFormController implements SoamFormController {
+    private final SpecificationService specificationService;
     private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
-    private final SpecificationRepository specificationRepository;
     private final StakeholderRepository stakeholderRepository;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
     private final PriorityRepository priorityRepository;
 
     public StakeholderObjectiveFormController(
-            StakeholderObjectiveRepository stakeholderObjectiveRepository, SpecificationRepository specificationRepository,
+            SpecificationService specificationService, StakeholderObjectiveRepository stakeholderObjectiveRepository,
             StakeholderRepository stakeholderRepository,
             SpecificationObjectiveRepository specificationObjectiveRepository, PriorityRepository priorityRepository) {
+        this.specificationService = specificationService;
         this.stakeholderObjectiveRepository = stakeholderObjectiveRepository;
-        this.specificationRepository = specificationRepository;
         this.stakeholderRepository = stakeholderRepository;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
         this.priorityRepository = priorityRepository;
@@ -45,8 +46,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        return specificationRepository.findById(specificationId)
-                .orElseThrow(IllegalSpecificationIdException::new);
+        return specificationService.getById(specificationId);
     }
 
     @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER)
@@ -177,9 +177,9 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
     }
 
-    @ExceptionHandler(IllegalSpecificationIdException.class)
-    public String errorHandlerSpecification(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Incorrect request parameters.");
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String errorHandlerSpecification(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
@@ -191,9 +191,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
 
     private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
-    }
-
-    static class IllegalSpecificationIdException extends IllegalArgumentException {
     }
 
     static class IllegalStakeholderIdException extends IllegalArgumentException {
