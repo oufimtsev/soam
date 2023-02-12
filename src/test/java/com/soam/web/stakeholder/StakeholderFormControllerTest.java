@@ -3,13 +3,13 @@ package com.soam.web.stakeholder;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.service.stakeholder.StakeholderService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
@@ -112,10 +112,10 @@ class StakeholderFormControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private StakeholderService stakeholderService;
+    private SpecificationService specificationService;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
+    private StakeholderService stakeholderService;
 
     @MockBean
     private StakeholderTemplateRepository stakeholderTemplateRepository;
@@ -128,6 +128,10 @@ class StakeholderFormControllerTest {
 
     @BeforeEach
     void setup() {
+        given(specificationService.getById(TEST_SPECIFICATION_1.getId())).willReturn(TEST_SPECIFICATION_1);
+        given(specificationService.getById(TEST_SPECIFICATION_2.getId())).willReturn(TEST_SPECIFICATION_2);
+        given(specificationService.getById(EMPTY_SPECIFICATION_ID)).willThrow(new EntityNotFoundException("Specification", EMPTY_SPECIFICATION_ID));
+
         given(stakeholderService.getById(TEST_STAKEHOLDER_1.getId())).willReturn(TEST_STAKEHOLDER_1);
         given(stakeholderService.getById(TEST_STAKEHOLDER_2.getId())).willReturn(TEST_STAKEHOLDER_2);
         given(stakeholderService.getById(TEST_STAKEHOLDER_3.getId())).willReturn(TEST_STAKEHOLDER_3);
@@ -143,10 +147,7 @@ class StakeholderFormControllerTest {
             return stakeholder;
         });
 
-        given(specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationRepository.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
-
-        conversionService.addConverter(String.class, Specification.class, source -> specificationRepository.findById(Integer.parseInt(source)).orElse(null));
+        conversionService.addConverter(String.class, Specification.class, source -> specificationService.getById(Integer.parseInt(source)));
     }
 
     @Test

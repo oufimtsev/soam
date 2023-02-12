@@ -2,10 +2,10 @@ package com.soam.web.stakeholder;
 
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.service.stakeholder.StakeholderService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
@@ -33,25 +33,24 @@ public class StakeholderFormController implements SoamFormController {
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
     private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
+    private final SpecificationService specificationService;
     private final StakeholderService stakeholderService;
     private final StakeholderTemplateRepository stakeholderTemplateRepository;
-
-    private final SpecificationRepository specificationRepository;
 
     private final PriorityRepository priorityRepository;
 
     public StakeholderFormController(
-            StakeholderService stakeholderService, StakeholderTemplateRepository stakeholderTemplateRepository,
-            SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
+            SpecificationService specificationService, StakeholderService stakeholderService,
+            StakeholderTemplateRepository stakeholderTemplateRepository,PriorityRepository priorityRepository) {
+        this.specificationService = specificationService;
         this.stakeholderService = stakeholderService;
         this.stakeholderTemplateRepository = stakeholderTemplateRepository;
-        this.specificationRepository = specificationRepository;
         this.priorityRepository = priorityRepository;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        return specificationRepository.findById(specificationId).orElseThrow(IllegalArgumentException::new);
+        return specificationService.getById(specificationId);
     }
 
     @GetMapping("/stakeholder/{stakeholderId}")
@@ -145,12 +144,6 @@ public class StakeholderFormController implements SoamFormController {
         stakeholderService.delete(stakeholder);
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", stakeholder.getName()));
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String errorHandler(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Incorrect request parameters.");
-        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
