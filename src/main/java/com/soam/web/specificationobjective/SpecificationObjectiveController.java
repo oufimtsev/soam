@@ -1,9 +1,10 @@
 package com.soam.web.specificationobjective;
 
 import com.soam.model.specification.Specification;
-import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
+import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -21,13 +22,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveController {
     private final SpecificationService specificationService;
-    private final SpecificationObjectiveRepository specificationObjectiveRepository;
+    private final SpecificationObjectiveService specificationObjectiveService;
 
     public SpecificationObjectiveController(
             SpecificationService specificationService,
-            SpecificationObjectiveRepository specificationObjectiveRepository) {
+            SpecificationObjectiveService specificationObjectiveService) {
         this.specificationService = specificationService;
-        this.specificationObjectiveRepository = specificationObjectiveRepository;
+        this.specificationObjectiveService = specificationObjectiveService;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
@@ -45,15 +46,9 @@ public class SpecificationObjectiveController {
     public String showDetails(
             Specification specification, @PathVariable("specificationObjectiveId") int specificationObjectiveId,
             Model model, RedirectAttributes redirectAttributes) {
-        return specificationObjectiveRepository.findById(specificationObjectiveId)
-                .map(specificationObjective -> {
-                    model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
-                    return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;
-                })
-                .orElseGet(() -> {
-                    redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Specification Objective does not exist.");
-                    return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-                });
+        SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
+        return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

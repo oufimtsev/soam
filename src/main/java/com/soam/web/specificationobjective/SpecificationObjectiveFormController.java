@@ -4,9 +4,9 @@ import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
-import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
+import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/specification/{specificationId}")
@@ -29,16 +28,16 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
     private final SpecificationService specificationService;
-    private final SpecificationObjectiveRepository specificationObjectiveRepository;
+    private final SpecificationObjectiveService specificationObjectiveService;
     private final ObjectiveTemplateRepository objectiveTemplateRepository;
     private final PriorityRepository priorityRepository;
 
     public SpecificationObjectiveFormController(
             SpecificationService specificationService,
-            SpecificationObjectiveRepository specificationObjectiveRepository,
+            SpecificationObjectiveService specificationObjectiveService,
             ObjectiveTemplateRepository objectiveTemplateRepository, PriorityRepository priorityRepository) {
         this.specificationService = specificationService;
-        this.specificationObjectiveRepository = specificationObjectiveRepository;
+        this.specificationObjectiveService = specificationObjectiveService;
         this.objectiveTemplateRepository = objectiveTemplateRepository;
         this.priorityRepository = priorityRepository;
     }
@@ -68,7 +67,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
-        specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName()).ifPresent(so ->
+        specificationObjectiveService.findBySpecificationAndName(specification, specificationObjective.getName()).ifPresent(so ->
                 result.rejectValue("name", "unique", "Specification Objective already exists."));
 
         if (result.hasErrors()) {
@@ -76,7 +75,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
-        specificationObjectiveRepository.save(specificationObjective);
+        specificationObjective = specificationObjectiveService.save(specificationObjective);
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
     }
 
@@ -85,12 +84,8 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             Specification specification,
             @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model,
             RedirectAttributes redirectAttributes) {
-        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
-        if (maybeSpecificationObjective.isEmpty()) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Specification Objective does not exist.");
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
-        }
-        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, maybeSpecificationObjective.get());
+        SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
@@ -106,7 +101,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
-        specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(specification, specificationObjective.getName())
+        specificationObjectiveService.findBySpecificationAndName(specification, specificationObjective.getName())
                 .filter(so -> so.getId() != specificationObjectiveId)
                 .ifPresent(so -> result.rejectValue("name", "unique", "Specification Objective already exists."));
 
@@ -116,8 +111,8 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
         }
 
-        specificationObjectiveRepository.save(specificationObjective);
-        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjectiveId);
+        specificationObjective = specificationObjectiveService.save(specificationObjective);
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
     }
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/delete")
@@ -130,20 +125,14 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
         }
 
-        Optional<SpecificationObjective> maybeSpecificationObjective = specificationObjectiveRepository.findById(specificationObjectiveId);
-
-        if (maybeSpecificationObjective.isPresent()) {
-            SpecificationObjective specificationObjective = maybeSpecificationObjective.get();
-            if (!Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            } else if (specificationObjective.getStakeholderObjectives() != null && !specificationObjective.getStakeholderObjectives().isEmpty()) {
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Stakeholder Objectives first.");
-            } else {
-                specificationObjectiveRepository.delete(specificationObjective);
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", specificationObjective.getName()));
-            }
+        SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
+        if (!Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
+        } else if (specificationObjective.getStakeholderObjectives() != null && !specificationObjective.getStakeholderObjectives().isEmpty()) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Stakeholder Objectives first.");
         } else {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Error deleting Specification Objective.");
+            specificationObjectiveService.delete(specificationObjective);
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", specificationObjective.getName()));
         }
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
     }

@@ -38,7 +38,6 @@ public class StakeholderServiceTest {
         TEST_SPECIFICATION_1.setName("Test Specification 1");
         TEST_SPECIFICATION_1.setDescription("Test Specification 1 Description");
         TEST_SPECIFICATION_1.setPriority(lowPriority);
-        TEST_SPECIFICATION_1.setStakeholders(List.of(TEST_STAKEHOLDER_1));
 
         TEST_STAKEHOLDER_1.setId(100);
         TEST_STAKEHOLDER_1.setName("Test Stakeholder 1");
@@ -46,6 +45,7 @@ public class StakeholderServiceTest {
         TEST_STAKEHOLDER_1.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
         TEST_STAKEHOLDER_1.setPriority(lowPriority);
         TEST_STAKEHOLDER_1.setSpecification(TEST_SPECIFICATION_1);
+        TEST_SPECIFICATION_1.setStakeholders(List.of(TEST_STAKEHOLDER_1));
     }
 
     @Mock
