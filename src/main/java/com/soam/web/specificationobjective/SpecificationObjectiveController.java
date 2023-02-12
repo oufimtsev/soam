@@ -1,8 +1,9 @@
 package com.soam.web.specificationobjective;
 
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -19,19 +20,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveController {
-    private final SpecificationRepository specificationRepository;
+    private final SpecificationService specificationService;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
 
     public SpecificationObjectiveController(
-            SpecificationRepository specificationRepository,
+            SpecificationService specificationService,
             SpecificationObjectiveRepository specificationObjectiveRepository) {
-        this.specificationRepository = specificationRepository;
+        this.specificationService = specificationService;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        return specificationRepository.findById(specificationId).orElseThrow(IllegalArgumentException::new);
+        return specificationService.getById(specificationId);
     }
 
     @GetMapping("/specificationObjective/list")
@@ -55,9 +56,9 @@ public class SpecificationObjectiveController {
                 });
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String errorHandler(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Incorrect request parameters.");
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 }

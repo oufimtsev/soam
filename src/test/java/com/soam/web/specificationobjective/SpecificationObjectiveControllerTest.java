@@ -2,9 +2,10 @@ package com.soam.web.specificationobjective;
 
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -59,14 +60,15 @@ class SpecificationObjectiveControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
+    private SpecificationService specificationService;
 
     @MockBean
     private SpecificationObjectiveRepository specificationObjectiveRepository;
 
     @BeforeEach
     void setup() {
-        given(specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
+        given(specificationService.getById(TEST_SPECIFICATION.getId())).willReturn(TEST_SPECIFICATION);
+        given(specificationService.getById(EMPTY_SPECIFICATION_ID)).willThrow(new EntityNotFoundException("Specification", EMPTY_SPECIFICATION_ID));
 
         given(specificationObjectiveRepository.findAll()).willReturn(Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE));
         given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE));
