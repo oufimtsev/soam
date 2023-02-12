@@ -1,33 +1,30 @@
 package com.soam.web.specification;
 
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
 @Controller
 public class SpecificationController {
-	@Value("${soam.pageSize}")
-	private int pageSize;
-	private final SpecificationRepository specificationRepository;
+	private final SpecificationService specificationService;
 
-	public SpecificationController(SpecificationRepository specificationRepository) {
-		this.specificationRepository = specificationRepository;
+	public SpecificationController(SpecificationService specificationService) {
+		this.specificationService = specificationService;
 	}
 
 	@GetMapping("/specification/find")
@@ -44,7 +41,7 @@ public class SpecificationController {
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 
-		Page<Specification> specificationResults = findPaginatedForSpecificationName(page, specification.getName());
+		Page<Specification> specificationResults = specificationService.findByPrefix(specification.getName(), page - 1);
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
@@ -60,7 +57,7 @@ public class SpecificationController {
 
 	@GetMapping("/specification/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<Specification> specificationResults = findPaginatedForSpecificationName(page, "");
+		Page<Specification> specificationResults = specificationService.findByPrefix("", page - 1);
 		addPaginationModel(page, model, specificationResults);
 
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, new Specification()); // for breadcrumb
@@ -77,19 +74,15 @@ public class SpecificationController {
 		return ViewConstants.VIEW_SPECIFICATION_LIST;
 	}
 
-	private Page<Specification> findPaginatedForSpecificationName(int page, String name) {
-		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
-		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return specificationRepository.findByNameStartsWithIgnoreCase(name, pageable);
-	}
-
 	@GetMapping("/specification/{specificationId}")
 	public String showDetails(@PathVariable("specificationId") int specificationId, Model model) {
-		return specificationRepository.findById(specificationId)
-				.map(specification -> {
-					model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-					return ViewConstants.VIEW_SPECIFICATION_DETAILS;
-				})
-				.orElse(RedirectConstants.REDIRECT_FIND_SPECIFICATION);
+		Specification specification = specificationService.getById(specificationId);
+		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
+		return ViewConstants.VIEW_SPECIFICATION_DETAILS;
+	}
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public String errorHandler(RedirectAttributes redirectAttributes) {
+		return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
 	}
 }

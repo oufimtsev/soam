@@ -1,10 +1,9 @@
 package com.soam.web.specification;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
-import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
@@ -17,11 +16,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -53,22 +50,12 @@ class SpecificationControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
-
-    @MockBean
-    private SpecificationTemplateRepository specificationTemplateRepository;
-
-    @MockBean
-    private PriorityRepository priorityRepository;
+    private SpecificationService specificationService;
 
     @BeforeEach
     void setup() {
-        given(specificationRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-
-        given(specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
-                .willReturn(new PageImpl<Specification>(Lists.newArrayList(TEST_SPECIFICATION_1)));
+        given(specificationService.getById(TEST_SPECIFICATION_1.getId())).willReturn(TEST_SPECIFICATION_1);
+        given(specificationService.getById(EMPTY_SPECIFICATION_ID)).willThrow(EntityNotFoundException.class);
     }
 
     @Test
@@ -81,7 +68,7 @@ class SpecificationControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<Specification> specifications = new PageImpl<Specification>(Lists.newArrayList(TEST_SPECIFICATION_1, new Specification()));
-        Mockito.when(specificationRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specifications);
+        Mockito.when(specificationService.findByPrefix(anyString(), anyInt())).thenReturn(specifications);
         mockMvc.perform(get("/specifications?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_LIST));
@@ -91,8 +78,8 @@ class SpecificationControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
 
-        Mockito.when(specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
-        Mockito.when(specificationRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        Mockito.when(specificationService.findByPrefix(eq("Test"), anyInt())).thenReturn(specifications);
+        Mockito.when(specificationService.findByPrefix(eq("Not Present"), anyInt())).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/specifications?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -111,7 +98,7 @@ class SpecificationControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        Mockito.when(specificationRepository.findByNameStartsWithIgnoreCase(eq(""), any(Pageable.class))).thenReturn(specifications);
+        Mockito.when(specificationService.findByPrefix(eq(""), anyInt())).thenReturn(specifications);
         mockMvc.perform(get("/specification/list").param("page", "1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
