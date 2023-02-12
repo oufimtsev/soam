@@ -3,9 +3,10 @@ package com.soam.web.specificationobjective;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -27,24 +28,24 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
     private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
+    private final SpecificationService specificationService;
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
     private final ObjectiveTemplateRepository objectiveTemplateRepository;
-    private final SpecificationRepository specificationRepository;
     private final PriorityRepository priorityRepository;
 
     public SpecificationObjectiveFormController(
+            SpecificationService specificationService,
             SpecificationObjectiveRepository specificationObjectiveRepository,
-            ObjectiveTemplateRepository objectiveTemplateRepository,
-            SpecificationRepository specificationRepository, PriorityRepository priorityRepository) {
+            ObjectiveTemplateRepository objectiveTemplateRepository, PriorityRepository priorityRepository) {
+        this.specificationService = specificationService;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
         this.objectiveTemplateRepository = objectiveTemplateRepository;
-        this.specificationRepository = specificationRepository;
         this.priorityRepository = priorityRepository;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
     public Specification populateSpecification(@PathVariable("specificationId") int specificationId) {
-        return specificationRepository.findById(specificationId).orElseThrow(IllegalArgumentException::new);
+        return specificationService.getById(specificationId);
     }
 
     @GetMapping("/specificationObjective/new")
@@ -147,9 +148,9 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String errorHandler(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Incorrect request parameters.");
+    @ExceptionHandler(EntityNotFoundException.class)
+    public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
