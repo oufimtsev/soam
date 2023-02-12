@@ -3,7 +3,6 @@ package com.soam.web.specification;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
@@ -83,9 +82,6 @@ class SpecificationTemplateFormControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private SpecificationRepository specificationRepository;
 
     @MockBean
     private SpecificationTemplateRepository specificationTemplateRepository;

@@ -2,7 +2,6 @@ package com.soam.web.specification;
 
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.web.ModelConstants;
@@ -47,9 +46,6 @@ class SpecificationTemplateControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private SpecificationRepository specificationRepository;
 
     @MockBean
     private SpecificationTemplateRepository specificationTemplateRepository;
