@@ -146,7 +146,9 @@ class SpecificationFormControllerTest {
 
         given(specificationService.save(any())).will(invocation -> {
             Specification specification = invocation.getArgument(0);
-            specification.setId(500);
+            if (specification.getId() == null) {
+                specification.setId(500);
+            }
             return specification;
         });
 

@@ -1,4 +1,4 @@
-package com.soam.service;
+package com.soam.service.specification;
 
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.priority.PriorityType;
@@ -14,6 +14,7 @@ import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
+import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -145,7 +146,7 @@ class SpecificationServiceTest {
 
         Optional<Specification> maybeSpecification = specificationService.findByName(TEST_SPECIFICATION_1.getName());
         assertTrue(maybeSpecification.isPresent());
-        assertEquals(TEST_SPECIFICATION_1.getId(), specificationService.findByName(TEST_SPECIFICATION_1.getName()).get().getId());
+        assertEquals(TEST_SPECIFICATION_1.getId(), maybeSpecification.get().getId());
     }
 
     @Test
