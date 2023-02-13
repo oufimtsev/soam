@@ -6,7 +6,6 @@ import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +18,6 @@ import java.util.List;
 
 @Controller
 public class SpecificationTemplateController implements SoamFormController {
-	@Value("${soam.pageSize}")
-	private int pageSize;
 	private final SpecificationTemplateService specificationTemplateService;
 
 	public SpecificationTemplateController(SpecificationTemplateService specificationTemplateService) {
