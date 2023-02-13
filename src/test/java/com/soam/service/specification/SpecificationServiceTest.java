@@ -41,7 +41,7 @@ class SpecificationServiceTest {
     private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final Stakeholder TEST_STAKEHOLDER_1 = new Stakeholder();
     private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_1 = new SpecificationObjective();
-    private static final StakeholderObjective TEST_STAKEHOLDER_OBJECTIVE = new StakeholderObjective();
+    private static final StakeholderObjective TEST_STAKEHOLDER_OBJECTIVE_1 = new StakeholderObjective();
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE_1 = new SpecificationTemplate();
     private static final StakeholderTemplate TEST_STAKEHOLDER_TEMPLATE_1 = new StakeholderTemplate();
     private static final ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_1 = new ObjectiveTemplate();
@@ -71,11 +71,11 @@ class SpecificationServiceTest {
         TEST_SPECIFICATION_OBJECTIVE_1.setSpecification(TEST_SPECIFICATION_1);
         TEST_SPECIFICATION_1.setSpecificationObjectives(List.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
-        TEST_STAKEHOLDER_OBJECTIVE.setId(10_000);
-        TEST_STAKEHOLDER_OBJECTIVE.setStakeholder(TEST_STAKEHOLDER_1);
-        TEST_STAKEHOLDER_OBJECTIVE.setSpecificationObjective(TEST_SPECIFICATION_OBJECTIVE_1);
-        TEST_STAKEHOLDER_1.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()) {{ add(TEST_STAKEHOLDER_OBJECTIVE); }});
-        TEST_SPECIFICATION_OBJECTIVE_1.setStakeholderObjectives(List.of(TEST_STAKEHOLDER_OBJECTIVE));
+        TEST_STAKEHOLDER_OBJECTIVE_1.setId(10_000);
+        TEST_STAKEHOLDER_OBJECTIVE_1.setStakeholder(TEST_STAKEHOLDER_1);
+        TEST_STAKEHOLDER_OBJECTIVE_1.setSpecificationObjective(TEST_SPECIFICATION_OBJECTIVE_1);
+        TEST_STAKEHOLDER_1.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()) {{ add(TEST_STAKEHOLDER_OBJECTIVE_1); }});
+        TEST_SPECIFICATION_OBJECTIVE_1.setStakeholderObjectives(List.of(TEST_STAKEHOLDER_OBJECTIVE_1));
 
         TEST_SPECIFICATION_TEMPLATE_1.setId(100_000);
         TEST_SPECIFICATION_TEMPLATE_1.setName("Test Specification Template 1");

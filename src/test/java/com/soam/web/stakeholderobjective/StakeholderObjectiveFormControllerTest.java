@@ -6,11 +6,11 @@ import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
-import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.service.stakeholder.StakeholderService;
+import com.soam.service.stakeholderobjective.StakeholderObjectiveService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -23,8 +23,6 @@ import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -108,7 +106,7 @@ class StakeholderObjectiveFormControllerTest {
     private SpecificationObjectiveService specificationObjectiveService;
 
     @MockBean
-    private StakeholderObjectiveRepository stakeholderObjectiveRepository;
+    private StakeholderObjectiveService stakeholderObjectiveService;
 
     @MockBean
     private PriorityRepository priorityRepository;
@@ -130,15 +128,18 @@ class StakeholderObjectiveFormControllerTest {
         given(specificationObjectiveService.getById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(TEST_SPECIFICATION_OBJECTIVE_2);
         given(specificationObjectiveService.getById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willThrow(new EntityNotFoundException("Specification Objective", EMPTY_SPECIFICATION_ID));
 
-        given(stakeholderObjectiveRepository.findById(TEST_STAKEHOLDER_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_OBJECTIVE_1));
-        given(stakeholderObjectiveRepository.findByStakeholderAndSpecificationObjectiveId(TEST_STAKEHOLDER_1, TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_OBJECTIVE_1));
+        given(stakeholderObjectiveService.getById(TEST_STAKEHOLDER_OBJECTIVE_1.getId())).willReturn(TEST_STAKEHOLDER_OBJECTIVE_1);
+        given(stakeholderObjectiveService.getById(EMPTY_STAKEHOLDER_OBJECTIVE_ID)).willThrow(new EntityNotFoundException("Stakeholder Objective", EMPTY_SPECIFICATION_ID));
+        given(stakeholderObjectiveService.existsForStakeholderAndSpecificationObjective(TEST_STAKEHOLDER_1, TEST_SPECIFICATION_OBJECTIVE_1)).willReturn(true);
 
         conversionService.addConverter(String.class, Stakeholder.class, source -> stakeholderService.getById(Integer.parseInt(source)));
         conversionService.addConverter(String.class, SpecificationObjective.class, source -> specificationObjectiveService.getById(Integer.parseInt(source)));
 
-        given(stakeholderObjectiveRepository.save(any())).will(invocation -> {
+        given(stakeholderObjectiveService.save(any())).will(invocation -> {
             StakeholderObjective stakeholderObjective = invocation.getArgument(0);
-            stakeholderObjective.setId(2000);
+            if (stakeholderObjective.getId() == null) {
+                stakeholderObjective.setId(2000);
+            }
             return stakeholderObjective;
         });
     }
@@ -163,7 +164,7 @@ class StakeholderObjectiveFormControllerTest {
 
         mockMvc.perform(get(URL_VIEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId(), EMPTY_STAKEHOLDER_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
     @Test
@@ -258,7 +259,7 @@ class StakeholderObjectiveFormControllerTest {
         mockMvc.perform(get(URL_EDIT_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId(), EMPTY_STAKEHOLDER_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
     @Test
@@ -303,6 +304,6 @@ class StakeholderObjectiveFormControllerTest {
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId(), EMPTY_STAKEHOLDER_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 }
