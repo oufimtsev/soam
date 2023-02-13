@@ -3,16 +3,15 @@ package com.soam.web.stakeholder;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.stakeholder.Stakeholder;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.stakeholder.StakeholderService;
+import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,21 +29,20 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class StakeholderFormController implements SoamFormController {
-    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
     private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
     private final SpecificationService specificationService;
     private final StakeholderService stakeholderService;
-    private final StakeholderTemplateRepository stakeholderTemplateRepository;
+    private final StakeholderTemplateService stakeholderTemplateService;
 
     private final PriorityRepository priorityRepository;
 
     public StakeholderFormController(
             SpecificationService specificationService, StakeholderService stakeholderService,
-            StakeholderTemplateRepository stakeholderTemplateRepository,PriorityRepository priorityRepository) {
+            StakeholderTemplateService stakeholderTemplateService, PriorityRepository priorityRepository) {
         this.specificationService = specificationService;
         this.stakeholderService = stakeholderService;
-        this.stakeholderTemplateRepository = stakeholderTemplateRepository;
+        this.stakeholderTemplateService = stakeholderTemplateService;
         this.priorityRepository = priorityRepository;
     }
 
@@ -154,6 +152,6 @@ public class StakeholderFormController implements SoamFormController {
 
     private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
-        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateService.findAll());
     }
 }

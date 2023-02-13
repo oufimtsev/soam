@@ -4,10 +4,10 @@ import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.service.specification.SpecificationTemplateService;
+import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -37,17 +37,17 @@ public class TemplateLinkController implements SoamFormController {
 
     private final TemplateLinkRepository templateLinkRepository;
     private final SpecificationTemplateService specificationTemplateService;
-    private final StakeholderTemplateRepository stakeholderTemplateRepository;
+    private final StakeholderTemplateService stakeholderTemplateService;
     private final ObjectiveTemplateRepository objectiveTemplateRepository;
 
     public TemplateLinkController(
             TemplateLinkRepository templateLinkRepository,
             SpecificationTemplateService specificationTemplateService,
-            StakeholderTemplateRepository stakeholderTemplateRepository,
+            StakeholderTemplateService stakeholderTemplateService,
             ObjectiveTemplateRepository objectiveTemplateRepository) {
         this.templateLinkRepository = templateLinkRepository;
         this.specificationTemplateService = specificationTemplateService;
-        this.stakeholderTemplateRepository = stakeholderTemplateRepository;
+        this.stakeholderTemplateService = stakeholderTemplateService;
         this.objectiveTemplateRepository = objectiveTemplateRepository;
     }
 
@@ -58,7 +58,7 @@ public class TemplateLinkController implements SoamFormController {
 
     @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES)
     public List<StakeholderTemplate> populateStakeholderTemplates() {
-        return stakeholderTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
+        return stakeholderTemplateService.findAll();
     }
 
     @ModelAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES)

@@ -5,10 +5,10 @@ import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.service.specification.SpecificationTemplateService;
+import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -88,7 +88,7 @@ class TemplateLinkControllerTest {
     private SpecificationTemplateService specificationTemplateService;
 
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplateRepository;
+    private StakeholderTemplateService stakeholderTemplateService;
 
     @MockBean
     private ObjectiveTemplateRepository objectiveTemplateRepository;
@@ -103,12 +103,12 @@ class TemplateLinkControllerTest {
                 TEST_SPECIFICATION_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE, TEST_OBJECTIVE_TEMPLATE_1)
         ).willReturn(Optional.of(TEST_TEMPLATE_LINK));
         given(specificationTemplateService.getById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(TEST_SPECIFICATION_TEMPLATE);
-        given(stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_TEMPLATE.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_TEMPLATE));
+        given(stakeholderTemplateService.getById(TEST_STAKEHOLDER_TEMPLATE.getId())).willReturn(TEST_STAKEHOLDER_TEMPLATE);
         given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_TEMPLATE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_TEMPLATE_1));
         given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_TEMPLATE_2.getId())).willReturn(Optional.of(TEST_OBJECTIVE_TEMPLATE_2));
 
         conversionService.addConverter(String.class, SpecificationTemplate.class, source -> specificationTemplateService.getById(Integer.parseInt(source)));
-        conversionService.addConverter(String.class, StakeholderTemplate.class, source -> stakeholderTemplateRepository.findById(Integer.parseInt(source)).orElse(null));
+        conversionService.addConverter(String.class, StakeholderTemplate.class, source -> stakeholderTemplateService.getById(Integer.parseInt(source)));
         conversionService.addConverter(String.class, ObjectiveTemplate.class, source -> objectiveTemplateRepository.findById(Integer.parseInt(source)).orElse(null));
     }
 

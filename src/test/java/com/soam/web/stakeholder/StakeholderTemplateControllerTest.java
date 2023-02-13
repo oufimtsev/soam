@@ -3,24 +3,20 @@ package com.soam.web.stakeholder;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.stakeholder.StakeholderTemplate;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
+import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -48,17 +44,10 @@ class StakeholderTemplateControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplateRepository;
+    private StakeholderTemplateService stakeholderTemplateService;
 
     @MockBean
     private PriorityRepository priorityRepository;
-
-    @BeforeEach
-    void setup() {
-        given(stakeholderTemplateRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given(stakeholderTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given(stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-    }
 
     @Test
     void tesInitFindForm() throws Exception {
@@ -70,7 +59,7 @@ class StakeholderTemplateControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplates = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1, new StakeholderTemplate()));
-        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(stakeholderTemplates);
+        given(stakeholderTemplateService.findByPrefix(anyString(), anyInt())).willReturn(stakeholderTemplates);
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST));
@@ -80,8 +69,8 @@ class StakeholderTemplateControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<StakeholderTemplate> stakeholders = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
 
-        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(stakeholders);
-        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        given(stakeholderTemplateService.findByPrefix(eq("Test"), anyInt())).willReturn(stakeholders);
+        given(stakeholderTemplateService.findByPrefix(eq("Not Present"), anyInt())).willReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -101,7 +90,7 @@ class StakeholderTemplateControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
-        Mockito.when(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(stakeholderTemplatesPage);
+        given(stakeholderTemplateService.findByPrefix(any(String.class), anyInt())).willReturn(stakeholderTemplatesPage);
 
         mockMvc.perform(get("/stakeholder/template/list"))
                 .andExpect(status().isOk())
