@@ -1,12 +1,12 @@
 package com.soam.web.templatelink;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.service.objective.ObjectiveTemplateService;
 import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
@@ -91,7 +91,7 @@ class TemplateLinkControllerTest {
     private StakeholderTemplateService stakeholderTemplateService;
 
     @MockBean
-    private ObjectiveTemplateRepository objectiveTemplateRepository;
+    private ObjectiveTemplateService objectiveTemplateService;
 
     @Autowired
     private WebConversionService conversionService;
@@ -104,12 +104,12 @@ class TemplateLinkControllerTest {
         ).willReturn(Optional.of(TEST_TEMPLATE_LINK));
         given(specificationTemplateService.getById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(TEST_SPECIFICATION_TEMPLATE);
         given(stakeholderTemplateService.getById(TEST_STAKEHOLDER_TEMPLATE.getId())).willReturn(TEST_STAKEHOLDER_TEMPLATE);
-        given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_TEMPLATE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_TEMPLATE_1));
-        given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_TEMPLATE_2.getId())).willReturn(Optional.of(TEST_OBJECTIVE_TEMPLATE_2));
+        given(objectiveTemplateService.getById(TEST_OBJECTIVE_TEMPLATE_1.getId())).willReturn(TEST_OBJECTIVE_TEMPLATE_1);
+        given(objectiveTemplateService.getById(TEST_OBJECTIVE_TEMPLATE_2.getId())).willReturn(TEST_OBJECTIVE_TEMPLATE_2);
 
         conversionService.addConverter(String.class, SpecificationTemplate.class, source -> specificationTemplateService.getById(Integer.parseInt(source)));
         conversionService.addConverter(String.class, StakeholderTemplate.class, source -> stakeholderTemplateService.getById(Integer.parseInt(source)));
-        conversionService.addConverter(String.class, ObjectiveTemplate.class, source -> objectiveTemplateRepository.findById(Integer.parseInt(source)).orElse(null));
+        conversionService.addConverter(String.class, ObjectiveTemplate.class, source -> objectiveTemplateService.getById(Integer.parseInt(source)));
     }
 
     @Test

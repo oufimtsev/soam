@@ -1,11 +1,11 @@
 package com.soam.web.templatelink;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.service.objective.ObjectiveTemplateService;
 import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
@@ -28,7 +28,6 @@ public class TemplateLinkController implements SoamFormController {
     //human-friendly template link title in form of 'specification template name / stakeholder template name / objective template name'
     private static final String TEMPLATE_LINK_TITLE = "%s / %s / %s";
 
-    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
     private static final Sort TEMPLATE_LINK_SORT = Sort.by(List.of(
             Sort.Order.by("specificationTemplate.name").ignoreCase(),
             Sort.Order.by("stakeholderTemplate.name").ignoreCase(),
@@ -38,17 +37,17 @@ public class TemplateLinkController implements SoamFormController {
     private final TemplateLinkRepository templateLinkRepository;
     private final SpecificationTemplateService specificationTemplateService;
     private final StakeholderTemplateService stakeholderTemplateService;
-    private final ObjectiveTemplateRepository objectiveTemplateRepository;
+    private final ObjectiveTemplateService objectiveTemplateService;
 
     public TemplateLinkController(
             TemplateLinkRepository templateLinkRepository,
             SpecificationTemplateService specificationTemplateService,
             StakeholderTemplateService stakeholderTemplateService,
-            ObjectiveTemplateRepository objectiveTemplateRepository) {
+            ObjectiveTemplateService objectiveTemplateService) {
         this.templateLinkRepository = templateLinkRepository;
         this.specificationTemplateService = specificationTemplateService;
         this.stakeholderTemplateService = stakeholderTemplateService;
-        this.objectiveTemplateRepository = objectiveTemplateRepository;
+        this.objectiveTemplateService = objectiveTemplateService;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES)
@@ -63,7 +62,7 @@ public class TemplateLinkController implements SoamFormController {
 
     @ModelAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES)
     public List<ObjectiveTemplate> populateObjectiveTemplates() {
-        return objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
+        return objectiveTemplateService.findAll();
     }
 
     @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINKS)

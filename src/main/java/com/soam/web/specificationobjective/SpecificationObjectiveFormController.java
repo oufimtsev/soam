@@ -1,10 +1,10 @@
 package com.soam.web.specificationobjective;
 
-import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.objective.ObjectiveTemplateService;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.web.ModelConstants;
@@ -12,7 +12,6 @@ import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,21 +23,20 @@ import java.util.Objects;
 @Controller
 @RequestMapping("/specification/{specificationId}")
 public class SpecificationObjectiveFormController implements SoamFormController {
-    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
     private static final String MSG_MALFORMED_REQUEST = "Malformed request.";
 
     private final SpecificationService specificationService;
     private final SpecificationObjectiveService specificationObjectiveService;
-    private final ObjectiveTemplateRepository objectiveTemplateRepository;
+    private final ObjectiveTemplateService objectiveTemplateService;
     private final PriorityRepository priorityRepository;
 
     public SpecificationObjectiveFormController(
             SpecificationService specificationService,
             SpecificationObjectiveService specificationObjectiveService,
-            ObjectiveTemplateRepository objectiveTemplateRepository, PriorityRepository priorityRepository) {
+            ObjectiveTemplateService objectiveTemplateService, PriorityRepository priorityRepository) {
         this.specificationService = specificationService;
         this.specificationObjectiveService = specificationObjectiveService;
-        this.objectiveTemplateRepository = objectiveTemplateRepository;
+        this.objectiveTemplateService = objectiveTemplateService;
         this.priorityRepository = priorityRepository;
     }
 
@@ -145,6 +143,6 @@ public class SpecificationObjectiveFormController implements SoamFormController 
 
     private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
-        model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateService.findAll());
     }
 }
