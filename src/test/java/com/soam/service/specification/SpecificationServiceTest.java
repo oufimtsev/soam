@@ -77,15 +77,15 @@ class SpecificationServiceTest {
         TEST_STAKEHOLDER_1.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()) {{ add(TEST_STAKEHOLDER_OBJECTIVE_1); }});
         TEST_SPECIFICATION_OBJECTIVE_1.setStakeholderObjectives(List.of(TEST_STAKEHOLDER_OBJECTIVE_1));
 
-        TEST_SPECIFICATION_TEMPLATE_1.setId(100_000);
+        TEST_SPECIFICATION_TEMPLATE_1.setId(15);
         TEST_SPECIFICATION_TEMPLATE_1.setName("Test Specification Template 1");
         TEST_SPECIFICATION_TEMPLATE_1.setDescription("Test Specification Template Description 1");
 
-        TEST_STAKEHOLDER_TEMPLATE_1.setId(1_000_000);
+        TEST_STAKEHOLDER_TEMPLATE_1.setId(105);
         TEST_STAKEHOLDER_TEMPLATE_1.setName("Test Stakeholder Template 1");
         TEST_STAKEHOLDER_TEMPLATE_1.setDescription("Test Stakeholder Template Description 1");
 
-        TEST_OBJECTIVE_TEMPLATE_1.setId(10_000_000);
+        TEST_OBJECTIVE_TEMPLATE_1.setId(1005);
         TEST_OBJECTIVE_TEMPLATE_1.setName("Test Objective Template 1");
         TEST_OBJECTIVE_TEMPLATE_1.setDescription("Test Objective Template Description 1");
 
@@ -166,6 +166,11 @@ class SpecificationServiceTest {
     void saveDeepCopyTest() {
         given(specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(any(), eq(TEST_SPECIFICATION_OBJECTIVE_1.getName())))
                 .will(invocation -> Optional.of(invocation.<Specification>getArgument(0).getSpecificationObjectives().get(0)));
+        given(specificationRepository.save(any())).will(invocation -> {
+            Specification specification = invocation.getArgument(0);
+            specification.setId(90);
+            return specification;
+        });
 
         Specification specification = new Specification();
 

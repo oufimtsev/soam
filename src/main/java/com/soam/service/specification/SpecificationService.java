@@ -72,10 +72,10 @@ public class SpecificationService {
     }
 
     public Specification saveDeepCopy(Specification srcSpecification, Specification dstSpecification) {
-        specificationRepository.save(dstSpecification);
+        Specification savedDstSpecification = specificationRepository.save(dstSpecification);
 
-        dstSpecification.setStakeholders(new ArrayList<>());
-        dstSpecification.setSpecificationObjectives(new ArrayList<>());
+        savedDstSpecification.setStakeholders(new ArrayList<>());
+        savedDstSpecification.setSpecificationObjectives(new ArrayList<>());
 
         //in the loop below we sacrifice the performance somewhat in favour of predictable memory consumption.
         srcSpecification.getSpecificationObjectives().forEach(srcSpecificationObjective -> {
@@ -84,8 +84,8 @@ public class SpecificationService {
             dstSpecificationObjective.setDescription(srcSpecificationObjective.getDescription());
             dstSpecificationObjective.setNotes(srcSpecificationObjective.getNotes());
             dstSpecificationObjective.setPriority(srcSpecificationObjective.getPriority());
-            dstSpecificationObjective.setSpecification(dstSpecification);
-            dstSpecification.getSpecificationObjectives().add(dstSpecificationObjective);
+            dstSpecificationObjective.setSpecification(savedDstSpecification);
+            savedDstSpecification.getSpecificationObjectives().add(dstSpecificationObjective);
             specificationObjectiveRepository.save(dstSpecificationObjective);
         });
         srcSpecification.getStakeholders().forEach(srcStakeholder -> {
@@ -94,13 +94,13 @@ public class SpecificationService {
             dstStakeholder.setDescription(srcStakeholder.getDescription());
             dstStakeholder.setNotes(srcStakeholder.getNotes());
             dstStakeholder.setPriority(srcStakeholder.getPriority());
-            dstStakeholder.setSpecification(dstSpecification);
+            dstStakeholder.setSpecification(savedDstSpecification);
             dstStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
-            dstSpecification.getStakeholders().add(dstStakeholder);
+            savedDstSpecification.getStakeholders().add(dstStakeholder);
             stakeholderRepository.save(dstStakeholder);
 
             srcStakeholder.getStakeholderObjectives().forEach(srcStakeholderObjective ->
-                    specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(dstSpecification, srcStakeholderObjective.getSpecificationObjective().getName())
+                    specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(savedDstSpecification, srcStakeholderObjective.getSpecificationObjective().getName())
                             .ifPresent(so -> {
                                 StakeholderObjective dstStakeholderObjective = new StakeholderObjective();
                                 dstStakeholderObjective.setStakeholder(dstStakeholder);
@@ -112,7 +112,7 @@ public class SpecificationService {
                             }));
         });
 
-        return dstSpecification;
+        return savedDstSpecification;
     }
 
     public Specification saveFromTemplate(SpecificationTemplate srcSpecificationTemplate, Specification dstSpecification) {

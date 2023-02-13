@@ -3,24 +3,20 @@ package com.soam.web.specification;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -48,17 +44,10 @@ class SpecificationTemplateControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationTemplateRepository specificationTemplateRepository;
+    private SpecificationTemplateService specificationTemplateService;
 
     @MockBean
     private PriorityRepository priorityRepository;
-
-    @BeforeEach
-    void setup() {
-        given(specificationTemplateRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationTemplateRepository.findByNameIgnoreCase("Test Spec")).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-    }
 
     @Test
     void tesInitFindForm() throws Exception {
@@ -70,7 +59,7 @@ class SpecificationTemplateControllerTest {
     @Test
     void testProcessFindFormSuccess() throws Exception {
         Page<SpecificationTemplate> specificationTemplates = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1, new SpecificationTemplate()));
-        Mockito.when(specificationTemplateRepository.findByNameStartsWithIgnoreCase(anyString(), any(Pageable.class))).thenReturn(specificationTemplates);
+        given(specificationTemplateService.findByPrefix(anyString(), anyInt())).willReturn(specificationTemplates);
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST));
@@ -80,8 +69,8 @@ class SpecificationTemplateControllerTest {
     void testProcessFindFormByName() throws Exception {
         Page<SpecificationTemplate> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
 
-        Mockito.when(specificationTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class))).thenReturn(specifications);
-        Mockito.when(specificationTemplateRepository.findByNameStartsWithIgnoreCase(eq("Not Present"), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        given(specificationTemplateService.findByPrefix(eq("Test"), anyInt())).willReturn(specifications);
+        given(specificationTemplateService.findByPrefix(eq("Not Present"), anyInt())).willReturn(new PageImpl<>(new ArrayList<>()));
 
         mockMvc.perform(get("/specification/templates?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -101,7 +90,7 @@ class SpecificationTemplateControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        Mockito.when(specificationTemplateRepository.findByNameStartsWithIgnoreCase(any(String.class), any(Pageable.class))).thenReturn(specificationTemplatesPage);
+        given(specificationTemplateService.findByPrefix(any(String.class), anyInt())).willReturn(specificationTemplatesPage);
 
         mockMvc.perform(get("/specification/template/list"))
                 .andExpect(status().isOk())

@@ -3,11 +3,11 @@ package com.soam.web.templatelink;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -36,24 +36,24 @@ public class TemplateLinkController implements SoamFormController {
     ));
 
     private final TemplateLinkRepository templateLinkRepository;
-    private final SpecificationTemplateRepository specificationTemplateRepository;
+    private final SpecificationTemplateService specificationTemplateService;
     private final StakeholderTemplateRepository stakeholderTemplateRepository;
     private final ObjectiveTemplateRepository objectiveTemplateRepository;
 
     public TemplateLinkController(
             TemplateLinkRepository templateLinkRepository,
-            SpecificationTemplateRepository specificationTemplateRepository,
+            SpecificationTemplateService specificationTemplateService,
             StakeholderTemplateRepository stakeholderTemplateRepository,
             ObjectiveTemplateRepository objectiveTemplateRepository) {
         this.templateLinkRepository = templateLinkRepository;
-        this.specificationTemplateRepository = specificationTemplateRepository;
+        this.specificationTemplateService = specificationTemplateService;
         this.stakeholderTemplateRepository = stakeholderTemplateRepository;
         this.objectiveTemplateRepository = objectiveTemplateRepository;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES)
     public List<SpecificationTemplate> populateSpecificationTemplates() {
-        return specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT);
+        return specificationTemplateService.findAll();
     }
 
     @ModelAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES)

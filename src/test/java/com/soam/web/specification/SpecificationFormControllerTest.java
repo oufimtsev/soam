@@ -4,12 +4,12 @@ import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
+import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -45,6 +45,7 @@ class SpecificationFormControllerTest {
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
 
     private static final int EMPTY_SPECIFICATION_ID = 999;
+    private static final int EMPTY_SPECIFICATION_TEMPLATE_ID = 9999;
 
     private static final String URL_NEW_SPECIFICATION = "/specification/new";
     private static final String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
@@ -128,14 +129,15 @@ class SpecificationFormControllerTest {
     private SpecificationService specificationService;
 
     @MockBean
-    private SpecificationTemplateRepository specificationTemplateRepository;
+    private SpecificationTemplateService specificationTemplateService;
 
     @MockBean
     private PriorityRepository priorityRepository;
 
     @BeforeEach
     void setup() {
-        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
+        given(specificationTemplateService.getById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(TEST_SPECIFICATION_TEMPLATE);
+        given(specificationTemplateService.getById(EMPTY_SPECIFICATION_TEMPLATE_ID)).willThrow(new EntityNotFoundException("Specification Template", EMPTY_SPECIFICATION_TEMPLATE_ID));
 
         given(specificationService.getById(TEST_SPECIFICATION_1.getId())).willReturn(TEST_SPECIFICATION_1);
         given(specificationService.getById(TEST_SPECIFICATION_2.getId())).willReturn(TEST_SPECIFICATION_2);
@@ -227,7 +229,7 @@ class SpecificationFormControllerTest {
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "desc")
                         .param("collectionType", SpecificationFormController.CREATE_MODE_FROM_TEMPLATE)
-                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_TEMPLATE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));

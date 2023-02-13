@@ -3,15 +3,14 @@ package com.soam.web.specification;
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
+import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -25,24 +24,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class SpecificationFormController implements SoamFormController {
-    private static final Sort NAME_CASE_INSENSITIVE_SORT = Sort.by(Sort.Order.by("name").ignoreCase());
-
     public static String CREATE_MODE_COPY_SPECIFICATION = "srcSpecification";
     public static String CREATE_MODE_FROM_TEMPLATE = "templateDeepCopy";
 
     private final SpecificationService specificationService;
-    private final SpecificationTemplateRepository specificationTemplateRepository;
+    private final SpecificationTemplateService specificationTemplateService;
     private final PriorityRepository priorityRepository;
 
     public SpecificationFormController(
             SpecificationService specificationService,
-            SpecificationTemplateRepository specificationTemplateRepository, PriorityRepository priorityRepository) {
+            SpecificationTemplateService specificationTemplateService, PriorityRepository priorityRepository) {
         this.specificationService = specificationService;
-        this.specificationTemplateRepository = specificationTemplateRepository;
+        this.specificationTemplateService = specificationTemplateService;
         this.priorityRepository = priorityRepository;
     }
 
@@ -85,18 +81,13 @@ public class SpecificationFormController implements SoamFormController {
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         } else if (CREATE_MODE_FROM_TEMPLATE.equals(collectionType)) {
             //creating new Specification as a deep copy of source Specification Template
-            Optional<SpecificationTemplate> maybeSrcSpecificationTemplate = specificationTemplateRepository.findById(collectionItemId);
-            if (maybeSrcSpecificationTemplate.isPresent()) {
-                specification = specificationService.saveFromTemplate(maybeSrcSpecificationTemplate.get(), specification);
-                redirectAttributes.addFlashAttribute(
-                        SoamFormController.FLASH_SUCCESS,
-                        String.format("Created %s", getSpecificationOverviewMessage(specification))
-                );
-                return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-            } else {
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Source Specification Template does not exist.");
-                return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
-            }
+            SpecificationTemplate srcSpecificationTemplate = specificationTemplateService.getById(collectionItemId);
+            specification = specificationService.saveFromTemplate(srcSpecificationTemplate, specification);
+            redirectAttributes.addFlashAttribute(
+                    SoamFormController.FLASH_SUCCESS,
+                    String.format("Created %s", getSpecificationOverviewMessage(specification))
+            );
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         } else {
             //creating new Specification manually or as a shall copy of existing Specification Template
             specification = specificationService.save(specification);
@@ -173,6 +164,6 @@ public class SpecificationFormController implements SoamFormController {
 
     private void populateFormModel(Model model) {
         model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
-        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateRepository.findAll(NAME_CASE_INSENSITIVE_SORT));
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateService.findAll());
     }
 }
