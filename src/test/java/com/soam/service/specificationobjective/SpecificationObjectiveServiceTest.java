@@ -22,7 +22,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class SpecificationObjectiveServiceTest {
+class SpecificationObjectiveServiceTest {
     private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE_1 = new SpecificationObjective();
     private static final int EMPTY_SPECIFICATION_OBJECTIVE_ID = 9999;

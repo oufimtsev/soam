@@ -23,7 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class StakeholderServiceTest {
+class StakeholderServiceTest {
     private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final Stakeholder TEST_STAKEHOLDER_1 = new Stakeholder();
     private static final int EMPTY_STAKEHOLDER_ID = 999;
