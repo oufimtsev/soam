@@ -2,7 +2,6 @@ package com.soam.web.specification;
 
 import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
@@ -27,14 +26,11 @@ public class SpecificationTemplateFormController implements SoamFormController {
     public static String CREATE_MODE_FROM_TEMPLATE = "templateDeepCopy";
 
     private final SpecificationTemplateService specificationTemplateService;
-    private final TemplateLinkRepository templateLinkRepository;
     private final PriorityRepository priorityRepository;
 
     public SpecificationTemplateFormController(
-            SpecificationTemplateService specificationTemplateService,
-            TemplateLinkRepository templateLinkRepository, PriorityRepository priorityRepository) {
+            SpecificationTemplateService specificationTemplateService, PriorityRepository priorityRepository) {
         this.specificationTemplateService = specificationTemplateService;
-        this.templateLinkRepository = templateLinkRepository;
         this.priorityRepository = priorityRepository;
     }
 

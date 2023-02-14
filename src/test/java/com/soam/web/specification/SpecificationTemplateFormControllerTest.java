@@ -6,7 +6,6 @@ import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
-import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
@@ -99,9 +98,6 @@ class SpecificationTemplateFormControllerTest {
 
     @MockBean
     private SpecificationTemplateService specificationTemplateService;
-
-    @MockBean
-    private TemplateLinkRepository templateLinkRepository;
 
     @MockBean
     private PriorityRepository priorityRepository;
