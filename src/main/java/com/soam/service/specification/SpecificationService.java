@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,6 +72,7 @@ public class SpecificationService {
         return specificationRepository.save(specification);
     }
 
+    @Transactional
     public Specification saveDeepCopy(Specification srcSpecification, Specification dstSpecification) {
         Specification savedDstSpecification = specificationRepository.save(dstSpecification);
 
@@ -115,6 +117,7 @@ public class SpecificationService {
         return savedDstSpecification;
     }
 
+    @Transactional
     public Specification saveFromTemplate(SpecificationTemplate srcSpecificationTemplate, Specification dstSpecification) {
         specificationRepository.save(dstSpecification);
 

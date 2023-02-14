@@ -10,7 +10,6 @@ import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,7 +43,6 @@ public class SpecificationTemplateFormController implements SoamFormController {
     }
 
     @PostMapping("/specification/template/new")
-    @Transactional
     public String processCreationForm(
             @Valid SpecificationTemplate specificationTemplate, BindingResult result,
             @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,

@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -55,6 +56,7 @@ public class SpecificationTemplateService {
         return specificationTemplateRepository.save(specificationTemplate);
     }
 
+    @Transactional
     public SpecificationTemplate saveDeepCopy(SpecificationTemplate srcSpecificationTemplate, SpecificationTemplate dstSpecificationTemplate) {
         SpecificationTemplate savedDstSpecificationTemplate = specificationTemplateRepository.save(dstSpecificationTemplate);
 
