@@ -1,10 +1,10 @@
 package com.soam.web.specificationobjective;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.objective.ObjectiveTemplateService;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.web.ModelConstants;
@@ -28,16 +28,16 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     private final SpecificationService specificationService;
     private final SpecificationObjectiveService specificationObjectiveService;
     private final ObjectiveTemplateService objectiveTemplateService;
-    private final PriorityRepository priorityRepository;
+    private final PriorityService priorityService;
 
     public SpecificationObjectiveFormController(
             SpecificationService specificationService,
             SpecificationObjectiveService specificationObjectiveService,
-            ObjectiveTemplateService objectiveTemplateService, PriorityRepository priorityRepository) {
+            ObjectiveTemplateService objectiveTemplateService, PriorityService priorityService) {
         this.specificationService = specificationService;
         this.specificationObjectiveService = specificationObjectiveService;
         this.objectiveTemplateService = objectiveTemplateService;
-        this.priorityRepository = priorityRepository;
+        this.priorityService = priorityService;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
@@ -142,7 +142,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityService.findAll());
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateService.findAll());
     }
 }

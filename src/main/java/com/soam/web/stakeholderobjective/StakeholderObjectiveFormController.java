@@ -1,11 +1,11 @@
 package com.soam.web.stakeholderobjective;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.service.stakeholder.StakeholderService;
@@ -36,17 +36,17 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     private final StakeholderService stakeholderService;
     private final SpecificationObjectiveService specificationObjectiveService;
     private final StakeholderObjectiveService stakeholderObjectiveService;
-    private final PriorityRepository priorityRepository;
+    private final PriorityService priorityService;
 
     public StakeholderObjectiveFormController(
             SpecificationService specificationService, StakeholderService stakeholderService,
             SpecificationObjectiveService specificationObjectiveService,
-            StakeholderObjectiveService stakeholderObjectiveService, PriorityRepository priorityRepository) {
+            StakeholderObjectiveService stakeholderObjectiveService, PriorityService priorityService) {
         this.specificationService = specificationService;
         this.stakeholderService = stakeholderService;
         this.specificationObjectiveService = specificationObjectiveService;
         this.stakeholderObjectiveService = stakeholderObjectiveService;
-        this.priorityRepository = priorityRepository;
+        this.priorityService = priorityService;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
@@ -185,7 +185,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityService.findAll());
     }
 
     static class IllegalStakeholderIdException extends IllegalArgumentException {

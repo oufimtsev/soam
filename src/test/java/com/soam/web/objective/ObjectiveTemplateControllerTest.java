@@ -1,7 +1,6 @@
 package com.soam.web.objective;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.service.objective.ObjectiveTemplateService;
 import com.soam.web.ModelConstants;
@@ -45,9 +44,6 @@ class ObjectiveTemplateControllerTest {
 
     @MockBean
     private ObjectiveTemplateService objectiveTemplateService;
-
-    @MockBean
-    private PriorityRepository priorityRepository;
 
     @Test
     void tesInitFindForm() throws Exception {

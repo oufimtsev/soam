@@ -1,8 +1,8 @@
 package com.soam.web.stakeholder;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
@@ -22,12 +22,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class StakeholderTemplateFormController implements SoamFormController {
     private final StakeholderTemplateService stakeholderTemplateService;
-    private final PriorityRepository priorityRepository;
+    private final PriorityService priorityService;
 
     public StakeholderTemplateFormController(
-            StakeholderTemplateService stakeholderTemplateService, PriorityRepository priorityRepository) {
+            StakeholderTemplateService stakeholderTemplateService, PriorityService priorityService) {
         this.stakeholderTemplateService = stakeholderTemplateService;
-        this.priorityRepository = priorityRepository;
+        this.priorityService = priorityService;
     }
 
     @GetMapping("/stakeholder/template/new")
@@ -106,7 +106,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityService.findAll());
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateService.findAll());
     }
 }

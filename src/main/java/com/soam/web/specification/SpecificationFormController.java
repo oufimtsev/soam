@@ -1,9 +1,9 @@
 package com.soam.web.specification;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
@@ -32,14 +32,14 @@ public class SpecificationFormController implements SoamFormController {
 
     private final SpecificationService specificationService;
     private final SpecificationTemplateService specificationTemplateService;
-    private final PriorityRepository priorityRepository;
+    private final PriorityService priorityService;
 
     public SpecificationFormController(
             SpecificationService specificationService,
-            SpecificationTemplateService specificationTemplateService, PriorityRepository priorityRepository) {
+            SpecificationTemplateService specificationTemplateService, PriorityService priorityService) {
         this.specificationService = specificationService;
         this.specificationTemplateService = specificationTemplateService;
-        this.priorityRepository = priorityRepository;
+        this.priorityService = priorityService;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATIONS)
@@ -163,7 +163,7 @@ public class SpecificationFormController implements SoamFormController {
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityService.findAll());
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateService.findAll());
     }
 }

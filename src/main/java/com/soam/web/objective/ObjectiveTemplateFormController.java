@@ -1,9 +1,9 @@
 package com.soam.web.objective;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.priority.PriorityRepository;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.objective.ObjectiveTemplateService;
+import com.soam.service.priority.PriorityService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -22,12 +22,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class ObjectiveTemplateFormController implements SoamFormController {
     private final ObjectiveTemplateService objectiveTemplateService;
-    private final PriorityRepository priorityRepository;
+    private final PriorityService priorityService;
 
     public ObjectiveTemplateFormController(
-            ObjectiveTemplateService objectiveTemplateService, PriorityRepository priorityRepository) {
+            ObjectiveTemplateService objectiveTemplateService, PriorityService priorityService) {
         this.objectiveTemplateService = objectiveTemplateService;
-        this.priorityRepository = priorityRepository;
+        this.priorityService = priorityService;
     }
 
     @GetMapping("/objective/template/new")
@@ -106,7 +106,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityService.findAll());
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateService.findAll());
     }
 }

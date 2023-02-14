@@ -1,6 +1,5 @@
 package com.soam.web.stakeholder;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
@@ -8,6 +7,7 @@ import com.soam.model.stakeholder.Stakeholder;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.stakeholder.StakeholderService;
 import com.soam.service.stakeholder.StakeholderTemplateService;
@@ -121,7 +121,7 @@ class StakeholderFormControllerTest {
     private StakeholderTemplateService stakeholderTemplateService;
 
     @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @Autowired
     private WebConversionService conversionService;

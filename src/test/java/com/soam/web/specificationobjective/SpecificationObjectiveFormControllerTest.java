@@ -1,11 +1,11 @@
 package com.soam.web.specificationobjective;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.objective.ObjectiveTemplateService;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.web.ModelConstants;
@@ -100,7 +100,7 @@ class SpecificationObjectiveFormControllerTest {
     private ObjectiveTemplateService objectiveTemplateService;
 
     @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @Autowired
     private WebConversionService conversionService;

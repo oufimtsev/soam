@@ -1,6 +1,5 @@
 package com.soam.web.stakeholder;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.service.stakeholder.StakeholderTemplateService;
@@ -45,9 +44,6 @@ class StakeholderTemplateControllerTest {
 
     @MockBean
     private StakeholderTemplateService stakeholderTemplateService;
-
-    @MockBean
-    private PriorityRepository priorityRepository;
 
     @Test
     void tesInitFindForm() throws Exception {

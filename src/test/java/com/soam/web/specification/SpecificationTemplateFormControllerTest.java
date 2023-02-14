@@ -1,12 +1,12 @@
 package com.soam.web.specification;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
@@ -100,7 +100,7 @@ class SpecificationTemplateFormControllerTest {
     private SpecificationTemplateService specificationTemplateService;
 
     @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @BeforeEach
     void setup() {

@@ -1,9 +1,9 @@
 package com.soam.web.stakeholder;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.specification.Specification;
 import com.soam.model.stakeholder.Stakeholder;
 import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.stakeholder.StakeholderService;
 import com.soam.service.stakeholder.StakeholderTemplateService;
@@ -34,16 +34,15 @@ public class StakeholderFormController implements SoamFormController {
     private final SpecificationService specificationService;
     private final StakeholderService stakeholderService;
     private final StakeholderTemplateService stakeholderTemplateService;
-
-    private final PriorityRepository priorityRepository;
+    private final PriorityService priorityService;
 
     public StakeholderFormController(
             SpecificationService specificationService, StakeholderService stakeholderService,
-            StakeholderTemplateService stakeholderTemplateService, PriorityRepository priorityRepository) {
+            StakeholderTemplateService stakeholderTemplateService, PriorityService priorityService) {
         this.specificationService = specificationService;
         this.stakeholderService = stakeholderService;
         this.stakeholderTemplateService = stakeholderTemplateService;
-        this.priorityRepository = priorityRepository;
+        this.priorityService = priorityService;
     }
 
     @ModelAttribute(ModelConstants.ATTR_SPECIFICATION)
@@ -151,7 +150,7 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     private void populateFormModel(Model model) {
-        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityRepository.findAll());
+        model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityService.findAll());
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateService.findAll());
     }
 }
