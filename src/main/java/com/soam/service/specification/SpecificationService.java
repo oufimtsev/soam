@@ -173,6 +173,16 @@ public class SpecificationService {
         return dstSpecification;
     }
 
+    @Transactional
+    public void deleteCascade(Specification specification) {
+        specification.getStakeholders().forEach(stakeholder -> {
+            stakeholder.getStakeholderObjectives().forEach(stakeholderObjectiveRepository::delete);
+            stakeholderRepository.delete(stakeholder);
+        });
+        specification.getSpecificationObjectives().forEach(specificationObjectiveRepository::delete);
+        specificationRepository.delete(specification);
+    }
+
     public void delete(Specification specification) {
         specificationRepository.delete(specification);
     }
