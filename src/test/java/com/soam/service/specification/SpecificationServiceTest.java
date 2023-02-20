@@ -204,4 +204,13 @@ class SpecificationServiceTest {
         specificationService.delete(new Specification());
         verify(specificationRepository, times(1)).delete(any());
     }
+
+    @Test
+    void deleteCascadeTest() {
+        specificationService.deleteCascade(TEST_SPECIFICATION_1);
+        verify(specificationRepository, times(1)).delete(TEST_SPECIFICATION_1);
+        verify(stakeholderRepository, times(1)).delete(TEST_STAKEHOLDER_1);
+        verify(specificationObjectiveRepository, times(1)).delete(TEST_SPECIFICATION_OBJECTIVE_1);
+        verify(stakeholderObjectiveRepository, times(1)).delete(TEST_STAKEHOLDER_OBJECTIVE_1);
+    }
 }

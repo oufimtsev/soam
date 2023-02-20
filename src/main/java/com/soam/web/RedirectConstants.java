@@ -23,6 +23,8 @@ public final class RedirectConstants {
 
     public static final String REDIRECT_TEMPLATE_LINK_LIST = "redirect:/templateLink/list";
 
+    public static final String REDIRECT_ADMIN_DELETE_SPECIFICATION = "redirect:/admin/deleteSpecification/list";
+
     private RedirectConstants() {
     }
 }
