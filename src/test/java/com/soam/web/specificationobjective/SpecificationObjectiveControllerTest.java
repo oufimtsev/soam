@@ -2,9 +2,10 @@ package com.soam.web.specificationobjective;
 
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
-import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.specification.SpecificationService;
+import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -16,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -59,17 +58,18 @@ class SpecificationObjectiveControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
+    private SpecificationService specificationService;
 
     @MockBean
-    private SpecificationObjectiveRepository specificationObjectiveRepository;
+    private SpecificationObjectiveService specificationObjectiveService;
 
     @BeforeEach
     void setup() {
-        given(specificationRepository.findById(TEST_SPECIFICATION.getId())).willReturn(Optional.of(TEST_SPECIFICATION));
+        given(specificationService.getById(TEST_SPECIFICATION.getId())).willReturn(TEST_SPECIFICATION);
+        given(specificationService.getById(EMPTY_SPECIFICATION_ID)).willThrow(new EntityNotFoundException("Specification", EMPTY_SPECIFICATION_ID));
 
-        given(specificationObjectiveRepository.findAll()).willReturn(Lists.newArrayList(TEST_SPECIFICATION_OBJECTIVE));
-        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE));
+        given(specificationObjectiveService.getById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(TEST_SPECIFICATION_OBJECTIVE);
+        given(specificationObjectiveService.getById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willThrow(new EntityNotFoundException("Specification Objective", EMPTY_SPECIFICATION_OBJECTIVE_ID));
     }
 
     @Test
@@ -98,6 +98,6 @@ class SpecificationObjectiveControllerTest {
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),
                         EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 }

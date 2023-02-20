@@ -1,16 +1,12 @@
 package com.soam.web.stakeholder;
 
 import com.soam.model.stakeholder.StakeholderTemplate;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
+import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,12 +18,10 @@ import java.util.List;
 
 @Controller
 public class StakeholderTemplateController implements SoamFormController {
-	@Value("${soam.pageSize}")
-	private int pageSize;
-	private final StakeholderTemplateRepository stakeholderTemplateRepository;
+	private final StakeholderTemplateService stakeholderTemplateService;
 
-	public StakeholderTemplateController(StakeholderTemplateRepository stakeholderTemplateRepository) {
-		this.stakeholderTemplateRepository = stakeholderTemplateRepository;
+	public StakeholderTemplateController(StakeholderTemplateService stakeholderTemplateService) {
+		this.stakeholderTemplateService = stakeholderTemplateService;
 	}
 
 	@GetMapping("/stakeholder/template/find")
@@ -45,7 +39,7 @@ public class StakeholderTemplateController implements SoamFormController {
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 
-		Page<StakeholderTemplate> stakeholderResults = findPaginatedForStakeholderTemplateName(page, stakeholderTemplate.getName());
+		Page<StakeholderTemplate> stakeholderResults = stakeholderTemplateService.findByPrefix(stakeholderTemplate.getName(), page - 1);
 		if (stakeholderResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
@@ -61,7 +55,7 @@ public class StakeholderTemplateController implements SoamFormController {
 
 	@GetMapping("/stakeholder/template/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<StakeholderTemplate> stakeholderTemplateResults = findPaginatedForStakeholderTemplateName(page, "");
+		Page<StakeholderTemplate> stakeholderTemplateResults = stakeholderTemplateService.findByPrefix("", page - 1);
 		addPaginationModel(page, model, stakeholderTemplateResults);
 		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
 		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;
@@ -75,11 +69,5 @@ public class StakeholderTemplateController implements SoamFormController {
 		model.addAttribute(ModelConstants.ATTR_TOTAL_ITEMS, paginated.getTotalElements());
 		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplates);
 		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;
-	}
-
-	private Page<StakeholderTemplate> findPaginatedForStakeholderTemplateName(int page, String name) {
-		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
-		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 }

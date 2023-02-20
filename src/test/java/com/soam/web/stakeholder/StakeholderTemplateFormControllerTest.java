@@ -1,12 +1,13 @@
 package com.soam.web.stakeholder;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.stakeholder.StakeholderTemplate;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
+import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -14,7 +15,6 @@ import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,9 +31,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StakeholderTemplateFormController.class)
 class StakeholderTemplateFormControllerTest {
-    private static final StakeholderTemplate TEST_STAKEHOLDER_1 = new StakeholderTemplate();
-    private static final StakeholderTemplate TEST_STAKEHOLDER_2 = new StakeholderTemplate();
-    private static final int EMPTY_STAKEHOLDER_ID = 200;
+    private static final StakeholderTemplate TEST_STAKEHOLDER_TEMPLATE_1 = new StakeholderTemplate();
+    private static final StakeholderTemplate TEST_STAKEHOLDER_TEMPLATE_2 = new StakeholderTemplate();
+    private static final int EMPTY_STAKEHOLDER_TEMPLATE_ID = 999;
 
     private static final String URL_NEW_TEMPLATE =  "/stakeholder/template/new";
     private static final String URL_EDIT_TEMPLATE =  "/stakeholder/template/{stakeholderId}/edit";
@@ -45,17 +45,17 @@ class StakeholderTemplateFormControllerTest {
         lowPriority.setId(1);
         lowPriority.setSequence(1);
 
-        TEST_STAKEHOLDER_1.setId(100);
-        TEST_STAKEHOLDER_1.setName("Test Spec 1");
-        TEST_STAKEHOLDER_1.setDescription("desc");
-        TEST_STAKEHOLDER_1.setNotes("notes");
-        TEST_STAKEHOLDER_1.setPriority(lowPriority);
+        TEST_STAKEHOLDER_TEMPLATE_1.setId(100);
+        TEST_STAKEHOLDER_TEMPLATE_1.setName("Test Spec 1");
+        TEST_STAKEHOLDER_TEMPLATE_1.setDescription("desc");
+        TEST_STAKEHOLDER_TEMPLATE_1.setNotes("notes");
+        TEST_STAKEHOLDER_TEMPLATE_1.setPriority(lowPriority);
         
-        TEST_STAKEHOLDER_2.setId(101);
-        TEST_STAKEHOLDER_2.setName("Test Spec 2");
-        TEST_STAKEHOLDER_2.setDescription("desc");
-        TEST_STAKEHOLDER_2.setNotes("notes");
-        TEST_STAKEHOLDER_2.setPriority(lowPriority);
+        TEST_STAKEHOLDER_TEMPLATE_2.setId(101);
+        TEST_STAKEHOLDER_TEMPLATE_2.setName("Test Spec 2");
+        TEST_STAKEHOLDER_TEMPLATE_2.setDescription("desc");
+        TEST_STAKEHOLDER_TEMPLATE_2.setNotes("notes");
+        TEST_STAKEHOLDER_TEMPLATE_2.setPriority(lowPriority);
 
         SpecificationTemplate testSpecificationTemplate = new SpecificationTemplate();
         testSpecificationTemplate.setId(1000);
@@ -73,26 +73,27 @@ class StakeholderTemplateFormControllerTest {
 
         TemplateLink testTemplateLink = new TemplateLink();
         testTemplateLink.setSpecificationTemplate(testSpecificationTemplate);
-        testTemplateLink.setStakeholderTemplate(TEST_STAKEHOLDER_2);
+        testTemplateLink.setStakeholderTemplate(TEST_STAKEHOLDER_TEMPLATE_2);
         testTemplateLink.setObjectiveTemplate(testObjectiveTemplate);
 
-        TEST_STAKEHOLDER_2.setTemplateLinks(Lists.newArrayList(testTemplateLink));
+        TEST_STAKEHOLDER_TEMPLATE_2.setTemplateLinks(Lists.newArrayList(testTemplateLink));
     }
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplateRepository;
+    private StakeholderTemplateService stakeholderTemplateService;
 
     @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @BeforeEach
     void setup() {
-        given(stakeholderTemplateRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given(stakeholderTemplateRepository.findByNameIgnoreCase(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given(stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given(stakeholderTemplateService.getById(TEST_STAKEHOLDER_TEMPLATE_1.getId())).willReturn(TEST_STAKEHOLDER_TEMPLATE_1);
+        given(stakeholderTemplateService.getById(TEST_STAKEHOLDER_TEMPLATE_2.getId())).willReturn(TEST_STAKEHOLDER_TEMPLATE_2);
+        given(stakeholderTemplateService.getById(EMPTY_STAKEHOLDER_TEMPLATE_ID)).willThrow(new EntityNotFoundException("Stakeholder Template", EMPTY_STAKEHOLDER_TEMPLATE_ID));
+        given(stakeholderTemplateService.findByName(TEST_STAKEHOLDER_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_TEMPLATE_1));
     }
 
     @Test
@@ -115,7 +116,7 @@ class StakeholderTemplateFormControllerTest {
 
     @Test
     void testProcessCreationFormError() throws Exception {
-        mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_STAKEHOLDER_1.getName())
+        mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", TEST_STAKEHOLDER_TEMPLATE_1.getName())
                         .param("notes", "spec notes").param("description", "Description"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
@@ -132,17 +133,15 @@ class StakeholderTemplateFormControllerTest {
 
     @Test
     void testInitUpdateForm() throws Exception {
-        Mockito.when(stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
-
-        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId()))
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
-                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
+                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, hasProperty("name", is(TEST_STAKEHOLDER_TEMPLATE_1.getName()))))
                 .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, hasProperty("description", is("desc"))))
                 .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, hasProperty("notes", is("notes"))))
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_STAKEHOLDER_ID))
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_STAKEHOLDER_TEMPLATE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
@@ -150,16 +149,15 @@ class StakeholderTemplateFormControllerTest {
 
     @Test
     void testProcessUpdateFormSuccess() throws Exception {
-        Mockito.when(stakeholderTemplateRepository.findById(EMPTY_STAKEHOLDER_ID)).thenReturn(Optional.empty());
-        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE_1.getId())
                         .param("name", "New Test Stakeholder")
                         .param("notes", "notes here")
                         .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
 
-        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())
-                        .param("name", TEST_STAKEHOLDER_1.getName())
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE_1.getId())
+                        .param("name", TEST_STAKEHOLDER_TEMPLATE_1.getName())
                         .param("notes", "notes here")
                         .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
@@ -168,7 +166,7 @@ class StakeholderTemplateFormControllerTest {
 
     @Test
     void testProcessUpdateFormError() throws Exception {
-        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_1.getId())
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE_1.getId())
                         .param("name", "New Test Stakeholder")
                         .param("notes", "notes")
                         .param("description", ""))
@@ -177,8 +175,8 @@ class StakeholderTemplateFormControllerTest {
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "description"))
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_STAKEHOLDER_ID)
-                        .param("name", TEST_STAKEHOLDER_1.getName())
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_STAKEHOLDER_TEMPLATE_ID)
+                        .param("name", TEST_STAKEHOLDER_TEMPLATE_1.getName())
                         .param("notes", "notes")
                         .param("description", ""))
                 .andExpect(status().isOk())
@@ -189,8 +187,8 @@ class StakeholderTemplateFormControllerTest {
 
     @Test
     void testProcessDeleteSuccess() throws Exception {
-        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_1.getId())
-                        .param("id", String.valueOf(TEST_STAKEHOLDER_1.getId())))
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE_1.getId())
+                        .param("id", String.valueOf(TEST_STAKEHOLDER_TEMPLATE_1.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
@@ -198,22 +196,22 @@ class StakeholderTemplateFormControllerTest {
 
     @Test
     void testProcessDeleteError() throws Exception {
-        mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_STAKEHOLDER_ID)
-                        .param("id", String.valueOf(EMPTY_STAKEHOLDER_ID)))
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_STAKEHOLDER_TEMPLATE_ID)
+                        .param("id", String.valueOf(EMPTY_STAKEHOLDER_TEMPLATE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
 
-        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_1.getId())
-                        .param("id", String.valueOf(EMPTY_STAKEHOLDER_ID)))
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE_1.getId())
+                        .param("id", String.valueOf(EMPTY_STAKEHOLDER_TEMPLATE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
 
-        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_2.getId())
-                        .param("id", String.valueOf(TEST_STAKEHOLDER_2.getId())))
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE_2.getId())
+                        .param("id", String.valueOf(TEST_STAKEHOLDER_TEMPLATE_2.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
                 .andExpect(view().name(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST));
     }
 }

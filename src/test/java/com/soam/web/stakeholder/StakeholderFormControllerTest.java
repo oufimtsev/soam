@@ -1,15 +1,16 @@
 package com.soam.web.stakeholder;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.model.stakeholder.Stakeholder;
-import com.soam.model.stakeholder.StakeholderRepository;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjective;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
+import com.soam.service.specification.SpecificationService;
+import com.soam.service.stakeholder.StakeholderService;
+import com.soam.service.stakeholder.StakeholderTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -17,13 +18,10 @@ import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -33,7 +31,6 @@ import java.util.TreeSet;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -115,50 +112,42 @@ class StakeholderFormControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
+    private SpecificationService specificationService;
 
     @MockBean
-    private StakeholderRepository stakeholderRepository;
+    private StakeholderService stakeholderService;
 
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplateRepository;
+    private StakeholderTemplateService stakeholderTemplateService;
 
     @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @Autowired
     private WebConversionService conversionService;
 
     @BeforeEach
     void setup() {
-        given(specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationRepository.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
+        given(specificationService.getById(TEST_SPECIFICATION_1.getId())).willReturn(TEST_SPECIFICATION_1);
+        given(specificationService.getById(TEST_SPECIFICATION_2.getId())).willReturn(TEST_SPECIFICATION_2);
+        given(specificationService.getById(EMPTY_SPECIFICATION_ID)).willThrow(new EntityNotFoundException("Specification", EMPTY_SPECIFICATION_ID));
 
-        given(stakeholderRepository.findByName(TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given(stakeholderRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
-        given(stakeholderRepository.findById(TEST_STAKEHOLDER_1.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
+        given(stakeholderService.getById(TEST_STAKEHOLDER_1.getId())).willReturn(TEST_STAKEHOLDER_1);
+        given(stakeholderService.getById(TEST_STAKEHOLDER_2.getId())).willReturn(TEST_STAKEHOLDER_2);
+        given(stakeholderService.getById(TEST_STAKEHOLDER_3.getId())).willReturn(TEST_STAKEHOLDER_3);
+        given(stakeholderService.getById(EMPTY_STAKEHOLDER_ID)).willThrow(new EntityNotFoundException("Stakeholder", EMPTY_STAKEHOLDER_ID));
 
-        given(stakeholderRepository.findByName(TEST_STAKEHOLDER_2.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
-        given(stakeholderRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_STAKEHOLDER_2.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
-        given(stakeholderRepository.findById(TEST_STAKEHOLDER_2.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_2));
+        given(stakeholderService.findBySpecificationAndName(TEST_SPECIFICATION_1, TEST_STAKEHOLDER_1.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_1));
 
-        given(stakeholderRepository.findByName(TEST_STAKEHOLDER_3.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
-        given(stakeholderRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_STAKEHOLDER_3.getName())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
-        given(stakeholderRepository.findById(TEST_STAKEHOLDER_3.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_3));
-
-        given(stakeholderRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
-                .willReturn(new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_2, TEST_STAKEHOLDER_2)));
-
-        given(stakeholderRepository.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
-                .willReturn(new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_3)));
-
-        given(stakeholderRepository.save(any())).will(invocation -> {
+        given(stakeholderService.save(any())).will(invocation -> {
             Stakeholder stakeholder = invocation.getArgument(0);
-            stakeholder.setId(400);
+            if (stakeholder.getId() == null) {
+                stakeholder.setId(400);
+            }
             return stakeholder;
         });
 
-        conversionService.addConverter(String.class, Specification.class, source -> specificationRepository.findById(Integer.parseInt(source)).orElse(null));
+        conversionService.addConverter(String.class, Specification.class, source -> specificationService.getById(Integer.parseInt(source)));
     }
 
     @Test
@@ -179,7 +168,7 @@ class StakeholderFormControllerTest {
         mockMvc.perform(get("/specification/{specificationId}/stakeholder/{stakeholderId}", TEST_SPECIFICATION_1.getId(),
                         EMPTY_STAKEHOLDER_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
     @Test
@@ -241,8 +230,6 @@ class StakeholderFormControllerTest {
 
     @Test
     void testInitUpdateForm() throws Exception {
-        Mockito.when(stakeholderRepository.findById(TEST_STAKEHOLDER_1.getId())).thenReturn(Optional.of(TEST_STAKEHOLDER_1));
-
         mockMvc.perform(get(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER))
@@ -259,7 +246,7 @@ class StakeholderFormControllerTest {
         mockMvc.perform(get(URL_EDIT_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), EMPTY_STAKEHOLDER_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
     @Test
@@ -358,7 +345,7 @@ class StakeholderFormControllerTest {
                         .param("id", String.valueOf(EMPTY_STAKEHOLDER_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_STAKEHOLDER, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId())
                         .param("id", String.valueOf(EMPTY_STAKEHOLDER_ID)))

@@ -1,12 +1,13 @@
 package com.soam.web.specificationobjective;
 
-import com.soam.model.objective.ObjectiveTemplateRepository;
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
-import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.objective.ObjectiveTemplateService;
+import com.soam.service.priority.PriorityService;
+import com.soam.service.specification.SpecificationService;
+import com.soam.service.specificationobjective.SpecificationObjectiveService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -14,7 +15,6 @@ import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -91,41 +91,41 @@ class SpecificationObjectiveFormControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
+    private SpecificationService specificationService;
 
     @MockBean
-    private SpecificationObjectiveRepository specificationObjectiveRepository;
+    private SpecificationObjectiveService specificationObjectiveService;
 
     @MockBean
-    private ObjectiveTemplateRepository objectiveTemplateRepository;
+    private ObjectiveTemplateService objectiveTemplateService;
 
     @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @Autowired
     private WebConversionService conversionService;
 
     @BeforeEach
     void setup() {
-        given(specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationRepository.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
+        given(specificationService.getById(TEST_SPECIFICATION_1.getId())).willReturn(TEST_SPECIFICATION_1);
+        given(specificationService.getById(TEST_SPECIFICATION_2.getId())).willReturn(TEST_SPECIFICATION_2);
+        given(specificationService.getById(EMPTY_SPECIFICATION_ID)).willThrow(new EntityNotFoundException("Specification", EMPTY_SPECIFICATION_ID));
 
-        given(specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_SPECIFICATION_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
-        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
+        given(specificationObjectiveService.getById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).willReturn(TEST_SPECIFICATION_OBJECTIVE_1);
+        given(specificationObjectiveService.getById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willThrow(new EntityNotFoundException("Specification Objective", EMPTY_SPECIFICATION_OBJECTIVE_ID));
+        given(specificationObjectiveService.findBySpecificationAndName(TEST_SPECIFICATION_1, TEST_SPECIFICATION_OBJECTIVE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
 
-        given(specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_SPECIFICATION_OBJECTIVE_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
-        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_2));
+        given(specificationObjectiveService.getById(TEST_SPECIFICATION_OBJECTIVE_3.getId())).willReturn(TEST_SPECIFICATION_OBJECTIVE_3);
 
-        given(specificationObjectiveRepository.findBySpecificationAndNameIgnoreCase(TEST_SPECIFICATION_1, TEST_SPECIFICATION_OBJECTIVE_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
-        given(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_3));
-
-        given(specificationObjectiveRepository.save(any())).will(invocation -> {
+        given(specificationObjectiveService.save(any())).will(invocation -> {
             SpecificationObjective specificationObjective = invocation.getArgument(0);
-            specificationObjective.setId(400);
+            if (specificationObjective.getId() == null) {
+                specificationObjective.setId(400);
+            }
             return specificationObjective;
         });
 
-        conversionService.addConverter(String.class, Specification.class, source -> specificationRepository.findById(Integer.parseInt(source)).orElse(null));
+        conversionService.addConverter(String.class, Specification.class, source -> specificationService.getById(Integer.parseInt(source)));
     }
 
     @Test
@@ -187,8 +187,6 @@ class SpecificationObjectiveFormControllerTest {
 
     @Test
     void testInitUpdateForm() throws Exception {
-        Mockito.when(specificationObjectiveRepository.findById(TEST_SPECIFICATION_OBJECTIVE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_OBJECTIVE_1));
-
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
@@ -206,7 +204,7 @@ class SpecificationObjectiveFormControllerTest {
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
     @Test
@@ -295,7 +293,7 @@ class SpecificationObjectiveFormControllerTest {
                         .param("id", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
 
         mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("id", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))

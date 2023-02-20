@@ -1,17 +1,15 @@
 package com.soam.web.specification;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.specificationobjective.SpecificationObjective;
-import com.soam.model.specificationobjective.SpecificationObjectiveRepository;
 import com.soam.model.stakeholder.Stakeholder;
-import com.soam.model.stakeholder.StakeholderRepository;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
-import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
+import com.soam.service.specification.SpecificationService;
+import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -19,12 +17,9 @@ import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -34,8 +29,7 @@ import java.util.TreeSet;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,11 +39,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SpecificationFormControllerTest {
     private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final Specification TEST_SPECIFICATION_2 = new Specification();
+    private static final Specification TEST_SPECIFICATION_2_COPY = new Specification();
     private static final Specification TEST_SPECIFICATION_3 = new Specification();
+    private static final Specification TEST_SPECIFICATION_4_FROM_TEMPLATE = new Specification();
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();
 
     private static final int EMPTY_SPECIFICATION_ID = 999;
-    
+    private static final int EMPTY_SPECIFICATION_TEMPLATE_ID = 9999;
+
     private static final String URL_NEW_SPECIFICATION = "/specification/new";
     private static final String URL_EDIT_SPECIFICATION = "/specification/{specificationId}/edit";
     private static final String URL_DELETE_SPECIFICATION = "/specification/{specificationId}/delete";
@@ -79,12 +76,26 @@ class SpecificationFormControllerTest {
         TEST_SPECIFICATION_2.setPriority(highPriority);
 
         Stakeholder testStakeholder = new Stakeholder();
+        testStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
         TEST_SPECIFICATION_2.setStakeholders(Lists.newArrayList(testStakeholder));
         SpecificationObjective testSpecificationObjective = new SpecificationObjective();
         TEST_SPECIFICATION_2.setSpecificationObjectives(Lists.newArrayList(testSpecificationObjective));
         testStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
 
-        TEST_SPECIFICATION_3.setId(300);
+        TEST_SPECIFICATION_2_COPY.setId(300);
+        TEST_SPECIFICATION_2_COPY.setName("Test Spec 2 Copy");
+        TEST_SPECIFICATION_2_COPY.setDescription("desc");
+        TEST_SPECIFICATION_2_COPY.setNotes("notes");
+        TEST_SPECIFICATION_2_COPY.setPriority(highPriority);
+
+        Stakeholder testStakeholderCopy = new Stakeholder();
+        testStakeholderCopy.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
+        TEST_SPECIFICATION_2_COPY.setStakeholders(Lists.newArrayList(testStakeholderCopy));
+        SpecificationObjective testSpecificationObjectiveCopy = new SpecificationObjective();
+        TEST_SPECIFICATION_2_COPY.setSpecificationObjectives(Lists.newArrayList(testSpecificationObjectiveCopy));
+        testStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
+
+        TEST_SPECIFICATION_3.setId(400);
         TEST_SPECIFICATION_3.setName("Spec 3");
         TEST_SPECIFICATION_3.setDescription("desc");
         TEST_SPECIFICATION_3.setNotes("notes");
@@ -96,56 +107,56 @@ class SpecificationFormControllerTest {
         TEST_SPECIFICATION_TEMPLATE.setNotes("Test Specification Template");
         TEST_SPECIFICATION_TEMPLATE.setPriority(lowPriority);
         TEST_SPECIFICATION_TEMPLATE.setTemplateLinks(new LinkedList<>());
+
+        TEST_SPECIFICATION_4_FROM_TEMPLATE.setId(500);
+        TEST_SPECIFICATION_4_FROM_TEMPLATE.setName("Test Specification Template");
+        TEST_SPECIFICATION_4_FROM_TEMPLATE.setDescription("desc");
+        TEST_SPECIFICATION_4_FROM_TEMPLATE.setNotes("Test Specification Template");
+        TEST_SPECIFICATION_4_FROM_TEMPLATE.setPriority(lowPriority);
+
+        Stakeholder testStakeholderFromTemplate = new Stakeholder();
+        testStakeholderFromTemplate.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
+        TEST_SPECIFICATION_4_FROM_TEMPLATE.setStakeholders(Lists.newArrayList(testStakeholderFromTemplate));
+        SpecificationObjective testSpecificationObjectiveFromTemplate = new SpecificationObjective();
+        TEST_SPECIFICATION_4_FROM_TEMPLATE.setSpecificationObjectives(Lists.newArrayList(testSpecificationObjectiveFromTemplate));
+        testStakeholder.setStakeholderObjectives(new TreeSet<>(new StakeholderObjectiveComparator()));
     }
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
+    private SpecificationService specificationService;
 
     @MockBean
-    private StakeholderRepository stakeholderRepository;
+    private SpecificationTemplateService specificationTemplateService;
 
     @MockBean
-    private SpecificationObjectiveRepository specificationObjectiveRepository;
-
-    @MockBean
-    private StakeholderObjectiveRepository stakeholderObjectiveRepository;
-
-    @MockBean
-    private SpecificationTemplateRepository specificationTemplateRepository;
-
-    @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @BeforeEach
     void setup() {
-        given(specificationRepository.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
-        given(specificationRepository.findById(TEST_SPECIFICATION_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_1));
+        given(specificationTemplateService.getById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(TEST_SPECIFICATION_TEMPLATE);
+        given(specificationTemplateService.getById(EMPTY_SPECIFICATION_TEMPLATE_ID)).willThrow(new EntityNotFoundException("Specification Template", EMPTY_SPECIFICATION_TEMPLATE_ID));
 
-        given(specificationRepository.findByName(TEST_SPECIFICATION_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_2));
-        given(specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_2.getName())).willReturn(Optional.of(TEST_SPECIFICATION_2));
-        given(specificationRepository.findById(TEST_SPECIFICATION_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_2));
+        given(specificationService.getById(TEST_SPECIFICATION_1.getId())).willReturn(TEST_SPECIFICATION_1);
+        given(specificationService.getById(TEST_SPECIFICATION_2.getId())).willReturn(TEST_SPECIFICATION_2);
+        given(specificationService.getById(TEST_SPECIFICATION_3.getId())).willReturn(TEST_SPECIFICATION_3);
+        given(specificationService.getById(EMPTY_SPECIFICATION_ID)).willThrow(new EntityNotFoundException("Specification", EMPTY_SPECIFICATION_ID));
 
-        given(specificationRepository.findByName(TEST_SPECIFICATION_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_3));
-        given(specificationRepository.findByNameIgnoreCase(TEST_SPECIFICATION_3.getName())).willReturn(Optional.of(TEST_SPECIFICATION_3));
-        given(specificationRepository.findById(TEST_SPECIFICATION_3.getId())).willReturn(Optional.of(TEST_SPECIFICATION_3));
+        given(specificationService.findByName(TEST_SPECIFICATION_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_1));
 
-        given(specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any(Pageable.class)))
-                .willReturn(new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_2, TEST_SPECIFICATION_2)));
-
-        given(specificationRepository.findByNameStartsWithIgnoreCase(eq("Spec"), any(Pageable.class)))
-                .willReturn(new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_3)));
-
-        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
-
-        given(specificationRepository.save(any())).will(invocation -> {
+        given(specificationService.save(any())).will(invocation -> {
             Specification specification = invocation.getArgument(0);
-            specification.setId(400);
+            if (specification.getId() == null) {
+                specification.setId(500);
+            }
             return specification;
         });
+
+        given(specificationService.saveDeepCopy(eq(TEST_SPECIFICATION_2), any())).will(invocation -> TEST_SPECIFICATION_2_COPY);
+
+        given(specificationService.saveFromTemplate(eq(TEST_SPECIFICATION_TEMPLATE), any())).will(invocation -> TEST_SPECIFICATION_4_FROM_TEMPLATE);
     }
 
     @Test
@@ -166,7 +177,7 @@ class SpecificationFormControllerTest {
                         .param("collectionItemId", "-1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeCount(0))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 400)));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 500)));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
@@ -175,16 +186,16 @@ class SpecificationFormControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeCount(1))
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_SUCCESS))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 400)));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_2_COPY.getId())));
 
-        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec")
-                        .param("notes", "spec notes").param("description", "Description")
+        mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "Test Specification Template")
+                        .param("notes", "Test Specification Template").param("description", "desc")
                         .param("collectionType", SpecificationFormController.CREATE_MODE_FROM_TEMPLATE)
                         .param("collectionItemId", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeCount(1))
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_SUCCESS))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, 400)));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_4_FROM_TEMPLATE.getId())));
     }
 
     @Test
@@ -218,7 +229,7 @@ class SpecificationFormControllerTest {
         mockMvc.perform(post(URL_NEW_SPECIFICATION).param("name", "New spec 3")
                         .param("notes", "spec notes").param("description", "desc")
                         .param("collectionType", SpecificationFormController.CREATE_MODE_FROM_TEMPLATE)
-                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_TEMPLATE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
@@ -226,8 +237,6 @@ class SpecificationFormControllerTest {
 
     @Test
     void testInitUpdateForm() throws Exception {
-        Mockito.when(specificationRepository.findById(TEST_SPECIFICATION_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_1));
-
         mockMvc.perform(get(URL_EDIT_SPECIFICATION, TEST_SPECIFICATION_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
@@ -239,7 +248,7 @@ class SpecificationFormControllerTest {
         mockMvc.perform(get(URL_EDIT_SPECIFICATION, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_FIND_SPECIFICATION));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
     }
 
     @Test

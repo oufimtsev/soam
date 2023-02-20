@@ -1,14 +1,13 @@
 package com.soam.web.specification;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
-import com.soam.model.specification.SpecificationRepository;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.templatelink.TemplateLink;
-import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.priority.PriorityService;
+import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -16,7 +15,6 @@ import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,6 +24,8 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class SpecificationTemplateFormControllerTest {
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE_1 = new SpecificationTemplate();
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE_2 = new SpecificationTemplate();
-    private static final int EMPTY_SPECIFICATION_ID = 200;
+    private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE_3_COPY = new SpecificationTemplate();
+    private static final int EMPTY_SPECIFICATION_TEMPLATE_ID = 200;
 
     private static final String URL_NEW_TEMPLATE =  "/specification/template/new";
     private static final String URL_EDIT_TEMPLATE =  "/specification/template/{specificationId}/edit";
@@ -59,6 +60,12 @@ class SpecificationTemplateFormControllerTest {
         TEST_SPECIFICATION_TEMPLATE_2.setNotes("notes");
         TEST_SPECIFICATION_TEMPLATE_2.setPriority(lowPriority);
 
+        TEST_SPECIFICATION_TEMPLATE_3_COPY.setId(102);
+        TEST_SPECIFICATION_TEMPLATE_3_COPY.setName("Test Spec 3 Copy");
+        TEST_SPECIFICATION_TEMPLATE_3_COPY.setDescription("desc");
+        TEST_SPECIFICATION_TEMPLATE_3_COPY.setNotes("notes");
+        TEST_SPECIFICATION_TEMPLATE_3_COPY.setPriority(lowPriority);
+
         StakeholderTemplate testStakeholderTemplate = new StakeholderTemplate();
         testStakeholderTemplate.setId(1000);
         testStakeholderTemplate.setName("Test Stakeholder Template");
@@ -77,31 +84,32 @@ class SpecificationTemplateFormControllerTest {
         testTemplateLink.setSpecificationTemplate(TEST_SPECIFICATION_TEMPLATE_2);
         testTemplateLink.setStakeholderTemplate(testStakeholderTemplate);
         testTemplateLink.setObjectiveTemplate(testObjectiveTemplate);
-
         TEST_SPECIFICATION_TEMPLATE_2.setTemplateLinks(Lists.newArrayList(testTemplateLink));
+
+        TemplateLink testTemplateLinkCopy = new TemplateLink();
+        testTemplateLinkCopy.setSpecificationTemplate(TEST_SPECIFICATION_TEMPLATE_3_COPY);
+        testTemplateLinkCopy.setStakeholderTemplate(testStakeholderTemplate);
+        testTemplateLinkCopy.setObjectiveTemplate(testObjectiveTemplate);
+        TEST_SPECIFICATION_TEMPLATE_3_COPY.setTemplateLinks(Lists.newArrayList(testTemplateLinkCopy));
     }
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private SpecificationRepository specificationRepository;
+    private SpecificationTemplateService specificationTemplateService;
 
     @MockBean
-    private SpecificationTemplateRepository specificationTemplateRepository;
-
-    @MockBean
-    private TemplateLinkRepository templateLinkRepository;
-
-    @MockBean
-    private PriorityRepository priorityRepository;
+    private PriorityService priorityService;
 
     @BeforeEach
     void setup() {
-        given(specificationTemplateRepository.findByName(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
-        given(specificationTemplateRepository.findByNameIgnoreCase(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
-        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
-        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_2.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_2));
+        given(specificationTemplateService.getById(TEST_SPECIFICATION_TEMPLATE_1.getId())).willReturn(TEST_SPECIFICATION_TEMPLATE_1);
+        given(specificationTemplateService.getById(TEST_SPECIFICATION_TEMPLATE_2.getId())).willReturn(TEST_SPECIFICATION_TEMPLATE_2);
+        given(specificationTemplateService.getById(EMPTY_SPECIFICATION_TEMPLATE_ID)).willThrow(new EntityNotFoundException("Specification Template", EMPTY_SPECIFICATION_TEMPLATE_ID));
+        given(specificationTemplateService.findByName(TEST_SPECIFICATION_TEMPLATE_1.getName())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
+
+        given(specificationTemplateService.saveDeepCopy(eq(TEST_SPECIFICATION_TEMPLATE_2), any())).willReturn(TEST_SPECIFICATION_TEMPLATE_3_COPY);
     }
 
     @Test
@@ -157,7 +165,7 @@ class SpecificationTemplateFormControllerTest {
         mockMvc.perform(post(URL_NEW_TEMPLATE).param("name", "New spec")
                         .param("notes", "spec notes").param("description", "Description")
                         .param("collectionType", SpecificationTemplateFormController.CREATE_MODE_FROM_TEMPLATE)
-                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                        .param("collectionItemId", String.valueOf(EMPTY_SPECIFICATION_TEMPLATE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
@@ -165,8 +173,6 @@ class SpecificationTemplateFormControllerTest {
 
     @Test
     void testInitUpdateForm() throws Exception {
-        Mockito.when(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE_1.getId())).thenReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE_1));
-
         mockMvc.perform(get(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
@@ -175,7 +181,7 @@ class SpecificationTemplateFormControllerTest {
                 .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, hasProperty("notes", is("notes"))))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID))
+        mockMvc.perform(get(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_TEMPLATE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
@@ -183,7 +189,6 @@ class SpecificationTemplateFormControllerTest {
 
     @Test
     void testProcessUpdateFormSuccess() throws Exception {
-        Mockito.when(specificationTemplateRepository.findById(EMPTY_SPECIFICATION_ID)).thenReturn(Optional.empty());
         mockMvc.perform(post(URL_EDIT_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
                         .param("name", "New Test Specification")
                         .param("notes", "notes here")
@@ -210,7 +215,7 @@ class SpecificationTemplateFormControllerTest {
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "description"))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM));
 
-        mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_ID)
+        mockMvc.perform(post(URL_EDIT_TEMPLATE, EMPTY_SPECIFICATION_TEMPLATE_ID)
                         .param("name", TEST_SPECIFICATION_TEMPLATE_1.getName())
                         .param("notes", "notes")
                         .param("description", ""))
@@ -231,14 +236,14 @@ class SpecificationTemplateFormControllerTest {
 
     @Test
     void testProcessDeleteError() throws Exception {
-        mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_SPECIFICATION_ID)
-                        .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
+        mockMvc.perform(post(URL_DELETE_TEMPLATE, EMPTY_SPECIFICATION_TEMPLATE_ID)
+                        .param("id", String.valueOf(EMPTY_SPECIFICATION_TEMPLATE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));
 
         mockMvc.perform(post(URL_DELETE_TEMPLATE, TEST_SPECIFICATION_TEMPLATE_1.getId())
-                        .param("id", String.valueOf(EMPTY_SPECIFICATION_ID)))
+                        .param("id", String.valueOf(EMPTY_SPECIFICATION_TEMPLATE_ID)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
                 .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST));

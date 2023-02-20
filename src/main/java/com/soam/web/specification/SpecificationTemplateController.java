@@ -1,16 +1,12 @@
 package com.soam.web.specification;
 
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
+import com.soam.service.specification.SpecificationTemplateService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
 import com.soam.web.ViewConstants;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,12 +18,10 @@ import java.util.List;
 
 @Controller
 public class SpecificationTemplateController implements SoamFormController {
-	@Value("${soam.pageSize}")
-	private int pageSize;
-	private final SpecificationTemplateRepository specificationTemplateRepository;
+	private final SpecificationTemplateService specificationTemplateService;
 
-	public SpecificationTemplateController(SpecificationTemplateRepository specificationTemplateRepository) {
-		this.specificationTemplateRepository = specificationTemplateRepository;
+	public SpecificationTemplateController(SpecificationTemplateService specificationTemplateService) {
+		this.specificationTemplateService = specificationTemplateService;
 	}
 
 	@GetMapping("/specification/template/find")
@@ -45,7 +39,7 @@ public class SpecificationTemplateController implements SoamFormController {
 			return ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE;
 		}
 
-		Page<SpecificationTemplate> specificationResults = findPaginatedForSpecificationTemplateName(page, specificationTemplate.getName());
+		Page<SpecificationTemplate> specificationResults = specificationTemplateService.findByPrefix(specificationTemplate.getName(), page - 1);
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			return ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE;
@@ -61,7 +55,7 @@ public class SpecificationTemplateController implements SoamFormController {
 
 	@GetMapping("/specification/template/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<SpecificationTemplate> specificationTemplateResults = findPaginatedForSpecificationTemplateName(page, "");
+		Page<SpecificationTemplate> specificationTemplateResults = specificationTemplateService.findByPrefix("", page - 1);
 		addPaginationModel(page, model, specificationTemplateResults);
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, new SpecificationTemplate());
 		return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST;
@@ -75,11 +69,5 @@ public class SpecificationTemplateController implements SoamFormController {
 		model.addAttribute(ModelConstants.ATTR_TOTAL_ITEMS, paginated.getTotalElements());
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplates);
 		return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST;
-	}
-
-	private Page<SpecificationTemplate> findPaginatedForSpecificationTemplateName(int page, String name) {
-		Sort.Order order = new Sort.Order(Sort.Direction.ASC, "name").ignoreCase();
-		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(order));
-		return specificationTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
 	}
 }

@@ -1,14 +1,15 @@
 package com.soam.web.templatelink;
 
 import com.soam.model.objective.ObjectiveTemplate;
-import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
-import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.stakeholder.StakeholderTemplate;
-import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
-import com.soam.model.templatelink.TemplateLinkRepository;
+import com.soam.service.EntityNotFoundException;
+import com.soam.service.objective.ObjectiveTemplateService;
+import com.soam.service.specification.SpecificationTemplateService;
+import com.soam.service.stakeholder.StakeholderTemplateService;
+import com.soam.service.templatelink.TemplateLinkService;
 import com.soam.web.ModelConstants;
 import com.soam.web.RedirectConstants;
 import com.soam.web.SoamFormController;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -82,34 +84,43 @@ class TemplateLinkControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TemplateLinkRepository templateLinkRepository;
+    private TemplateLinkService templateLinkService;
 
     @MockBean
-    private SpecificationTemplateRepository specificationTemplateRepository;
+    private SpecificationTemplateService specificationTemplateService;
 
     @MockBean
-    private StakeholderTemplateRepository stakeholderTemplateRepository;
+    private StakeholderTemplateService stakeholderTemplateService;
 
     @MockBean
-    private ObjectiveTemplateRepository objectiveTemplateRepository;
+    private ObjectiveTemplateService objectiveTemplateService;
 
     @Autowired
     private WebConversionService conversionService;
 
     @BeforeEach
     void setup() {
-        given(templateLinkRepository.findById(TEST_TEMPLATE_LINK.getId())).willReturn(Optional.of(TEST_TEMPLATE_LINK));
-        given(templateLinkRepository.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
+        given(templateLinkService.getById(TEST_TEMPLATE_LINK.getId())).willReturn(TEST_TEMPLATE_LINK);
+        given(templateLinkService.getById(EMPTY_TEMPLATE_LINK_ID)).willThrow(new EntityNotFoundException("Template Link", EMPTY_TEMPLATE_LINK_ID));
+        given(templateLinkService.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
                 TEST_SPECIFICATION_TEMPLATE, TEST_STAKEHOLDER_TEMPLATE, TEST_OBJECTIVE_TEMPLATE_1)
         ).willReturn(Optional.of(TEST_TEMPLATE_LINK));
-        given(specificationTemplateRepository.findById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(Optional.of(TEST_SPECIFICATION_TEMPLATE));
-        given(stakeholderTemplateRepository.findById(TEST_STAKEHOLDER_TEMPLATE.getId())).willReturn(Optional.of(TEST_STAKEHOLDER_TEMPLATE));
-        given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_TEMPLATE_1.getId())).willReturn(Optional.of(TEST_OBJECTIVE_TEMPLATE_1));
-        given(objectiveTemplateRepository.findById(TEST_OBJECTIVE_TEMPLATE_2.getId())).willReturn(Optional.of(TEST_OBJECTIVE_TEMPLATE_2));
+        given(specificationTemplateService.getById(TEST_SPECIFICATION_TEMPLATE.getId())).willReturn(TEST_SPECIFICATION_TEMPLATE);
+        given(stakeholderTemplateService.getById(TEST_STAKEHOLDER_TEMPLATE.getId())).willReturn(TEST_STAKEHOLDER_TEMPLATE);
+        given(objectiveTemplateService.getById(TEST_OBJECTIVE_TEMPLATE_1.getId())).willReturn(TEST_OBJECTIVE_TEMPLATE_1);
+        given(objectiveTemplateService.getById(TEST_OBJECTIVE_TEMPLATE_2.getId())).willReturn(TEST_OBJECTIVE_TEMPLATE_2);
 
-        conversionService.addConverter(String.class, SpecificationTemplate.class, source -> specificationTemplateRepository.findById(Integer.parseInt(source)).orElse(null));
-        conversionService.addConverter(String.class, StakeholderTemplate.class, source -> stakeholderTemplateRepository.findById(Integer.parseInt(source)).orElse(null));
-        conversionService.addConverter(String.class, ObjectiveTemplate.class, source -> objectiveTemplateRepository.findById(Integer.parseInt(source)).orElse(null));
+        given(templateLinkService.save(any())).will(invocation -> {
+            TemplateLink templateLink = invocation.getArgument(0);
+            if (templateLink.getId() == null) {
+                templateLink.setId(5000);
+            }
+            return templateLink;
+        });
+
+        conversionService.addConverter(String.class, SpecificationTemplate.class, source -> specificationTemplateService.getById(Integer.parseInt(source)));
+        conversionService.addConverter(String.class, StakeholderTemplate.class, source -> stakeholderTemplateService.getById(Integer.parseInt(source)));
+        conversionService.addConverter(String.class, ObjectiveTemplate.class, source -> objectiveTemplateService.getById(Integer.parseInt(source)));
     }
 
     @Test
@@ -169,10 +180,12 @@ class TemplateLinkControllerTest {
 
     @Test
     void testProcessDeleteError() throws Exception {
-        mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK, EMPTY_TEMPLATE_LINK_ID))
+        TemplateLinkFormDto templateLinkFormDto = new TemplateLinkFormDto();
+        templateLinkFormDto.setDeleteTemplateLinkId(EMPTY_TEMPLATE_LINK_ID);
+        mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK)
+                        .param("deleteTemplateLinkId", String.valueOf(templateLinkFormDto.getDeleteTemplateLinkId())))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
                 .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 }

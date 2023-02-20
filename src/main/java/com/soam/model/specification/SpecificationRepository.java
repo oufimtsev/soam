@@ -14,5 +14,4 @@ public interface SpecificationRepository extends CrudRepository<Specification, I
     List<Specification> findAll(Sort sort);
     Page<Specification> findByNameStartsWithIgnoreCase(String name, Pageable pageable);
     Optional<Specification> findByNameIgnoreCase(String name);
-    Optional<Specification> findByName(String name);
 }
