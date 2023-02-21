@@ -15,6 +15,6 @@ public class PriorityService {
     }
 
     public Collection<PriorityType> findAll() {
-        return priorityRepository.findAll();
+        return priorityRepository.findAllByOrderBySequence();
     }
 }

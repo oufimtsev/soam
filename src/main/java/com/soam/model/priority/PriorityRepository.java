@@ -7,5 +7,5 @@ import java.util.Collection;
 
 @Repository
 public interface PriorityRepository extends CrudRepository<PriorityType, Integer> {
-    Collection<PriorityType> findAll();
+    Collection<PriorityType> findAllByOrderBySequence();
 }

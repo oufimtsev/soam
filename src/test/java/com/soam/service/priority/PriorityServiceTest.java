@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,7 +35,7 @@ class PriorityServiceTest {
 
     @Test
     void findAllTest() {
-        given(priorityRepository.findAll()).willReturn(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2));
+        given(priorityRepository.findAllByOrderBySequence()).willReturn(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2));
 
         assertEquals(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2), priorityService.findAll());
     }
