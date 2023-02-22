@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'admin')}">
+<head></head>
+<body>
+
+<h2>Enums</h2>
+<form id="soamEnumsForm" th:object="${soamEnumForm}" th:action="@{/admin/soamEnum/list}" method="post">
+    <table id="soamEnums" class="table table-striped">
+        <thead>
+        <tr>
+            <th>Enum Id</th>
+            <th>Enum Value</th>
+            <th>Enum Sequence</th>
+        </tr>
+        <tr>
+            <td>
+                <input th:replace="~{fragments/selectField :: select ('filterSoamEnumId', ${soamEnumIds}, true, true, 'fa-filter')}"/>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody th:with="isFiltered = ${soamEnumForm.filterSoamEnumId != null}">
+        <td colspan="4" th:if="${#lists.isEmpty(soamEnums) && !isFiltered}">
+            <div class="alert alert-warning mb-0">No Enums have been defined.</div>
+        </td>
+        <td colspan="4" th:if="${#lists.isEmpty(soamEnums) && isFiltered}">
+            <div class="alert alert-warning mb-0">No Enums found for selected filters.</div>
+        </td>
+        <tr th:each="soamEnum : ${soamEnums}" th:object="${soamEnum}">
+            <td th:text="*{enumId}"/>
+            <td th:text="*{name}"/>
+            <td th:text="*{sequence}"/>
+        </tr>
+        </tbody>
+    </table>
+</form>
+</body>
+</html>
+

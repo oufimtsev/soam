@@ -31,6 +31,7 @@ public final class ViewConstants {
     public static final String VIEW_TEMPLATE_LINK_LIST = "templateLink/templateLinkList";
 
     public static final String VIEW_ADMIN_DELETE_SPECIFICATION = "admin/deleteSpecification";
+    public static final String VIEW_ADMIN_SOAM_EMUM_LIST = "admin/soamEnumList";
 
     private ViewConstants() {
     }

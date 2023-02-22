@@ -1,20 +1,20 @@
 package com.soam.service.priority;
 
-import com.soam.model.priority.PriorityRepository;
 import com.soam.model.priority.PriorityType;
+import com.soam.model.soamenum.SoamEnumRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Service
 public class PriorityService {
-    private final PriorityRepository priorityRepository;
+    private final SoamEnumRepository soamEnumRepository;
 
-    public PriorityService(PriorityRepository priorityRepository) {
-        this.priorityRepository = priorityRepository;
+    public PriorityService(SoamEnumRepository soamEnumRepository) {
+        this.soamEnumRepository = soamEnumRepository;
     }
 
     public Collection<PriorityType> findAll() {
-        return priorityRepository.findAllByOrderBySequence();
+        return soamEnumRepository.findAllByOrderBySequence();
     }
 }

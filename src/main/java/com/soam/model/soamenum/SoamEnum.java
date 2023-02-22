@@ -1,5 +1,6 @@
 package com.soam.model.soamenum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
@@ -22,6 +23,8 @@ public abstract class SoamEnum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "enum_id", insertable = false, updatable = false)
+    private String enumId;
     private String name;
     private Integer sequence;
 
@@ -31,6 +34,10 @@ public abstract class SoamEnum {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getEnumId() {
+        return enumId;
     }
 
     public String getName() {
