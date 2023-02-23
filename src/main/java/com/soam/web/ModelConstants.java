@@ -15,6 +15,7 @@ public final class ModelConstants {
     public static final String ATTR_STAKEHOLDER_OBJECTIVE = "stakeholderObjective";
     public static final String ATTR_TEMPLATE_LINKS = "templateLinks";
     public static final String ATTR_TEMPLATE_LINK_FORM = "templateLinkForm";
+    public static final String ATTR_ADMIN_SOAM_ENUM = "soamEnum";
     public static final String ATTR_ADMIN_SOAM_ENUMS = "soamEnums";
     public static final String ATTR_ADMIN_SOAM_ENUM_IDS = "soamEnumIds";
     public static final String ATTR_ADMIN_SOAM_ENUM_FORM = "soamEnumForm";

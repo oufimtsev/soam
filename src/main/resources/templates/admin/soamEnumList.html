@@ -30,7 +30,9 @@
         </td>
         <tr th:each="soamEnum : ${soamEnums}" th:object="${soamEnum}">
             <td th:text="*{enumId}"/>
-            <td th:text="*{name}"/>
+            <td>
+                <a th:href="@{/admin/soamEnum/__*{id}__/edit}" th:text="*{name}"/></a>
+            </td>
             <td th:text="*{sequence}"/>
         </tr>
         </tbody>
