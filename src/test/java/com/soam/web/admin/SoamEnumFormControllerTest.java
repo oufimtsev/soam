@@ -50,8 +50,8 @@ public class SoamEnumFormControllerTest {
     void setup() {
         given(soamEnumService.getById(TEST_PRIORITY_1.getId())).willReturn(TEST_PRIORITY_1);
         given(soamEnumService.getById(EMPTY_SOAM_ENUM_ID)).willThrow(new EntityNotFoundException("Soam Enum", EMPTY_SOAM_ENUM_ID));
-        given(soamEnumService.findBySoamEnumIdAndName(PriorityType.class, TEST_PRIORITY_2.getName())).willReturn(Optional.of(TEST_PRIORITY_2));
-        given(soamEnumService.findBySoamEnumIdAndSequence(PriorityType.class, TEST_PRIORITY_2.getSequence())).willReturn(Optional.of(TEST_PRIORITY_2));
+        given(soamEnumService.findByTypeAndName(PriorityType.class, TEST_PRIORITY_2.getName())).willReturn(Optional.of(TEST_PRIORITY_2));
+        given(soamEnumService.findByTypeAndSequence(PriorityType.class, TEST_PRIORITY_2.getSequence())).willReturn(Optional.of(TEST_PRIORITY_2));
     }
 
     @Test

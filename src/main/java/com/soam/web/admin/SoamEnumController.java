@@ -21,24 +21,24 @@ public class SoamEnumController implements SoamFormController {
     public SoamEnumController(SoamEnumService soamEnumService, ConfigurableConversionService conversionService) {
         this.soamEnumService = soamEnumService;
         conversionService.addConverter(
-                String.class, SoamEnumId.class, source -> {
+                String.class, SoamEnumType.class, source -> {
                     int id = Integer.parseInt(source);
-                    return id == -1 ? null : SoamEnumId.values()[id];
+                    return id == -1 ? null : SoamEnumType.values()[id];
                 });
         conversionService.addConverter(
-                SoamEnumId.class, String.class, source -> String.valueOf(source.getId()));
+                SoamEnumType.class, String.class, source -> String.valueOf(source.getId()));
     }
 
-    @ModelAttribute(ModelConstants.ATTR_ADMIN_SOAM_ENUM_IDS)
-    public Collection<SoamEnumId> populateSoamEnumIds() {
-        return Arrays.asList(SoamEnumId.values());
+    @ModelAttribute(ModelConstants.ATTR_ADMIN_SOAM_ENUM_TYPES)
+    public Collection<SoamEnumType> populateSoamEnumTypes() {
+        return Arrays.asList(SoamEnumType.values());
     }
 
     @ModelAttribute(ModelConstants.ATTR_ADMIN_SOAM_ENUMS)
     public Collection<SoamEnum> populateSoamEnums(
             @ModelAttribute(ModelConstants.ATTR_ADMIN_SOAM_ENUM_FORM) SoamEnumFormDto soamEnumFormDto) {
-        if (soamEnumFormDto.getFilterSoamEnumId() != null) {
-            return soamEnumService.findBySoamEnumId(soamEnumFormDto.getFilterSoamEnumId().getEnumClass());
+        if (soamEnumFormDto.getFilterSoamEnumType() != null) {
+            return soamEnumService.findByType(soamEnumFormDto.getFilterSoamEnumType().getEnumClass());
         } else {
             return soamEnumService.findAll();
         }

@@ -56,28 +56,28 @@ class SoamEnumServiceTest {
     }
 
     @Test
-    void findByEnumIdAndNameTest() {
-        given(soamEnumRepository.findByEnumIdAndName(PriorityType.class.getSimpleName(), TEST_PRIORITY_1.getName())).willReturn(Optional.of(TEST_PRIORITY_1));
+    void findByTypeAndNameTest() {
+        given(soamEnumRepository.findByTypeAndName(PriorityType.class.getSimpleName(), TEST_PRIORITY_1.getName())).willReturn(Optional.of(TEST_PRIORITY_1));
 
-        Optional<SoamEnum> maybeSoamEnum = soamEnumService.findBySoamEnumIdAndName(PriorityType.class, TEST_PRIORITY_1.getName());
+        Optional<SoamEnum> maybeSoamEnum = soamEnumService.findByTypeAndName(PriorityType.class, TEST_PRIORITY_1.getName());
         assertTrue(maybeSoamEnum.isPresent());
         assertEquals(TEST_PRIORITY_1.getId(), maybeSoamEnum.get().getId());
     }
 
     @Test
-    void findByEnumIdAndSequenceTest() {
-        given(soamEnumRepository.findByEnumIdAndSequence(PriorityType.class.getSimpleName(), TEST_PRIORITY_1.getSequence())).willReturn(Optional.of(TEST_PRIORITY_1));
+    void findByTypeAndSequenceTest() {
+        given(soamEnumRepository.findByTypeAndSequence(PriorityType.class.getSimpleName(), TEST_PRIORITY_1.getSequence())).willReturn(Optional.of(TEST_PRIORITY_1));
 
-        Optional<SoamEnum> maybeSoamEnum = soamEnumService.findBySoamEnumIdAndSequence(PriorityType.class, TEST_PRIORITY_1.getSequence());
+        Optional<SoamEnum> maybeSoamEnum = soamEnumService.findByTypeAndSequence(PriorityType.class, TEST_PRIORITY_1.getSequence());
         assertTrue(maybeSoamEnum.isPresent());
         assertEquals(TEST_PRIORITY_1.getId(), maybeSoamEnum.get().getId());
     }
 
     @Test
-    void findBySoamEnumIdTest() {
-        given(soamEnumRepository.findByEnumId(eq(PriorityType.class.getSimpleName()), any())).willReturn(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2));
+    void findBySoamTypeTest() {
+        given(soamEnumRepository.findByType(eq(PriorityType.class.getSimpleName()), any())).willReturn(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2));
 
-        assertEquals(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2), soamEnumService.findBySoamEnumId(PriorityType.class));
+        assertEquals(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2), soamEnumService.findByType(PriorityType.class));
     }
 
     @Test

@@ -1,13 +1,13 @@
 package com.soam.web.admin;
 
 public class SoamEnumFormDto {
-    private SoamEnumId filterSoamEnumId;
+    private SoamEnumType filterSoamEnumType;
 
-    public SoamEnumId getFilterSoamEnumId() {
-        return filterSoamEnumId;
+    public SoamEnumType getFilterSoamEnumType() {
+        return filterSoamEnumType;
     }
 
-    public void setFilterSoamEnumId(SoamEnumId filterSoamEnumId) {
-        this.filterSoamEnumId = filterSoamEnumId;
+    public void setFilterSoamEnumType(SoamEnumType filterSoamEnumType) {
+        this.filterSoamEnumType = filterSoamEnumType;
     }
 }

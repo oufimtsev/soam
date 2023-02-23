@@ -11,20 +11,20 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@DiscriminatorColumn(name = "enum_id", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Table(
         name = "enums",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"enum_id", "name"}),
-                @UniqueConstraint(columnNames = {"enum_id", "sequence"})
+                @UniqueConstraint(columnNames = {"type", "name"}),
+                @UniqueConstraint(columnNames = {"type", "sequence"})
         }
 )
 public abstract class SoamEnum {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "enum_id", insertable = false, updatable = false)
-    private String enumId;
+    @Column(name = "type", insertable = false, updatable = false)
+    private String type;
     private String name;
     private Integer sequence;
 
@@ -36,8 +36,8 @@ public abstract class SoamEnum {
         this.id = id;
     }
 
-    public String getEnumId() {
-        return enumId;
+    public String getType() {
+        return type;
     }
 
     public String getName() {

@@ -10,9 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface SoamEnumRepository extends CrudRepository<SoamEnum, Integer> {
-    Optional<SoamEnum> findByEnumIdAndName(String enumId, String name);
-    Optional<SoamEnum> findByEnumIdAndSequence(String enumId, int sequence);
+    Optional<SoamEnum> findByTypeAndName(String type, String name);
+    Optional<SoamEnum> findByTypeAndSequence(String type, int sequence);
     Collection<SoamEnum> findAll(Sort sort);
-    Collection<SoamEnum> findByEnumId(String enumId, Sort sort);
+    Collection<SoamEnum> findByType(String type, Sort sort);
     Collection<PriorityType> findAllByOrderBySequence();
 }

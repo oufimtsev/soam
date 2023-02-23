@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class SoamEnumService {
     private static final Sort SORT_ORDER = Sort.by(List.of(
-            Sort.Order.by("enumId"),
+            Sort.Order.by("type"),
             Sort.Order.by("sequence")
     ));
 
@@ -28,16 +28,16 @@ public class SoamEnumService {
                 .orElseThrow(() -> new EntityNotFoundException("Soam Enum", soamEnumId));
     }
 
-    public Optional<SoamEnum> findBySoamEnumIdAndName(Class<? extends SoamEnum> clazz, String name) {
-        return soamEnumRepository.findByEnumIdAndName(clazz.getSimpleName(), name);
+    public Optional<SoamEnum> findByTypeAndName(Class<? extends SoamEnum> clazz, String name) {
+        return soamEnumRepository.findByTypeAndName(clazz.getSimpleName(), name);
     }
 
-    public Optional<SoamEnum> findBySoamEnumIdAndSequence(Class<? extends SoamEnum> clazz, int sequence) {
-        return soamEnumRepository.findByEnumIdAndSequence(clazz.getSimpleName(), sequence);
+    public Optional<SoamEnum> findByTypeAndSequence(Class<? extends SoamEnum> clazz, int sequence) {
+        return soamEnumRepository.findByTypeAndSequence(clazz.getSimpleName(), sequence);
     }
 
-    public Collection<SoamEnum> findBySoamEnumId(Class<? extends SoamEnum> clazz) {
-        return soamEnumRepository.findByEnumId(clazz.getSimpleName(), SORT_ORDER);
+    public Collection<SoamEnum> findByType(Class<? extends SoamEnum> clazz) {
+        return soamEnumRepository.findByType(clazz.getSimpleName(), SORT_ORDER);
     }
 
     public Collection<SoamEnum> findAll() {

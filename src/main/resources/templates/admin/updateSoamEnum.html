@@ -10,7 +10,7 @@
   <form th:object="${soamEnum}" class="form-horizontal" id="add-specification-form" method="post">
     <div class="form-group has-feedback">
       <input
-        th:replace="~{fragments/inputField :: readOnly ('Enum Id', 'enumId', 'text')}" />
+        th:replace="~{fragments/inputField :: readOnly ('Type', 'type', 'text')}" />
       <input
         th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
       <input

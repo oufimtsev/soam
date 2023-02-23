@@ -44,7 +44,7 @@ class SoamEnumControllerTest {
     @BeforeEach
     void setup() {
         given(soamEnumService.findAll()).willReturn(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2));
-        given(soamEnumService.findBySoamEnumId(PriorityType.class)).willReturn(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2));
+        given(soamEnumService.findByType(PriorityType.class)).willReturn(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2));
     }
 
     @Test
@@ -53,16 +53,16 @@ class SoamEnumControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUMS))
                 .andExpect(model().attribute(ModelConstants.ATTR_ADMIN_SOAM_ENUMS, new IsEqual<>(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2))))
-                .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUM_IDS))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUM_TYPES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUM_FORM))
                 .andExpect(view().name(ViewConstants.VIEW_ADMIN_SOAM_EMUM_LIST));
 
         mockMvc.perform(post(URL_VIEW_SOAM_ENUM_LIST)
-                        .param("filterSoamEnumId", String.valueOf(SoamEnumId.PriorityType.ordinal())))
+                        .param("filterSoamEnumType", String.valueOf(SoamEnumType.PriorityType.ordinal())))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUMS))
                 .andExpect(model().attribute(ModelConstants.ATTR_ADMIN_SOAM_ENUMS, new IsEqual<>(List.of(TEST_PRIORITY_1, TEST_PRIORITY_2))))
-                .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUM_IDS))
+                .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUM_TYPES))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_ADMIN_SOAM_ENUM_FORM))
                 .andExpect(view().name(ViewConstants.VIEW_ADMIN_SOAM_EMUM_LIST));
     }

@@ -38,10 +38,10 @@ public class SoamEnumFormController {
     @PostMapping("/admin/soamEnum/{soamEnumId}/edit")
     public String processUpdateForm(
             @Valid SoamEnum soamEnum, BindingResult result, @PathVariable("soamEnumId") int soamEnumId) {
-        soamEnumService.findBySoamEnumIdAndName(soamEnum.getClass(), soamEnum.getName())
+        soamEnumService.findByTypeAndName(soamEnum.getClass(), soamEnum.getName())
                 .filter(s -> s.getId() != soamEnumId)
                 .ifPresent(s -> result.rejectValue("name", "unique", "Enum name already exists."));
-        soamEnumService.findBySoamEnumIdAndSequence(soamEnum.getClass(), soamEnum.getSequence())
+        soamEnumService.findByTypeAndSequence(soamEnum.getClass(), soamEnum.getSequence())
                 .filter(s -> s.getId() != soamEnumId)
                 .ifPresent(s -> result.rejectValue("sequence", "unique", "Enum sequence already exists."));
 
