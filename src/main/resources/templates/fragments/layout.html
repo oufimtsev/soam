@@ -154,6 +154,29 @@
       </ol>
     </div>
   </nav>
+  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='admin' }" >
+    <div class="container">
+      <ol class="breadcrumb m-0 p-0">
+        <li class="breadcrumb-item">
+          <span>Admin</span>
+        </li>
+        <li class="breadcrumb-item" th:if="${specifications != null}">
+          <span>Delete Specification</span>
+        </li>
+        <li class="breadcrumb-item" th:if="${soamEnums != null}">
+          <span>Maintain Enums</span>
+        </li>
+        <th:block th:if="${soamEnum != null}">
+          <li class="breadcrumb-item" >
+            <a th:href="@{/admin/soamEnum/list}">Maintain Enums</a>
+          </li>
+          <li class="breadcrumb-item" >
+            <span th:text="${soamEnum.name}"></span>
+          </li>
+        </th:block>
+      </ol>
+    </div>
+  </nav>
   <div class="container-fluid">
     <div class="container xd-container">
       <div th:replace="~{fragments/flash :: flash}"></div>
