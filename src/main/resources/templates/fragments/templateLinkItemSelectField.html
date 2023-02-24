@@ -1,22 +1,11 @@
 <html>
 <body>
   <form>
-    <th:block th:fragment="select (name, items, useAllOption, submitOnChange, faIcon)">
-      <div class="form-group d-flex">
-        <i th:if="${faIcon != null}" class="fa fa-lg lh-1 me-2 flex-grow-0" th:classappend="${faIcon}"></i>
-        <select th:field="*{__${name}__}" class="flex-grow-1" th:attrappend="onchange = ${submitOnChange}?'this.form.submit()'">
-          <th:block th:if="${useAllOption}">
-            <option value="-1">All</option>
-          </th:block>
-          <option th:each="item : ${items}" th:value="${item.id}" th:text="${item.name}">template</option>
-        </select>
-      </div>
-    </th:block>
     <th:block th:fragment="selectFilter (name, items)">
-      <input th:replace="~{fragments/templateLinkItemSelectField :: select (${name}, ${items}, true, true, 'fa-filter')}" />
+      <input th:replace="~{fragments/selectField :: select (${name}, ${items}, true, true, 'fa-filter')}" />
     </th:block>
     <th:block th:fragment="selectNewItem (name, items, faIcon)">
-      <input th:replace="~{fragments/templateLinkItemSelectField :: select (${name}, ${items}, false, false, ${faIcon})}" />
+      <input th:replace="~{fragments/selectField :: select (${name}, ${items}, false, false, ${faIcon})}" />
     </th:block>
   </form>
 </body>

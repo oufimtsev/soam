@@ -25,6 +25,8 @@ public final class RedirectConstants {
 
     public static final String REDIRECT_ADMIN_DELETE_SPECIFICATION = "redirect:/admin/deleteSpecification/list";
 
+    public static final String REDIRECT_ADMIN_SOAM_EMUM_LIST = "redirect:/admin/soamEnum/list";
+
     private RedirectConstants() {
     }
 }

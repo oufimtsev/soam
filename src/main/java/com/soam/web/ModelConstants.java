@@ -15,6 +15,10 @@ public final class ModelConstants {
     public static final String ATTR_STAKEHOLDER_OBJECTIVE = "stakeholderObjective";
     public static final String ATTR_TEMPLATE_LINKS = "templateLinks";
     public static final String ATTR_TEMPLATE_LINK_FORM = "templateLinkForm";
+    public static final String ATTR_ADMIN_SOAM_ENUM = "soamEnum";
+    public static final String ATTR_ADMIN_SOAM_ENUMS = "soamEnums";
+    public static final String ATTR_ADMIN_SOAM_ENUM_TYPES = "soamEnumTypes";
+    public static final String ATTR_ADMIN_SOAM_ENUM_FORM = "soamEnumForm";
     public static final String ATTR_CURRENT_PAGE = "currentPage";
     public static final String ATTR_TOTAL_PAGES = "totalPages";
     public static final String ATTR_TOTAL_ITEMS = "totalItems";

@@ -1,37 +1,13 @@
 package com.soam.model.priority;
 
-import com.soam.model.BaseEntity;
-import jakarta.persistence.Column;
+import com.soam.model.soamenum.SoamEnum;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import org.springframework.util.comparator.Comparators;
 
 import java.util.Objects;
 
 @Entity
-@Table(name = "priority_types")
-public class PriorityType extends BaseEntity implements Comparable<PriorityType> {
-    @Column(unique = true)
-    private String name;
-    @Column(unique = true)
-    private Integer sequence;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getSequence() {
-        return sequence;
-    }
-
-    public void setSequence(Integer sequence) {
-        this.sequence = sequence;
-    }
-
+public class PriorityType extends SoamEnum implements Comparable<PriorityType> {
     @Override
     public int compareTo(PriorityType o) {
         return Comparators.comparable().compare(getSequence(), o.getSequence());
@@ -42,12 +18,12 @@ public class PriorityType extends BaseEntity implements Comparable<PriorityType>
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PriorityType that = (PriorityType) o;
-        return sequence.equals(that.sequence);
+        return getSequence().equals(that.getSequence());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sequence);
+        return Objects.hash(getSequence());
     }
 
     @Override

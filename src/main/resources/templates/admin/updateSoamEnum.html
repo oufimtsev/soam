@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org"
+  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'admin')}">
+<head>
+</head>
+<body>
+  <h2>Enum</h2>
+
+  <form th:object="${soamEnum}" class="form-horizontal" id="update-soam-enum-form" method="post">
+    <div class="form-group has-feedback">
+      <input
+        th:replace="~{fragments/inputField :: readOnly ('Type', 'type', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
+      <input
+        th:replace="~{fragments/inputField :: input ('Sequence', 'sequence', 'text')}" />
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10 d-flex">
+        <button class="btn btn-primary" type="submit">
+          <i class="fa me-1"  th:classappend="${'fa-pencil-square-o'}" aria-hidden="true"></i>
+          <span>Update</span>
+        </button>
+        <span class="flex-grow-1"></span>
+      </div>
+    </div>
+  </form>
+</body>
+</html>

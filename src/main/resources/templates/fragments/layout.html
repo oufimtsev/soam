@@ -71,6 +71,7 @@
               <li><a class="dropdown-item">Change Owner</a></li>
               <li><a class="dropdown-item" th:href="@{/admin/deleteSpecification/list}">Delete Specification</a></li>
               <li><a class="dropdown-item">Delete Account</a></li>
+              <li><a class="dropdown-item" th:href="@{/admin/soamEnum/list}">Maintain Enums</a></li>
             </ul>
           </li>
         </ul>
@@ -150,6 +151,29 @@
         <li class="breadcrumb-item" th:if="${objectiveTemplates != null}" >
           <span th:text="${objectiveTemplate.id != null ? (!#strings.isEmpty(objectiveTemplate.name) ? objectiveTemplate.name : 'Update Template') : 'Add Objective Template'}">Objective Template</span>
         </li>
+      </ol>
+    </div>
+  </nav>
+  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='admin' }" >
+    <div class="container">
+      <ol class="breadcrumb m-0 p-0">
+        <li class="breadcrumb-item">
+          <span>Admin</span>
+        </li>
+        <li class="breadcrumb-item" th:if="${specifications != null}">
+          <span>Delete Specification</span>
+        </li>
+        <li class="breadcrumb-item" th:if="${soamEnums != null}">
+          <span>Maintain Enums</span>
+        </li>
+        <th:block th:if="${soamEnum != null}">
+          <li class="breadcrumb-item" >
+            <a th:href="@{/admin/soamEnum/list}">Maintain Enums</a>
+          </li>
+          <li class="breadcrumb-item" >
+            <span th:text="${soamEnum.name}"></span>
+          </li>
+        </th:block>
       </ol>
     </div>
   </nav>
