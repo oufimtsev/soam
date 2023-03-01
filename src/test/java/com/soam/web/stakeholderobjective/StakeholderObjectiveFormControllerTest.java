@@ -1,5 +1,6 @@
 package com.soam.web.stakeholderobjective;
 
+import com.soam.config.SoamConfiguration;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasProperty;
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StakeholderObjectiveFormController.class)
+@Import(SoamConfiguration.class)
 class StakeholderObjectiveFormControllerTest {
     private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final Specification TEST_SPECIFICATION_2 = new Specification();

@@ -1,5 +1,6 @@
 package com.soam.web.objective;
 
+import com.soam.config.SoamConfiguration;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.priority.PriorityType;
 import com.soam.service.objective.ObjectiveTemplateService;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ObjectiveTemplateController.class)
+@Import(SoamConfiguration.class)
 class ObjectiveTemplateControllerTest {
     private static final ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_1 = new ObjectiveTemplate();
 

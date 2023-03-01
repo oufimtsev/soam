@@ -1,5 +1,6 @@
 package com.soam.web.admin;
 
+import com.soam.config.SoamConfiguration;
 import com.soam.model.priority.PriorityType;
 import com.soam.service.soamenum.SoamEnumService;
 import com.soam.web.ModelConstants;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SoamEnumController.class)
+@Import(SoamConfiguration.class)
 class SoamEnumControllerTest {
     private final static PriorityType TEST_PRIORITY_1 = new PriorityType();
     private final static PriorityType TEST_PRIORITY_2 = new PriorityType();

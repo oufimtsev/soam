@@ -1,5 +1,6 @@
 package com.soam.web.admin;
 
+import com.soam.config.SoamConfiguration;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
@@ -18,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,6 +35,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(DeleteSpecificationController.class)
+@Import(SoamConfiguration.class)
 class DeleteSpecificationControllerTest {
     private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final Stakeholder TEST_STAKEHOLDER_1 = new Stakeholder();

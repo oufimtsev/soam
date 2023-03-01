@@ -1,5 +1,6 @@
 package com.soam.web.specification;
 
+import com.soam.config.SoamConfiguration;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.service.EntityNotFoundException;
@@ -14,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationController.class)
+@Import(SoamConfiguration.class)
 class SpecificationControllerTest {
     private static final Specification TEST_SPECIFICATION_1 = new Specification();
     private static final int EMPTY_SPECIFICATION_ID = 999;
