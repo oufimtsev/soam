@@ -1,6 +1,6 @@
 package com.soam.config;
 
-public enum AccessType {
+public enum AccessMode {
     PUBLIC,
     PRIVATE
 }
