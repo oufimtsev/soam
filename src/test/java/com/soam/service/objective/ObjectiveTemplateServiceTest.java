@@ -1,10 +1,10 @@
 package com.soam.service.objective;
 
+import com.soam.config.SoamProperties;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.objective.ObjectiveTemplateRepository;
 import com.soam.model.priority.PriorityType;
 import com.soam.service.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,13 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -46,13 +44,11 @@ class ObjectiveTemplateServiceTest {
     @Mock
     private ObjectiveTemplateRepository objectiveTemplateRepository;
 
+    @Mock
+    private SoamProperties soamProperties;
+
     @InjectMocks
     private ObjectiveTemplateService objectiveTemplateService;
-
-    @BeforeEach
-    void setup() {
-        ReflectionTestUtils.setField(objectiveTemplateService, "pageSize", 1);
-    }
 
     @Test
     void getByIdSuccessTest() {
@@ -71,6 +67,7 @@ class ObjectiveTemplateServiceTest {
     @Test
     void findByPrefixTest() {
         given(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any())).willReturn(new PageImpl<>(List.of(TEST_OBJECTIVE_TEMPLATE_1)));
+        given(soamProperties.getPageSize()).willReturn(20);
 
         Page<ObjectiveTemplate> result = objectiveTemplateService.findByPrefix("Test", 0);
         assertEquals(1, result.getTotalElements());

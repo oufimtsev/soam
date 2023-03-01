@@ -1,9 +1,9 @@
 package com.soam.service.stakeholder;
 
+import com.soam.config.SoamProperties;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.service.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,12 +18,12 @@ public class StakeholderTemplateService {
     private static final Sort SORT_ORDER = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final StakeholderTemplateRepository stakeholderTemplateRepository;
+    private final SoamProperties soamProperties;
 
-    @Value("${soam.pageSize}")
-    private int pageSize;
-
-    public StakeholderTemplateService(StakeholderTemplateRepository stakeholderTemplateRepository) {
+    public StakeholderTemplateService(
+            StakeholderTemplateRepository stakeholderTemplateRepository, SoamProperties soamProperties) {
         this.stakeholderTemplateRepository = stakeholderTemplateRepository;
+        this.soamProperties = soamProperties;
     }
 
     public StakeholderTemplate getById(int stakeholderTemplateId) {
@@ -32,7 +32,7 @@ public class StakeholderTemplateService {
     }
 
     public Page<StakeholderTemplate> findByPrefix(String name, int page) {
-        Pageable pageable = PageRequest.of(page, pageSize, SORT_ORDER);
+        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
         return stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
     }
 
