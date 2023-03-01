@@ -1,11 +1,11 @@
 package com.soam.service.specification;
 
+import com.soam.config.SoamProperties;
 import com.soam.model.specification.SpecificationTemplate;
 import com.soam.model.specification.SpecificationTemplateRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.model.templatelink.TemplateLinkRepository;
 import com.soam.service.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,14 +24,14 @@ public class SpecificationTemplateService {
 
     private final SpecificationTemplateRepository specificationTemplateRepository;
     private final TemplateLinkRepository templateLinkRepository;
+    private final SoamProperties soamProperties;
 
-    @Value("${soam.pageSize}")
-    private int pageSize;
-
-    public SpecificationTemplateService(SpecificationTemplateRepository specificationTemplateRepository,
-                                        TemplateLinkRepository templateLinkRepository) {
+    public SpecificationTemplateService(
+            SpecificationTemplateRepository specificationTemplateRepository,
+            TemplateLinkRepository templateLinkRepository, SoamProperties soamProperties) {
         this.specificationTemplateRepository = specificationTemplateRepository;
         this.templateLinkRepository = templateLinkRepository;
+        this.soamProperties = soamProperties;
     }
 
     public SpecificationTemplate getById(int specificationTemplateId) {
@@ -40,7 +40,7 @@ public class SpecificationTemplateService {
     }
 
     public Page<SpecificationTemplate> findByPrefix(String name, int page) {
-        Pageable pageable = PageRequest.of(page, pageSize, SORT_ORDER);
+        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
         return specificationTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
     }
 

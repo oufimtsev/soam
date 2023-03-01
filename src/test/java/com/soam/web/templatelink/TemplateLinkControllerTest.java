@@ -1,5 +1,6 @@
 package com.soam.web.templatelink;
 
+import com.soam.config.SoamConfiguration;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.SpecificationTemplate;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.format.WebConversionService;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Optional;
@@ -31,6 +33,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TemplateLinkController.class)
+@Import(SoamConfiguration.class)
 class TemplateLinkControllerTest {
     private static final TemplateLink TEST_TEMPLATE_LINK = new TemplateLink();
     private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE = new SpecificationTemplate();

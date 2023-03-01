@@ -1,5 +1,6 @@
 package com.soam.service.specification;
 
+import com.soam.config.SoamProperties;
 import com.soam.model.objective.ObjectiveTemplate;
 import com.soam.model.specification.Specification;
 import com.soam.model.specification.SpecificationRepository;
@@ -14,7 +15,6 @@ import com.soam.model.stakeholderobjective.StakeholderObjectiveComparator;
 import com.soam.model.stakeholderobjective.StakeholderObjectiveRepository;
 import com.soam.model.templatelink.TemplateLink;
 import com.soam.service.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,18 +36,18 @@ public class SpecificationService {
     private final SpecificationObjectiveRepository specificationObjectiveRepository;
     private final StakeholderRepository stakeholderRepository;
     private final StakeholderObjectiveRepository stakeholderObjectiveRepository;
-
-    @Value("${soam.pageSize}")
-    private int pageSize;
+    private final SoamProperties soamProperties;
 
     public SpecificationService(
             SpecificationRepository specificationRepository,
             SpecificationObjectiveRepository specificationObjectiveRepository,
-            StakeholderRepository stakeholderRepository, StakeholderObjectiveRepository stakeholderObjectiveRepository) {
+            StakeholderRepository stakeholderRepository, StakeholderObjectiveRepository stakeholderObjectiveRepository,
+            SoamProperties soamProperties) {
         this.specificationRepository = specificationRepository;
         this.specificationObjectiveRepository = specificationObjectiveRepository;
         this.stakeholderRepository = stakeholderRepository;
         this.stakeholderObjectiveRepository = stakeholderObjectiveRepository;
+        this.soamProperties = soamProperties;
     }
 
     public Specification getById(int specificationId) {
@@ -56,7 +56,7 @@ public class SpecificationService {
     }
 
     public Page<Specification> findByPrefix(String name, int page) {
-        Pageable pageable = PageRequest.of(page, pageSize, SORT_ORDER);
+        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
         return specificationRepository.findByNameStartsWithIgnoreCase(name, pageable);
     }
 

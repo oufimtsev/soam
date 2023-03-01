@@ -1,5 +1,6 @@
 package com.soam.web.specificationobjective;
 
+import com.soam.config.SoamConfiguration;
 import com.soam.model.priority.PriorityType;
 import com.soam.model.specification.Specification;
 import com.soam.model.specificationobjective.SpecificationObjective;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasProperty;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationObjectiveController.class)
+@Import(SoamConfiguration.class)
 class SpecificationObjectiveControllerTest {
     private static final Specification TEST_SPECIFICATION = new Specification();
     private static final SpecificationObjective TEST_SPECIFICATION_OBJECTIVE = new SpecificationObjective();

@@ -10,7 +10,7 @@
 
   <link rel="shortcut icon" type="image/x-icon" th:href="@{/resources/images/favicon.png}">
 
-  <title>SOAM :: Stakeholder and Objective Analysis and Management</title>
+  <title th:text="#{soam.top-entity-name} + ' :: Stakeholder and Objective Analysis and Management'">SOAM :: Stakeholder and Objective Analysis and Management</title>
 
   <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -27,7 +27,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark mb-0" role="navigation">
     <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/}">SOAM</a>
+      <a class="navbar-brand" th:href="@{/}" th:text="#{soam.top-entity-name}">SOAM</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar">
         <span class="navbar-toggler-icon"></span>
       </button>
