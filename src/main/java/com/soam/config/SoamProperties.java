@@ -6,10 +6,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SoamProperties {
     private final String topEntityName;
     private final int pageSize;
+    private final AccessType accessType;
 
-    public SoamProperties(String topEntityName, int pageSize) {
+    public SoamProperties(String topEntityName, int pageSize, AccessType accessType) {
         this.topEntityName = topEntityName;
         this.pageSize = pageSize;
+        this.accessType = accessType;
     }
 
     public String getTopEntityName() {
@@ -18,5 +20,9 @@ public class SoamProperties {
 
     public int getPageSize() {
         return pageSize;
+    }
+
+    public AccessType getAccessType() {
+        return accessType;
     }
 }
