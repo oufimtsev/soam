@@ -88,6 +88,17 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
+    @GetMapping("/specificationObjective2/{specificationObjectiveId}/edit")
+    public String initUpdateForm2(
+            Specification specification,
+            @PathVariable("specificationObjectiveId") int specificationObjectiveId, Model model,
+            RedirectAttributes redirectAttributes) {
+        SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
+        populateFormModel(model);
+        return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM2;
+    }
+
     @PostMapping("/specificationObjective/{specificationObjectiveId}/edit")
     public String processUpdateForm(
             @Valid SpecificationObjective specificationObjective, BindingResult result,
@@ -111,6 +122,32 @@ public class SpecificationObjectiveFormController implements SoamFormController 
 
         specificationObjective = specificationObjectiveService.save(specificationObjective);
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
+    }
+
+    @PostMapping("/specificationObjective2/{specificationObjectiveId}/edit")
+    public String processUpdateForm2(
+            @Valid SpecificationObjective specificationObjective, BindingResult result,
+            @ModelAttribute(binding = false) Specification specification,
+            @PathVariable("specificationObjectiveId") int specificationObjectiveId,
+            Model model, RedirectAttributes redirectAttributes) {
+        if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+        }
+
+        specificationObjectiveService.findBySpecificationAndName(specification, specificationObjective.getName())
+                .filter(so -> so.getId() != specificationObjectiveId)
+                .ifPresent(so -> result.rejectValue("name", "unique", "Specification Objective already exists."));
+
+        specificationObjective.setId(specificationObjectiveId);
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM2;
+        }
+
+        specificationObjective = specificationObjectiveService.save(specificationObjective);
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Specification Objective updated.");
+        return String.format(RedirectConstants.REDIRECT_TREE_SPECIFICATION_OBJECTIVE_EDIT, specification.getId(), specificationObjective.getId());
     }
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/delete")

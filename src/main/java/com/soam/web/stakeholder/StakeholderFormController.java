@@ -98,6 +98,14 @@ public class StakeholderFormController implements SoamFormController {
         return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
 
+    @GetMapping("/stakeholder2/{stakeholderId}/edit")
+    public String initUpdateForm2(@PathVariable("stakeholderId") int stakeholderId, Model model) {
+        Stakeholder stakeholder = stakeholderService.getById(stakeholderId);
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
+        populateFormModel(model);
+        return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM2;
+    }
+
     @PostMapping("/stakeholder/{stakeholderId}/edit")
     public String processUpdateForm(
             @Valid Stakeholder stakeholder, BindingResult result,
@@ -120,6 +128,31 @@ public class StakeholderFormController implements SoamFormController {
 
         stakeholder = stakeholderService.save(stakeholder);
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+    }
+
+    @PostMapping("/stakeholder2/{stakeholderId}/edit")
+    public String processUpdateForm2(
+            @Valid Stakeholder stakeholder, BindingResult result,
+            @ModelAttribute(binding = false) Specification specification,
+            @PathVariable("stakeholderId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
+        if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
+            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+        }
+
+        stakeholderService.findBySpecificationAndName(specification, stakeholder.getName())
+                .filter(s -> s.getId() != stakeholderId)
+                .ifPresent(s -> result.rejectValue("name", "unique", "Stakeholder already exists."));
+
+        stakeholder.setId(stakeholderId);
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM2;
+        }
+
+        stakeholder = stakeholderService.save(stakeholder);
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Stakeholder updated.");
+        return String.format(RedirectConstants.REDIRECT_TREE_STAKEHOLDER_EDIT, specification.getId(), stakeholder.getId());
     }
 
     @PostMapping("/stakeholder/{stakeholderId}/delete")

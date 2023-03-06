@@ -102,6 +102,15 @@ public class SpecificationFormController implements SoamFormController {
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
+    @GetMapping("/specification2/{specificationId}/edit")
+    public String initUpdateForm2(
+            @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
+        Specification specification = specificationService.getById(specificationId);
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
+        populateFormModel(model);
+        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
+    }
+
     @PostMapping("/specification/{specificationId}/edit")
     public String processUpdateForm(
             @Valid Specification specification, BindingResult result,
@@ -118,6 +127,25 @@ public class SpecificationFormController implements SoamFormController {
 
         specificationService.save(specification);
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specificationId);
+    }
+
+    @PostMapping("/specification2/{specificationId}/edit")
+    public String processUpdateForm2(
+            @Valid Specification specification, BindingResult result,
+            @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
+        specificationService.findByName(specification.getName())
+                .filter(s -> s.getId() != specificationId)
+                .ifPresent(s -> result.rejectValue("name", "unique", "Specification already exists."));
+
+        specification.setId(specificationId);
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
+        }
+
+        specificationService.save(specification);
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Specification updated.");
+        return String.format(RedirectConstants.REDIRECT_TREE_SPECIFICATION_EDIT, specification.getId());
     }
 
     @PostMapping("/specification/{specificationId}/delete")

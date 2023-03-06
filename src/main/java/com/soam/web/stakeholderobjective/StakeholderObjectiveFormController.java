@@ -140,6 +140,17 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
+    @GetMapping("/stakeholderObjective2/{stakeholderObjectiveId}/edit")
+    public String initUpdateForm2(
+            Specification specification, Stakeholder stakeholder,
+            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model,
+            RedirectAttributes redirectAttributes) {
+        StakeholderObjective stakeholderObjective = stakeholderObjectiveService.getById(stakeholderObjectiveId);
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
+        populateFormModel(model);
+        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM2;
+    }
+
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
     public String processUpdateForm(
             @Valid StakeholderObjective stakeholderObjective, BindingResult result,
@@ -154,6 +165,23 @@ public class StakeholderObjectiveFormController implements SoamFormController {
 
         stakeholderObjective = stakeholderObjectiveService.save(stakeholderObjective);
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
+    }
+
+    @PostMapping("/stakeholderObjective2/{stakeholderObjectiveId}/edit")
+    public String processUpdateForm2(
+            @Valid StakeholderObjective stakeholderObjective, BindingResult result,
+            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
+            @ModelAttribute(binding = false) Specification specification,
+            @ModelAttribute(binding = false) Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
+        stakeholderObjective.setId(stakeholderObjectiveId);
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM2;
+        }
+
+        stakeholderObjective = stakeholderObjectiveService.save(stakeholderObjective);
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Stakeholder Objective updated.");
+        return String.format(RedirectConstants.REDIRECT_TREE_STAKEHOLDER_OBJECTIVE_EDIT, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/delete")
