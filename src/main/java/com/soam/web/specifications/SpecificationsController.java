@@ -1,30 +1,30 @@
 package com.soam.web.specifications;
 
-import com.soam.model.specification.Specification;
-import com.soam.service.priority.PriorityService;
 import com.soam.service.specification.SpecificationService;
-import com.soam.web.ModelConstants;
+import com.soam.service.stakeholder.StakeholderService;
 import com.soam.web.ViewConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class SpecificationsController {
 	private final SpecificationService specificationService;
-	private final PriorityService priorityService;
+	private final StakeholderService stakeholderService;
 
-	public SpecificationsController(SpecificationService specificationService, PriorityService priorityService) {
+	public SpecificationsController(
+			SpecificationService specificationService, StakeholderService stakeholderService) {
 		this.specificationService = specificationService;
-		this.priorityService = priorityService;
+		this.stakeholderService = stakeholderService;
 	}
 
 	@GetMapping("/specifications2")
 	public String listAll(Model model) {
-		List<Specification> specifications = specificationService.findAll();
-		model.addAttribute(ModelConstants.ATTR_SPECIFICATIONS, specifications);
 		return ViewConstants.VIEW_TREE;
 	}
 
@@ -33,11 +33,51 @@ public class SpecificationsController {
 		return ViewConstants.VIEW_TREE_DEFAULT;
 	}
 
-//	@GetMapping("/tree/specification/{specificationId}")
-//	public String specificationDetails(@PathVariable("specificationId") int specificationId, Model model) {
-//		Specification specification = specificationService.getById(specificationId);
-//		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-//		model.addAttribute(ModelConstants.ATTR_PRIORITIES, priorityService.findAll());
-//		return ViewConstants.VIEW_TREE_SPECIFICATION;
-//	}
+	@GetMapping("/tree/specification")
+	@ResponseBody
+	public List<Map<String, String>> getSpecifications() {
+		return specificationService.findAll().stream()
+				.map(specification -> Map.of(
+						"id", String.valueOf(specification.getId()),
+						"name", specification.getName(),
+						"type", "specification"
+				))
+				.toList();
+	}
+
+	@GetMapping("/tree/specification/{specificationId}/specificationObjective")
+	@ResponseBody
+	public List<Map<String, String>> getSpecificationObjectives(@PathVariable("specificationId") int specificationId) {
+		return specificationService.getById(specificationId).getSpecificationObjectives().stream()
+				.map(specificationObjective -> Map.of(
+						"id", String.valueOf(specificationObjective.getId()),
+						"name", specificationObjective.getName(),
+						"type", "specificationObjective"
+				))
+				.toList();
+	}
+
+	@GetMapping("/tree/specification/{specificationId}/stakeholder")
+	@ResponseBody
+	public List<Map<String, String>> getStakeholders(@PathVariable("specificationId") int specificationId) {
+		return specificationService.getById(specificationId).getStakeholders().stream()
+				.map(stakeholder -> Map.of(
+						"id", String.valueOf(stakeholder.getId()),
+						"name", stakeholder.getName(),
+						"type", "stakeholder"
+				))
+				.toList();
+	}
+
+	@GetMapping("/tree/stakeholder/{stakeholderId}/stakeholderObjective")
+	@ResponseBody
+	public List<Map<String, String>> getStakeholderObjectives(@PathVariable("stakeholderId") int stakeholderId) {
+		return stakeholderService.getById(stakeholderId).getStakeholderObjectives().stream()
+				.map(stakeholderObjective -> Map.of(
+						"id", String.valueOf(stakeholderObjective.getId()),
+						"name", stakeholderObjective.getSpecificationObjective().getName(),
+						"type", "stakeholderObjective"
+				))
+				.toList();
+	}
 }
