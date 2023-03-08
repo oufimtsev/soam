@@ -54,6 +54,14 @@ public class SpecificationFormController implements SoamFormController {
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
+    @GetMapping("/specification2/new")
+    public String initCreationForm2(Model model) {
+        Specification specification = new Specification();
+        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
+        populateFormModel(model);
+        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
+    }
+
     @PostMapping("/specification/new")
     public String processCreationForm(
             @Valid Specification specification, BindingResult result,
@@ -91,6 +99,41 @@ public class SpecificationFormController implements SoamFormController {
             specification = specificationService.save(specification);
             return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
         }
+    }
+
+    @PostMapping("/specification2/new")
+    public String processCreationForm2(
+            @Valid Specification specification, BindingResult result,
+            @ModelAttribute("collectionType") String collectionType,
+            @ModelAttribute("collectionItemId") int collectionItemId,
+            Model model, RedirectAttributes redirectAttributes) {
+        specificationService.findByName(specification.getName()).ifPresent(s ->
+                result.rejectValue("name", "unique", "Specification already exists."));
+
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
+        }
+
+        if (CREATE_MODE_COPY_SPECIFICATION.equals(collectionType)) {
+            //creating new Specification as a deep copy of source Specification
+            Specification srcSpecification = specificationService.getById(collectionItemId);
+            specification = specificationService.saveDeepCopy(srcSpecification, specification);
+        } else if (CREATE_MODE_FROM_TEMPLATE.equals(collectionType)) {
+            //creating new Specification as a deep copy of source Specification Template
+            SpecificationTemplate srcSpecificationTemplate = specificationTemplateService.getById(collectionItemId);
+            specification = specificationService.saveFromTemplate(srcSpecificationTemplate, specification);
+        } else {
+            //creating new Specification manually or as a shall copy of existing Specification Template
+            specification.setStakeholders(List.of());
+            specification.setSpecificationObjectives(List.of());
+            specification = specificationService.save(specification);
+        }
+        redirectAttributes.addFlashAttribute(
+                SoamFormController.FLASH_SUCCESS,
+                String.format("Created %s", getSpecificationOverviewMessage(specification))
+        );
+        return String.format(RedirectConstants.REDIRECT_TREE_SPECIFICATION_EDIT, specification.getId());
     }
 
     @GetMapping("/specification/{specificationId}/edit")

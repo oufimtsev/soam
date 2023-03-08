@@ -97,6 +97,28 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
 
+    @GetMapping("/stakeholderObjective2/new")
+    public String initCreationForm2(
+            Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
+        if (specification.getSpecificationObjectives().isEmpty()) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Specification does not have any Specification Objectives.");
+            return RedirectConstants.REDIRECT_TREE_DEFAULT;
+        }
+
+        SpecificationObjective specificationObjective = new SpecificationObjective();
+        specificationObjective.setId(-1);
+
+        StakeholderObjective stakeholderObjective = new StakeholderObjective();
+        stakeholderObjective.setStakeholder(stakeholder);
+        stakeholderObjective.setSpecificationObjective(specificationObjective);
+        stakeholderObjective.setNotes(specificationObjective.getNotes());
+        stakeholderObjective.setPriority(specificationObjective.getPriority());
+
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
+        populateFormModel(model);
+        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM2;
+    }
+
     @PostMapping("/stakeholderObjective/new")
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
@@ -127,6 +149,39 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         stakeholderObjective = stakeholderObjectiveService.save(stakeholderObjective);
 
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
+    }
+
+    @PostMapping("/stakeholderObjective2/new")
+    public String processCreationForm2(
+            @ModelAttribute(binding = false) Specification specification,
+            @ModelAttribute(binding = false) Stakeholder stakeholder,
+            @RequestParam("collectionItemId") int specificationObjectiveId,
+            @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model,
+            RedirectAttributes redirectAttributes) {
+        if (specificationObjectiveId == -1) {
+            SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
+            emptySeSpecificationObjective.setId(-1);
+            stakeholderObjective.setSpecificationObjective(emptySeSpecificationObjective);
+            result.rejectValue("specificationObjective.name", "required", "Specification Objective should not be empty.");
+        } else {
+            SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
+            stakeholderObjective.setSpecificationObjective(specificationObjective);
+
+            if (stakeholderObjectiveService.existsForStakeholderAndSpecificationObjective(
+                    stakeholder, specificationObjective)) {
+                result.rejectValue("specificationObjective.name", "unique",
+                        "Stakeholder Objective already exists.");
+            }
+        }
+
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM2;
+        }
+
+        stakeholderObjective = stakeholderObjectiveService.save(stakeholderObjective);
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Stakeholder Objective created.");
+        return String.format(RedirectConstants.REDIRECT_TREE_STAKEHOLDER_OBJECTIVE_EDIT, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
     }
 
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")

@@ -78,6 +78,7 @@ function jsTreeDataLoader(obj, callback) {
                                 'text': 'Stakeholder Objectives',
                                 'data': {
                                     'type': 'stakeholderObjectives',
+                                    'specificationId': item.specificationId,
                                     'stakeholderId': item.id
                                 },
                                 'children': true
@@ -111,26 +112,61 @@ $(document).ready(function () {
     $('#tree').jstree({
         'core': {
             'data': jsTreeDataLoader
-        }
-    });
-
-
-    /*{
+        },
         'plugins': ['contextmenu'],
         'contextmenu': {
+            'select_node': false,
             'items': (node, callback) => {
                 switch (node.data.type) {
                     case 'specifications':
                         callback({
-                            'new': {
-                                'label': ''
+                            'enter': {
+                                'label': 'Enter',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification2/new');
+                                }
+                            }
+                        });
+                        break;
+                    case 'specificationObjectives':
+                        callback({
+                            'enter': {
+                                'label': 'Enter',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification/' + node.data.specificationId + '/specificationObjective2/new');
+                                }
+                            }
+                        });
+                        break;
+                    case 'stakeholders':
+                        callback({
+                            'enter': {
+                                'label': 'Enter',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder2/new');
+                                }
+                            }
+                        });
+                        break;
+                    case 'stakeholderObjectives':
+                        callback({
+                            'enter': {
+                                'label': 'Enter',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder/' + node.data.stakeholderId + '/stakeholderObjective2/new');
+                                }
                             }
                         });
                         break;
                 }
             }
         }
-    });*/
+    });
+
     $('#tree').on('activate_node.jstree', (e, data) => {
         console.log("activate_node: data: " + data);
         let url;

@@ -12,9 +12,10 @@
     <input type="hidden" th:field="*{stakeholder}"/>
     <input type="hidden" th:field="*{specificationObjective}"/>
     <input type="hidden" id="collectionItemId" name="collectionItemId" th:attr="value=*{specificationObjective.id}"/>
+    <input type="hidden" id="name" onchange="console.log(this.value)"/>
     <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
       <span th:if="${stakeholderObjective['new']}">
-        <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${specification.specificationObjectives}, 'Use Specification Objective', 'No Specification Objectives defined', 'existingSpecificationObjective')}" />
+        <div th:replace="~{fragments/collectionDropdown :: specificationObjectivesDropdown(${specification.specificationObjectives}, 'Use Specification Objective', 'No Specification Objectives defined', 'existingSpecificationObjective')}" />
       </span>
       <a th:if="${!stakeholderObjective['new']}" class="btn btn-sm btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this stakeholder objective?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>
     </div>

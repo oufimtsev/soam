@@ -1,8 +1,12 @@
 <h2>Specification</h2>
 
 <div th:replace="~{fragments/flash :: flash}"></div>
-<form th:object="${specification}" th:action="@{/specification2/__${specification.id}__/edit}" class="form-horizontal"
+<form th:object="${specification}"
+      th:action="${specification['new']} ? @{/specification2/new} : @{/specification2/__${specification.id}__/edit}"
+      class="form-horizontal"
       id="add-specification-form" method="post" onsubmit="soamFormSubmit(this);return false;">
+    <input type="hidden" id="collectionType" name="collectionType" th:attr="value=${collectionType} ?: ''"/>
+    <input type="hidden" id="collectionItemId" name="collectionItemId" th:attr="value=${collectionItemId} ?: -1"/>
     <div class="form-group has-feedback">
         <input
                 th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}"/>

@@ -2,7 +2,8 @@
 
 <div th:replace="~{fragments/flash :: flash}"></div>
 <form th:object="${specificationObjective}"
-      th:action="@{/specification/__${specification.id}__/specificationObjective2/__${specificationObjective.id}__/edit}" class="form-horizontal" id="add-specification-objective-form" method="post"
+      th:action="${specificationObjective['new']} ? @{/specification/__${specification.id}__/specificationObjective2/new} : @{/specification/__${specification.id}__/specificationObjective2/__${specificationObjective.id}__/edit}"
+      class="form-horizontal" id="add-specification-objective-form" method="post"
       onsubmit="soamFormSubmit(this);return false;">
     <input type="hidden" th:field="*{specification}"/>
     <div class="form-group has-feedback">

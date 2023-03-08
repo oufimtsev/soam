@@ -63,6 +63,7 @@ public class SpecificationsController {
 		return specificationService.getById(specificationId).getStakeholders().stream()
 				.map(stakeholder -> Map.of(
 						"id", String.valueOf(stakeholder.getId()),
+						"specificationId", String.valueOf(stakeholder.getSpecification().getId()),
 						"name", stakeholder.getName(),
 						"type", "stakeholder"
 				))

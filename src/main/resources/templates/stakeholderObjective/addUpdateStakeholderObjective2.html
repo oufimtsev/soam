@@ -2,7 +2,7 @@
 
 <div th:replace="~{fragments/flash :: flash}"></div>
 <form th:object="${stakeholderObjective}"
-      th:action="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective2/__${stakeholderObjective.id}__/edit}"
+      th:action="${stakeholderObjective['new']} ? @{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective2/new} : @{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective2/__${stakeholderObjective.id}__/edit}"
       class="form-horizontal" id="add-stakeholder-objective-form" method="post"
       onsubmit="soamFormSubmit(this);return false;">
     <input type="hidden" th:field="*{stakeholder}"/>
@@ -10,7 +10,7 @@
     <input type="hidden" id="collectionItemId" name="collectionItemId" th:attr="value=*{specificationObjective.id}"/>
     <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
       <span th:if="${stakeholderObjective['new']}">
-        <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${specification.specificationObjectives}, 'Use Specification Objective', 'No Specification Objectives defined', 'existingSpecificationObjective')}"/>
+        <div th:replace="~{fragments/collectionDropdown :: specificationObjectivesDropdown(${specification.specificationObjectives}, 'Use Specification Objective', 'No Specification Objectives defined', 'existingSpecificationObjective')}"/>
       </span>
     </div>
     <div class="form-group has-feedback">
@@ -35,3 +35,7 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    initCollectionDropdown();
+</script>

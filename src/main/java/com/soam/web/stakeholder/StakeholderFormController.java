@@ -69,6 +69,16 @@ public class StakeholderFormController implements SoamFormController {
         return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
 
+    @GetMapping("/stakeholder2/new")
+    public String initCreationForm2(Specification specification, Model model) {
+        Stakeholder stakeholder = new Stakeholder();
+        stakeholder.setSpecification(specification);
+
+        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
+        populateFormModel(model);
+        return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM2;
+    }
+
     @PostMapping("/stakeholder/new")
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
@@ -88,6 +98,28 @@ public class StakeholderFormController implements SoamFormController {
 
         stakeholder = stakeholderService.save(stakeholder);
         return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+    }
+
+    @PostMapping("/stakeholder2/new")
+    public String processCreationForm2(
+            @ModelAttribute(binding = false) Specification specification,
+            @Valid Stakeholder stakeholder, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
+            return RedirectConstants.REDIRECT_TREE_DEFAULT;
+        }
+
+        stakeholderService.findBySpecificationAndName(specification, stakeholder.getName()).ifPresent(s ->
+                result.rejectValue("name", "unique", "Stakeholder already exists."));
+
+        if (result.hasErrors()) {
+            populateFormModel(model);
+            return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM2;
+        }
+
+        stakeholder = stakeholderService.save(stakeholder);
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Stakeholder created.");
+        return String.format(RedirectConstants.REDIRECT_TREE_STAKEHOLDER_EDIT, specification.getId(), stakeholder.getId());
     }
 
     @GetMapping("/stakeholder/{stakeholderId}/edit")
