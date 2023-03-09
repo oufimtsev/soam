@@ -70,11 +70,14 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder2/new")
-    public String initCreationForm2(Specification specification, Model model) {
+    public String initCreationForm2(
+            Specification specification, Model model,
+            @RequestParam(name = "collectionType", required = false) String collectionType) {
         Stakeholder stakeholder = new Stakeholder();
         stakeholder.setSpecification(specification);
 
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
+        model.addAttribute(ModelConstants.ATTR_COLLECTION_TYPE, collectionType == null ? "" : collectionType);
         populateFormModel(model);
         return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM2;
     }

@@ -56,11 +56,14 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     }
 
     @GetMapping("/specificationObjective2/new")
-    public String initCreationForm2(Specification specification, Model model) {
+    public String initCreationForm2(
+            Specification specification, Model model,
+            @RequestParam(name = "collectionType", required = false) String collectionType) {
         SpecificationObjective specificationObjective = new SpecificationObjective();
         specificationObjective.setSpecification(specification);
 
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
+        model.addAttribute(ModelConstants.ATTR_COLLECTION_TYPE, collectionType == null ? "" : collectionType);
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM2;
     }

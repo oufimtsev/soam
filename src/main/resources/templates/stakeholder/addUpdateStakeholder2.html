@@ -6,6 +6,9 @@
       class="form-horizontal" id="add-stakeholder-form" method="post"
       onsubmit="soamFormSubmit(this);return false;">
     <input type="hidden" th:field="*{specification}"/>
+    <div th:if="${stakeholder['new'] && collectionType == 'copyTemplate'}" class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
+        <div th:replace="~{fragments/templateDropdown :: templateDropdown(${stakeholderTemplates})}" />
+    </div>
     <div class="form-group has-feedback">
         <input
                 th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}"/>
@@ -28,3 +31,7 @@
         </div>
     </div>
 </form>
+
+<script type="text/javascript">
+    initCollectionDropdown();
+</script>

@@ -152,6 +152,13 @@ $(document).ready(function () {
                         break;
                     case 'specificationObjectives':
                         callback({
+                            'copyTemplate': {
+                                'label': 'Copy Template',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification/' + node.data.specificationId + '/specificationObjective2/new?collectionType=copyTemplate');
+                                }
+                            },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {
@@ -163,6 +170,13 @@ $(document).ready(function () {
                         break;
                     case 'stakeholders':
                         callback({
+                            'copyTemplate': {
+                                'label': 'Copy Template',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder2/new?collectionType=copyTemplate');
+                                }
+                            },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {
