@@ -134,6 +134,13 @@ $(document).ready(function () {
                                     loadMainPanel('/specification2/new?collectionType=srcSpecification');
                                 }
                             },
+                            'copyTemplate': {
+                                'label': 'Copy Template',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification2/new?collectionType=copyTemplate');
+                                }
+                            },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {

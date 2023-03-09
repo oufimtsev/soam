@@ -14,6 +14,9 @@
         <span th:if="${specification['new'] && collectionType == 'templateDeepCopy'}" class="ms-2">
             <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${specificationTemplates}, 'Create from Template', 'No Specification Templates defined', 'templateDeepCopy')}"/>
         </span>
+        <span th:if="${specification['new'] && collectionType == 'copyTemplate'}"  class="ms-2">
+          <div th:replace="~{fragments/templateDropdown :: templateDropdown(${specificationTemplates})}" />
+        </span>
     </div>
     <div class="form-group has-feedback">
         <input
