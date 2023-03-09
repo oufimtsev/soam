@@ -74,22 +74,15 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
-                            treeEntity.children = [{
-                                'text': 'Stakeholder Objectives',
-                                'data': {
-                                    'type': 'stakeholderObjectives',
-                                    'specificationId': item.specificationId,
-                                    'stakeholderId': item.id
-                                },
-                                'children': true
-                            }];
+                            treeEntity.data.specificationId = item.specificationId;
+                            treeEntity.children = true;
                             return treeEntity;
                         });
                         callback(children);
                     });
                 break;
-            case 'stakeholderObjectives':
-                fetch('/tree/stakeholder/' + obj.data.stakeholderId + '/stakeholderObjective')
+            case 'stakeholder':
+                fetch('/tree/stakeholder/' + obj.data.id + '/stakeholderObjective')
                     .then(response => response.json())
                     .then(items => {
                         const children = items.map(createTreeEntity);
@@ -186,13 +179,13 @@ $(document).ready(function () {
                             }
                         });
                         break;
-                    case 'stakeholderObjectives':
+                    case 'stakeholder':
                         callback({
-                            'enter': {
-                                'label': 'Enter',
+                            'addObjective': {
+                                'label': 'Add Objective',
                                 'action': obj => {
                                     $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder/' + node.data.stakeholderId + '/stakeholderObjective2/new');
+                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder/' + node.data.id + '/stakeholderObjective2/new');
                                 }
                             }
                         });
