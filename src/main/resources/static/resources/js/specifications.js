@@ -127,6 +127,13 @@ $(document).ready(function () {
                                     loadMainPanel('/specification2/new?collectionType=templateDeepCopy');
                                 }
                             },
+                            'copyComplete': {
+                                'label': 'Copy Complete',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification2/new?collectionType=srcSpecification');
+                                }
+                            },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {
