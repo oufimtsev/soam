@@ -120,6 +120,13 @@ $(document).ready(function () {
                 switch (node.data.type) {
                     case 'specifications':
                         callback({
+                            'createComplete': {
+                                'label': 'Create Complete',
+                                'action': obj => {
+                                    $('#tree').jstree().deselect_all();
+                                    loadMainPanel('/specification2/new?collectionType=templateDeepCopy');
+                                }
+                            },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {
