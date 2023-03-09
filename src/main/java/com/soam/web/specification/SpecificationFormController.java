@@ -213,6 +213,21 @@ public class SpecificationFormController implements SoamFormController {
         return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
     }
 
+    @PostMapping("/specification2/{specificationId}/delete")
+    public String processDelete2(
+            @PathVariable("specificationId") int specificationId, RedirectAttributes redirectAttributes) {
+        Specification specification = specificationService.getById(specificationId);
+        if ((specification.getStakeholders() != null && !specification.getStakeholders().isEmpty()) ||
+                (specification.getSpecificationObjectives() != null && !specification.getSpecificationObjectives().isEmpty())) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Please delete any Stakeholders and Specification Objectives first.");
+            return RedirectConstants.REDIRECT_TREE_DEFAULT;
+        }
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", specification.getName()));
+        specificationService.delete(specification);
+
+        return RedirectConstants.REDIRECT_TREE_DEFAULT;
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());

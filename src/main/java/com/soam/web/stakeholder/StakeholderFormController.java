@@ -211,6 +211,22 @@ public class StakeholderFormController implements SoamFormController {
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
     }
 
+    @PostMapping("/stakeholder2/{stakeholderId}/delete")
+    public String processDelete2(
+            @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
+            RedirectAttributes redirectAttributes) {
+        Stakeholder stakeholder = stakeholderService.getById(stakeholderId);
+        if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
+        } else if (stakeholder.getStakeholderObjectives() != null && !stakeholder.getStakeholderObjectives().isEmpty()) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Please delete any Stakeholder Objectives first.");
+        } else {
+            stakeholderService.delete(stakeholder);
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", stakeholder.getName()));
+        }
+        return RedirectConstants.REDIRECT_TREE_DEFAULT;
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());

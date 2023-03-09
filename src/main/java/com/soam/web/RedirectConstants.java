@@ -5,7 +5,7 @@ public final class RedirectConstants {
     public static final String REDIRECT_TREE_STAKEHOLDER_EDIT = "redirect:/specification/%s/stakeholder2/%s/edit";
     public static final String REDIRECT_TREE_SPECIFICATION_OBJECTIVE_EDIT = "redirect:/specification/%s/specificationObjective2/%s/edit";
     public static final String REDIRECT_TREE_STAKEHOLDER_OBJECTIVE_EDIT = "redirect:/specification/%s/stakeholder/%s/stakeholderObjective2/%s/edit";
-    public static final String REDIRECT_TREE_DEFAULT = "redirect:/specification2/default";
+    public static final String REDIRECT_TREE_DEFAULT = "redirect:/specifications2/default";
 
     public static final String REDIRECT_FIND_SPECIFICATION = "redirect:/specification/find";
     public static final String REDIRECT_SPECIFICATION_LIST = "redirect:/specification/list";

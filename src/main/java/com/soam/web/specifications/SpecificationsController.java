@@ -51,6 +51,7 @@ public class SpecificationsController {
 		return specificationService.getById(specificationId).getSpecificationObjectives().stream()
 				.map(specificationObjective -> Map.of(
 						"id", String.valueOf(specificationObjective.getId()),
+						"specificationId", String.valueOf(specificationObjective.getSpecification().getId()),
 						"name", specificationObjective.getName(),
 						"type", "specificationObjective"
 				))
@@ -76,6 +77,8 @@ public class SpecificationsController {
 		return stakeholderService.getById(stakeholderId).getStakeholderObjectives().stream()
 				.map(stakeholderObjective -> Map.of(
 						"id", String.valueOf(stakeholderObjective.getId()),
+						"specificationId", String.valueOf(stakeholderObjective.getSpecificationObjective().getSpecification().getId()),
+						"stakeholderId", String.valueOf(stakeholderObjective.getStakeholder().getId()),
 						"name", stakeholderObjective.getSpecificationObjective().getName(),
 						"type", "stakeholderObjective"
 				))

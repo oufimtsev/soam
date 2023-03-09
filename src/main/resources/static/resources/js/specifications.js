@@ -7,14 +7,12 @@ const TREE_ICON_MAP = {
 const DEFAULT_MESSAGE = 'Please select an item in Entity Explorer';
 
 function createTreeEntity(item) {
-    return {
+    const treeEntity = {
         'text': item.name,
         'icon': TREE_ICON_MAP[item.type],
-        'data': {
-            'type': item.type,
-            'id': item.id
-        }
+        'data': item
     };
+    return treeEntity;
 }
 
 function jsTreeDataLoader(obj, callback) {
@@ -74,7 +72,6 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
-                            treeEntity.data.specificationId = item.specificationId;
                             treeEntity.children = true;
                             return treeEntity;
                         });
@@ -90,6 +87,20 @@ function jsTreeDataLoader(obj, callback) {
                     });
                 break;
         }
+    }
+}
+
+function deleteEntity(entityName, url) {
+    if (confirm('Are you sure you want to delete this ' + entityName + '?')) {
+        $('#tree').jstree().deselect_all();
+        fetch(url, {
+            'method': 'POST'
+        })
+            .then(response => response.text())
+            .then(text => {
+                $('#main').html(text);
+                $('#tree').jstree().refresh();
+            });
     }
 }
 
@@ -179,6 +190,26 @@ $(document).ready(function () {
                             }
                         });
                         break;
+                    case 'specification':
+                        callback({
+                            'delete': {
+                                'label': 'Delete',
+                                'action': obj => {
+                                    deleteEntity('Specification', '/specification2/' + node.data.id + '/delete');
+                                }
+                            }
+                        });
+                        break;
+                    case 'specificationObjective':
+                        callback({
+                            'delete': {
+                                'label': 'Delete',
+                                'action': obj => {
+                                    deleteEntity('Specification Objective', '/specification/' + node.data.specificationId + '/specificationObjective2/' + node.data.id + '/delete');
+                                }
+                            }
+                        });
+                        break;
                     case 'stakeholder':
                         callback({
                             'addObjective': {
@@ -186,6 +217,22 @@ $(document).ready(function () {
                                 'action': obj => {
                                     $('#tree').jstree().deselect_all();
                                     loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder/' + node.data.id + '/stakeholderObjective2/new');
+                                }
+                            },
+                            'delete': {
+                                'label': 'Delete',
+                                'action': obj => {
+                                    deleteEntity('Stakeholder', '/specification/' + node.data.specificationId + '/stakeholder2/' + node.data.id + '/delete');
+                                }
+                            }
+                        });
+                        break;
+                    case 'stakeholderObjective':
+                        callback({
+                            'delete': {
+                                'label': 'Delete',
+                                'action': obj => {
+                                    deleteEntity('Stakeholder Objective', '/specification/' + node.data.specificationId + '/stakeholder/' + node.data.stakeholderId + '/stakeholderObjective2/' + node.data.id + '/delete');
                                 }
                             }
                         });
@@ -200,9 +247,11 @@ $(document).ready(function () {
         let url;
         if (data.node.data.id) {
             url = '/' + data.node.data.type + '2/' + data.node.data.id + '/edit';
-            for (let i = 1; i < data.node.parents.length - 1; i += 2) {
+            for (let i = 0; i < data.node.parents.length; i ++) {
                 const parentData = $('#tree').jstree().get_node(data.node.parents[i]).data;
-                url = '/' + parentData.type + '/' + parentData.id + url;
+                if (parentData && parentData.id) {
+                    url = '/' + parentData.type + '/' + parentData.id + url;
+                }
             }
         } else {
             url = '/specifications2/default';
