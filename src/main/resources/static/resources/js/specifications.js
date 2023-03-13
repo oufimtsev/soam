@@ -212,17 +212,17 @@ $(document).ready(function () {
                         break;
                     case 'stakeholder':
                         callback({
+                            'delete': {
+                                'label': 'Delete',
+                                'action': obj => {
+                                    deleteEntity('Stakeholder', '/specification/' + node.data.specificationId + '/stakeholder2/' + node.data.id + '/delete');
+                                }
+                            },
                             'addObjective': {
                                 'label': 'Add Objective',
                                 'action': obj => {
                                     $('#tree').jstree().deselect_all();
                                     loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder/' + node.data.id + '/stakeholderObjective2/new');
-                                }
-                            },
-                            'delete': {
-                                'label': 'Delete',
-                                'action': obj => {
-                                    deleteEntity('Stakeholder', '/specification/' + node.data.specificationId + '/stakeholder2/' + node.data.id + '/delete');
                                 }
                             }
                         });
