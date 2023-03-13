@@ -93,6 +93,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     @PostMapping("/specificationObjective2/new")
     public String processCreationForm2(
             @ModelAttribute(binding = false) Specification specification,
+            @ModelAttribute("collectionType") String collectionType,
             @Valid SpecificationObjective specificationObjective, BindingResult result, Model model,
             RedirectAttributes redirectAttributes) {
         if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
