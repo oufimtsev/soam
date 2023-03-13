@@ -1,8 +1,8 @@
 const TREE_ICON_MAP = {
-    'specification': 'bi bi-file-text',
-    'specificationObjective': 'bi bi-bullseye',
-    'stakeholder': 'bi bi-person-check-fill',
-    'stakeholderObjective': 'bi bi-check-circle'
+    'specification': 'fa fa-file-text-o',
+    'specificationObjective': 'fa fa-bullseye',
+    'stakeholder': 'fa fa-user',
+    'stakeholderObjective': 'fa fa-check-square-o'
 };
 const DEFAULT_MESSAGE = 'Please select an item in Entity Explorer';
 
