@@ -272,3 +272,7 @@ function soamFormSubmit(form) {
             $('#tree').jstree().refresh();
         });
 }
+
+function soamFormCancel() {
+    loadMainPanel('/specifications2/default');
+}
