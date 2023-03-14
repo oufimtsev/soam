@@ -110,6 +110,22 @@ function loadMainPanel(url) {
         .then(text => $('#main').html(text));
 }
 
+function createUpdateAction(node) {
+    let url = '/' + node.data.type + '2/' + node.data.id + '/edit';
+    for (let i = 0; i < node.parents.length; i ++) {
+        const parentData = $('#tree').jstree().get_node(node.parents[i]).data;
+        if (parentData && parentData.id) {
+            url = '/' + parentData.type + '/' + parentData.id + url;
+        }
+    }
+    return {
+       'label': 'Update',
+       'action': obj => {
+           loadMainPanel(url);
+       }
+   };
+}
+
 $(document).ready(function () {
     loadMainPanel('/specifications2/default');
 
@@ -192,6 +208,7 @@ $(document).ready(function () {
                         break;
                     case 'specification':
                         callback({
+                            'update': createUpdateAction(node),
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
@@ -202,6 +219,7 @@ $(document).ready(function () {
                         break;
                     case 'specificationObjective':
                         callback({
+                            'update': createUpdateAction(node),
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
@@ -212,6 +230,7 @@ $(document).ready(function () {
                         break;
                     case 'stakeholder':
                         callback({
+                            'update': createUpdateAction(node),
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
@@ -229,6 +248,7 @@ $(document).ready(function () {
                         break;
                     case 'stakeholderObjective':
                         callback({
+                            'update': createUpdateAction(node),
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
@@ -242,22 +262,22 @@ $(document).ready(function () {
         }
     });
 
-    $('#tree').on('activate_node.jstree', (e, data) => {
-        console.log("activate_node: data: " + data);
-        let url;
-        if (data.node.data.id) {
-            url = '/' + data.node.data.type + '2/' + data.node.data.id + '/edit';
-            for (let i = 0; i < data.node.parents.length; i ++) {
-                const parentData = $('#tree').jstree().get_node(data.node.parents[i]).data;
-                if (parentData && parentData.id) {
-                    url = '/' + parentData.type + '/' + parentData.id + url;
-                }
-            }
-        } else {
-            url = '/specifications2/default';
-        }
-        loadMainPanel(url);
-    });
+//    $('#tree').on('activate_node.jstree', (e, data) => {
+//        console.log("activate_node: data: " + data);
+//        let url;
+//        if (data.node.data.id) {
+//            url = '/' + data.node.data.type + '2/' + data.node.data.id + '/edit';
+//            for (let i = 0; i < data.node.parents.length; i ++) {
+//                const parentData = $('#tree').jstree().get_node(data.node.parents[i]).data;
+//                if (parentData && parentData.id) {
+//                    url = '/' + parentData.type + '/' + parentData.id + url;
+//                }
+//            }
+//        } else {
+//            url = '/specifications2/default';
+//        }
+//        loadMainPanel(url);
+//    });
 })
 
 function soamFormSubmit(form) {
