@@ -121,6 +121,8 @@ function createUpdateAction(node) {
     return {
        'label': 'Update',
        'action': obj => {
+           $('#tree').jstree().deselect_all();
+           $('#tree').jstree().select_node(node, true);
            loadMainPanel(url);
        }
    };
