@@ -23,8 +23,13 @@ public class SpecificationsController {
 		this.stakeholderService = stakeholderService;
 	}
 
+	@GetMapping("/specifications1")
+	public String defaultTree1(Model model) {
+		return ViewConstants.VIEW_TREE_DEFAULT1;
+	}
+
 	@GetMapping("/specifications2")
-	public String listAll(Model model) {
+	public String defaultTree(Model model) {
 		return ViewConstants.VIEW_TREE;
 	}
 

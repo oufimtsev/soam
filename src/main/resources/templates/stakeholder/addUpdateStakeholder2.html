@@ -7,7 +7,7 @@
       onsubmit="soamFormSubmit(this);return false;">
     <input type="hidden" th:field="*{specification}"/>
     <input type="hidden" id="collectionType" name="collectionType" th:attr="value=${collectionType} ?: ''"/>
-    <div th:if="${stakeholder['new'] && collectionType == 'copyTemplate'}" class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
+    <div th:if="${stakeholder['new'] && collectionType == 'copyTemplate'}" class="col-sm-offset-2 d-flex justify-content-end">
         <div th:replace="~{fragments/templateDropdown :: templateDropdown(${stakeholderTemplates})}" />
     </div>
     <div class="form-group has-feedback">

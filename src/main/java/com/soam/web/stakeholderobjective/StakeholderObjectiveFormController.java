@@ -79,8 +79,8 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     public String initCreationForm(
             Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
         if (specification.getSpecificationObjectives().isEmpty()) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Specification does not have any Specification Objectives.");
-            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Specification does not have any Specification Objectives.");
+            return RedirectConstants.REDIRECT_TREE_DEFAULT1;
         }
 
         SpecificationObjective specificationObjective = new SpecificationObjective();
@@ -101,7 +101,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     public String initCreationForm2(
             Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {
         if (specification.getSpecificationObjectives().isEmpty()) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Specification does not have any Specification Objectives.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Specification does not have any Specification Objectives.");
             return RedirectConstants.REDIRECT_TREE_DEFAULT;
         }
 
@@ -124,7 +124,8 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             @ModelAttribute(binding = false) Specification specification,
             @ModelAttribute(binding = false) Stakeholder stakeholder,
             @RequestParam("collectionItemId") int specificationObjectiveId,
-            @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model) {
+            @Valid StakeholderObjective stakeholderObjective, BindingResult result, Model model,
+            RedirectAttributes redirectAttributes) {
         if (specificationObjectiveId == -1) {
             SpecificationObjective emptySeSpecificationObjective = new SpecificationObjective();
             emptySeSpecificationObjective.setId(-1);
@@ -148,7 +149,8 @@ public class StakeholderObjectiveFormController implements SoamFormController {
 
         stakeholderObjective = stakeholderObjectiveService.save(stakeholderObjective);
 
-        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Stakeholder Objective created.");
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_EDIT, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
     }
 
     @PostMapping("/stakeholderObjective2/new")
@@ -250,9 +252,9 @@ public class StakeholderObjectiveFormController implements SoamFormController {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Malformed request.");
         } else {
             stakeholderObjectiveService.delete(stakeholderObjective);
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", stakeholderObjective.getSpecificationObjective().getName()));
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", stakeholderObjective.getSpecificationObjective().getName()));
         }
-        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+        return RedirectConstants.REDIRECT_TREE_DEFAULT1;
     }
 
     @PostMapping("/stakeholderObjective2/{stakeholderObjectiveId}/delete")

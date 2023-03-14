@@ -7,7 +7,7 @@
       id="add-specification-form" method="post" onsubmit="soamFormSubmit(this);return false;">
     <input type="hidden" id="collectionType" name="collectionType" th:attr="value=${collectionType} ?: ''"/>
     <input type="hidden" id="collectionItemId" name="collectionItemId" th:attr="value=${collectionItemId} ?: -1"/>
-    <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
+    <div class="col-sm-offset-2 d-flex justify-content-end">
         <span th:if="${specification['new'] && collectionType == 'srcSpecification'}">
             <div th:replace="~{fragments/collectionDropdown :: collectionDropdown(${specifications}, 'Copy Existing Specification', 'No Specifications defined', 'srcSpecification')}"/>
         </span>

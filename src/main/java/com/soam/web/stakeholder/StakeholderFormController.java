@@ -60,11 +60,14 @@ public class StakeholderFormController implements SoamFormController {
     }
 
     @GetMapping("/stakeholder/new")
-    public String initCreationForm(Specification specification, Model model) {
+    public String initCreationForm(
+            Specification specification, Model model,
+            @RequestParam(name = "collectionType", required = false) String collectionType) {
         Stakeholder stakeholder = new Stakeholder();
         stakeholder.setSpecification(specification);
 
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
+        model.addAttribute(ModelConstants.ATTR_COLLECTION_TYPE, collectionType == null ? "" : collectionType);
         populateFormModel(model);
         return ViewConstants.VIEW_STAKEHOLDER_ADD_OR_UPDATE_FORM;
     }
@@ -85,6 +88,7 @@ public class StakeholderFormController implements SoamFormController {
     @PostMapping("/stakeholder/new")
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
+            @ModelAttribute("collectionType") String collectionType,
             @Valid Stakeholder stakeholder, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
@@ -100,7 +104,8 @@ public class StakeholderFormController implements SoamFormController {
         }
 
         stakeholder = stakeholderService.save(stakeholder);
-        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Stakeholder created.");
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_EDIT, specification.getId(), stakeholder.getId());
     }
 
     @PostMapping("/stakeholder2/new")
@@ -149,7 +154,7 @@ public class StakeholderFormController implements SoamFormController {
             @PathVariable("stakeholderId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+            return RedirectConstants.REDIRECT_TREE_DEFAULT1;
         }
 
         stakeholderService.findBySpecificationAndName(specification, stakeholder.getName())
@@ -163,7 +168,8 @@ public class StakeholderFormController implements SoamFormController {
         }
 
         stakeholder = stakeholderService.save(stakeholder);
-        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholder.getId());
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Stakeholder updated.");
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_EDIT, specification.getId(), stakeholder.getId());
     }
 
     @PostMapping("/stakeholder2/{stakeholderId}/edit")
@@ -194,22 +200,22 @@ public class StakeholderFormController implements SoamFormController {
     @PostMapping("/stakeholder/{stakeholderId}/delete")
     public String processDelete(
             @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
-            @RequestParam("id") int formId, RedirectAttributes redirectAttributes) {
-        if (stakeholderId != formId) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-        }
+            RedirectAttributes redirectAttributes) {
+//        if (stakeholderId != formId) {
+//            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
+//            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+//        }
 
         Stakeholder stakeholder = stakeholderService.getById(stakeholderId);
         if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
         } else if (stakeholder.getStakeholderObjectives() != null && !stakeholder.getStakeholderObjectives().isEmpty()) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Stakeholder Objectives first.");
-            return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_DETAILS, specification.getId(), stakeholderId);
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Please delete any Stakeholder Objectives first.");
+            return RedirectConstants.REDIRECT_TREE_DEFAULT1;
         }
         stakeholderService.delete(stakeholder);
-        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", stakeholder.getName()));
-        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", stakeholder.getName()));
+        return RedirectConstants.REDIRECT_TREE_DEFAULT1;
     }
 
     @PostMapping("/stakeholder2/{stakeholderId}/delete")

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'stakeholderObjectives')}">
+  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'specifications')}">
 <head>
   <script type="text/javascript" th:src="@{/resources/js/collectionDropdown.js}"></script>
 </head>
@@ -13,11 +13,11 @@
     <input type="hidden" th:field="*{specificationObjective}"/>
     <input type="hidden" id="collectionItemId" name="collectionItemId" th:attr="value=*{specificationObjective.id}"/>
     <input type="hidden" id="name" onchange="console.log(this.value)"/>
-    <div class="col-sm-offset-2 col-sm-10 d-flex justify-content-end">
+    <div class="col-sm-offset-2 d-flex justify-content-end">
       <span th:if="${stakeholderObjective['new']}">
         <div th:replace="~{fragments/collectionDropdown :: specificationObjectivesDropdown(${specification.specificationObjectives}, 'Use Specification Objective', 'No Specification Objectives defined', 'existingSpecificationObjective')}" />
       </span>
-      <a th:if="${!stakeholderObjective['new']}" class="btn btn-sm btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this stakeholder objective?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>
+<!--      <a th:if="${!stakeholderObjective['new']}" class="btn btn-sm btn-primary ms-2" onclick="if(confirm('Are you sure you want to delete this stakeholder objective?')) document.getElementById('deleteForm').submit()"><i class="fa fa-trash-o me-2" aria-hidden="true"></i>Delete</a>-->
     </div>
     <div class="form-group has-feedback">
       <input
@@ -31,7 +31,11 @@
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10 d-flex">
-        <button class="btn btn-primary" type="submit"
+        <a class="btn btn-primary" type="button" href="/specifications1">
+          <i class="fa fa-ban me-1" aria-hidden="true"></i>
+          <span>Cancel</span>
+        </a>
+        <button class="btn btn-primary ms-2" type="submit"
           th:with="text=${stakeholderObjective['new']} ? 'Add Stakeholder Objective' : 'Update Stakeholder Objective',
                   icon=${stakeholderObjective['new']} ? 'fa-plus' : 'fa-pencil-square-o'">
           <i class="fa me-1"  th:classappend="${icon}" aria-hidden="true"></i>
@@ -44,5 +48,8 @@
   <form th:if="${!stakeholderObjective['new']}" id="deleteForm" th:object="${stakeholderObjective}" th:action="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective/__${stakeholderObjective.id}__/delete}" method="post">
     <input type="hidden" th:field="*{id}"/>
   </form>
+  <script type="text/javascript">
+    updateTreeForStakeholderObjective([[${specification.id}]], [[${stakeholder.id}]], [[${stakeholderObjective.id}]]);
+  </script>
 </body>
 </html>

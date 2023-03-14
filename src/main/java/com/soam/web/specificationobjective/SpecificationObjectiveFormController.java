@@ -46,11 +46,14 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     }
 
     @GetMapping("/specificationObjective/new")
-    public String initCreationForm(Specification specification, Model model) {
+    public String initCreationForm(
+            Specification specification, Model model,
+            @RequestParam(name = "collectionType", required = false) String collectionType) {
         SpecificationObjective specificationObjective = new SpecificationObjective();
         specificationObjective.setSpecification(specification);
 
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
+        model.addAttribute(ModelConstants.ATTR_COLLECTION_TYPE, collectionType == null ? "" : collectionType);
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM;
     }
@@ -71,6 +74,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
     @PostMapping("/specificationObjective/new")
     public String processCreationForm(
             @ModelAttribute(binding = false) Specification specification,
+            @ModelAttribute("collectionType") String collectionType,
             @Valid SpecificationObjective specificationObjective, BindingResult result, Model model,
             RedirectAttributes redirectAttributes) {
         if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
@@ -87,7 +91,8 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         }
 
         specificationObjective = specificationObjectiveService.save(specificationObjective);
-        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Specification Objective created.");
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_EDIT, specification.getId(), specificationObjective.getId());
     }
 
     @PostMapping("/specificationObjective2/new")
@@ -144,7 +149,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             Model model, RedirectAttributes redirectAttributes) {
         if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+            return String.format(RedirectConstants.REDIRECT_TREE_DEFAULT1, specification.getId());
         }
 
         specificationObjectiveService.findBySpecificationAndName(specification, specificationObjective.getName())
@@ -158,7 +163,8 @@ public class SpecificationObjectiveFormController implements SoamFormController 
         }
 
         specificationObjective = specificationObjectiveService.save(specificationObjective);
-        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, specification.getId(), specificationObjective.getId());
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Specification Objective updated.");
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_EDIT, specification.getId(), specificationObjective.getId());
     }
 
     @PostMapping("/specificationObjective2/{specificationObjectiveId}/edit")
@@ -189,24 +195,24 @@ public class SpecificationObjectiveFormController implements SoamFormController 
 
     @PostMapping("/specificationObjective/{specificationObjectiveId}/delete")
     public String processDelete(
-            @PathVariable("specificationObjectiveId") int specificationObjectiveId, @RequestParam("id") int formId,
+            @PathVariable("specificationObjectiveId") int specificationObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             RedirectAttributes redirectAttributes) {
-        if (specificationObjectiveId != formId) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
-        }
-
+//        if (specificationObjectiveId != formId) {
+//            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
+//            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+//        }
+//
         SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
         if (!Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
         } else if (specificationObjective.getStakeholderObjectives() != null && !specificationObjective.getStakeholderObjectives().isEmpty()) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Stakeholder Objectives first.");
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Please delete any Stakeholder Objectives first.");
         } else {
             specificationObjectiveService.delete(specificationObjective);
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", specificationObjective.getName()));
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", specificationObjective.getName()));
         }
-        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+        return RedirectConstants.REDIRECT_TREE_DEFAULT1;
     }
 
     @PostMapping("/specificationObjective2/{specificationObjectiveId}/delete")

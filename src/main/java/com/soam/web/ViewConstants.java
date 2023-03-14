@@ -2,6 +2,7 @@ package com.soam.web;
 
 public final class ViewConstants {
     public static final String VIEW_TREE = "specifications/specifications";
+    public static final String VIEW_TREE_DEFAULT1 = "specifications/default1";
     public static final String VIEW_TREE_DEFAULT = "specifications/default";
     public static final String VIEW_TREE_SPECIFICATION = "tree/specification";
 
