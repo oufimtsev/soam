@@ -6,7 +6,7 @@
         th:class="|${'form-group' + (valid ? '' : ' has-error')} mb-3|"
         class="form-group">
         <label class="col-sm-2 control-label" th:text="${label}">Label</label>
-        <div class="col-sm-10">
+        <div>
             <div th:switch="${type}">
                 <input th:case="'text'" class="form-control" type="text" th:field="*{__${name}__}" th:readonly="${readOnly}"/>
                 <input th:case="'date'" class="form-control" type="date" th:field="*{__${name}__}" th:readonly="${readOnly}"/>
