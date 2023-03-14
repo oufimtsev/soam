@@ -3,10 +3,10 @@
 <html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'home')}">
 <head>
     <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/resources/js/jstree.min.js}"></script>
+    <script th:src="@{/webjars/jstree/3.3.14/jstree.min.js}"></script>
     <script type="text/javascript" th:src="@{/resources/js/specifications.js}"></script>
     <script type="text/javascript" th:src="@{/resources/js/collectionDropdown.js}"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
+    <link th:href="@{/webjars/jstree/3.3.14/themes/default/style.min.css}" rel="stylesheet">
 </head>
 <body>
 <div class="row h-100">
