@@ -17,8 +17,12 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+  <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+  <script th:src="@{/webjars/jstree/3.3.14/jstree.min.js}"></script>
+  <script type="text/javascript" th:src="@{/resources/js/specifications1.js}"></script>
   <link th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/resources/css/soam.css}" />
+  <link th:href="@{/webjars/jstree/3.3.14/themes/default/style.min.css}" rel="stylesheet">
 
   <th:block th:insert="${head}" />
 
@@ -49,7 +53,10 @@
             <span class="fa fa-home" aria-hidden="true"></span>
             <span>Home</span>
           </li>
-          <li th:replace="~{::menuItem ('/specifications2','specifications','Specifications','','Specifications')}">
+          <li th:replace="~{::menuItem ('/specifications1','specifications','Specifications(classic)','','Specifications(classic)')}">
+            <span>Specifications</span>
+          </li>
+          <li th:replace="~{::menuItem ('/specifications2','specifications_spa','Specifications(SPA)','','Specifications(SPA)')}">
             <span>Specifications</span>
           </li>
           <li class="nav-item dropdown" >
@@ -78,7 +85,7 @@
       </div>
     </div>
   </nav>
-  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu !='template' && specification != null }" >
+  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu !='template' && false && specification != null }" >
     <div class="container">
       <ol class="breadcrumb m-0 p-0" >
         <li class="breadcrumb-item" th:classappend="${specification == null ? 'active' : ''}">
@@ -177,16 +184,25 @@
       </ol>
     </div>
   </nav>
-  <div class="container-fluid h-100">
-    <div class="container xd-container h-100">
-      <div th:replace="~{fragments/flash :: flash}"></div>
-      <th:block th:insert="${template}" />
-      <div class="container mt-4">
+  <div class="container-fluid h-100 m-2">
+    <div class="row h-100">
+      <div class="col-4">
+        <h2>Entity Explorer</h2>
+        <div id="tree"></div>
+      </div>
+      <div class="col-8">
+          <div th:replace="~{fragments/flash :: flash}"></div>
+          <th:block th:insert="${template}" />
+          <div class="container mt-4">
+          </div>
       </div>
     </div>
   </div>
 
   <script th:src="@{/webjars/bootstrap/5.1.3/dist/js/bootstrap.bundle.min.js}"></script>
+
+  <form id="commonDeleteForm" method="post">
+  </form>
 
 </body>
 
