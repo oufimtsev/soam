@@ -102,28 +102,39 @@ function jsTreeDataLoader(obj, callback) {
     }
 }
 
-function deleteEntity(entityName, url) {
-    if (confirm('Are you sure you want to delete this ' + entityName + '?')) {
-        const form = $('#commonDeleteForm')[0];
-        form.action = url;
-        form.submit();
-    }
-}
-
-function createUpdateAction(node) {
-    let url = '/' + node.data.type + '/' + node.data.id + '/edit';
+function getNodeUrl(node) {
+    let url = '/' + node.data.type + '/' + node.data.id;
     for (let i = 0; i < node.parents.length; i ++) {
         const parentData = $('#tree').jstree().get_node(node.parents[i]).data;
         if (parentData && parentData.id) {
             url = '/' + parentData.type + '/' + parentData.id + url;
         }
     }
+    return url;
+}
+
+function createUpdateAction(node) {
+    const url = getNodeUrl(node) + '/edit';
     return {
        'label': 'Update',
        'action': obj => {
            window.location.href = url;
        }
    };
+}
+
+function createDeleteAction(name, node) {
+    const url = getNodeUrl(node) + '/delete';
+    return {
+       'label': 'Delete',
+       'action': obj => {
+            if (confirm('Are you sure you want to delete this ' + name + '?')) {
+                const form = $('#commonDeleteForm')[0];
+                form.action = url;
+                form.submit();
+            }
+       }
+    };
 }
 
 $(document).ready(function () {
@@ -199,34 +210,19 @@ $(document).ready(function () {
                     case 'specification':
                         callback({
                             'update': createUpdateAction(node),
-                            'delete': {
-                                'label': 'Delete',
-                                'action': obj => {
-                                    deleteEntity('Specification', '/specification/' + node.data.id + '/delete');
-                                }
-                            }
+                            'delete': createDeleteAction('Specification', node)
                         });
                         break;
                     case 'specificationObjective':
                         callback({
                             'update': createUpdateAction(node),
-                            'delete': {
-                                'label': 'Delete',
-                                'action': obj => {
-                                    deleteEntity('Specification Objective', '/specification/' + node.data.specificationId + '/specificationObjective/' + node.data.id + '/delete');
-                                }
-                            }
+                            'delete': createDeleteAction('Specification Objective', node)
                         });
                         break;
                     case 'stakeholder':
                         callback({
                             'update': createUpdateAction(node),
-                            'delete': {
-                                'label': 'Delete',
-                                'action': obj => {
-                                    deleteEntity('Stakeholder', '/specification/' + node.data.specificationId + '/stakeholder/' + node.data.id + '/delete');
-                                }
-                            },
+                            'delete': createDeleteAction('Stakeholder', node),
                             'addObjective': {
                                 'label': 'Add Objective',
                                 'action': obj => {
@@ -238,12 +234,7 @@ $(document).ready(function () {
                     case 'stakeholderObjective':
                         callback({
                             'update': createUpdateAction(node),
-                            'delete': {
-                                'label': 'Delete',
-                                'action': obj => {
-                                    deleteEntity('Stakeholder Objective', '/specification/' + node.data.specificationId + '/stakeholder/' + node.data.stakeholderId + '/stakeholderObjective/' + node.data.id + '/delete');
-                                }
-                            }
+                            'delete': createDeleteAction('Stakeholder Objective', node)
                         });
                         break;
                 }
