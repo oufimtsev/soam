@@ -27,13 +27,18 @@ public class SpecificationController {
 		this.specificationService = specificationService;
 	}
 
+	@GetMapping("/specifications")
+	public String defaultTree() {
+		return ViewConstants.VIEW_SPECIFICATION_DEFAULT;
+	}
+
 	@GetMapping("/specification/find")
 	public String initFindForm(Model model) {
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, new Specification());
 		return ViewConstants.VIEW_FIND_SPECIFICATION;
 	}
 
-	@GetMapping("/specifications")
+	@GetMapping("/specifications_todo")
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, Specification specification, BindingResult result, Model model) {
 		if (StringUtils.isEmpty(specification.getName())) {

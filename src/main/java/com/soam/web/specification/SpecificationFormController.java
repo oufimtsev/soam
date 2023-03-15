@@ -55,15 +55,6 @@ public class SpecificationFormController implements SoamFormController {
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
     }
 
-    @GetMapping("/specification2/new")
-    public String initCreationForm2(Model model, @RequestParam(name = "collectionType", required = false) String collectionType) {
-        Specification specification = new Specification();
-        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-        model.addAttribute(ModelConstants.ATTR_COLLECTION_TYPE, collectionType == null ? "" : collectionType);
-        populateFormModel(model);
-        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
-    }
-
     @PostMapping("/specification/new")
     public String processCreationForm(
             @Valid Specification specification, BindingResult result,
@@ -99,41 +90,6 @@ public class SpecificationFormController implements SoamFormController {
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_EDIT, specification.getId());
     }
 
-    @PostMapping("/specification2/new")
-    public String processCreationForm2(
-            @Valid Specification specification, BindingResult result,
-            @ModelAttribute("collectionType") String collectionType,
-            @ModelAttribute("collectionItemId") int collectionItemId,
-            Model model, RedirectAttributes redirectAttributes) {
-        specificationService.findByName(specification.getName()).ifPresent(s ->
-                result.rejectValue("name", "unique", "Specification already exists."));
-
-        if (result.hasErrors()) {
-            populateFormModel(model);
-            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
-        }
-
-        if (CREATE_MODE_COPY_SPECIFICATION.equals(collectionType)) {
-            //creating new Specification as a deep copy of source Specification
-            Specification srcSpecification = specificationService.getById(collectionItemId);
-            specification = specificationService.saveDeepCopy(srcSpecification, specification);
-        } else if (CREATE_MODE_FROM_TEMPLATE.equals(collectionType)) {
-            //creating new Specification as a deep copy of source Specification Template
-            SpecificationTemplate srcSpecificationTemplate = specificationTemplateService.getById(collectionItemId);
-            specification = specificationService.saveFromTemplate(srcSpecificationTemplate, specification);
-        } else {
-            //creating new Specification manually or as a shall copy of existing Specification Template
-            specification.setStakeholders(List.of());
-            specification.setSpecificationObjectives(List.of());
-            specification = specificationService.save(specification);
-        }
-        redirectAttributes.addFlashAttribute(
-                SoamFormController.FLASH_SUCCESS,
-                String.format("Created %s", getSpecificationOverviewMessage(specification))
-        );
-        return String.format(RedirectConstants.REDIRECT_TREE_SPECIFICATION_EDIT, specification.getId());
-    }
-
     @GetMapping("/specification/{specificationId}/edit")
     public String initUpdateForm(
             @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
@@ -141,15 +97,6 @@ public class SpecificationFormController implements SoamFormController {
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
         populateFormModel(model);
         return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM;
-    }
-
-    @GetMapping("/specification2/{specificationId}/edit")
-    public String initUpdateForm2(
-            @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
-        Specification specification = specificationService.getById(specificationId);
-        model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-        populateFormModel(model);
-        return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
     }
 
     @PostMapping("/specification/{specificationId}/edit")
@@ -171,25 +118,6 @@ public class SpecificationFormController implements SoamFormController {
         return String.format(RedirectConstants.REDIRECT_SPECIFICATION_EDIT, specificationId);
     }
 
-    @PostMapping("/specification2/{specificationId}/edit")
-    public String processUpdateForm2(
-            @Valid Specification specification, BindingResult result,
-            @PathVariable("specificationId") int specificationId, Model model, RedirectAttributes redirectAttributes) {
-        specificationService.findByName(specification.getName())
-                .filter(s -> s.getId() != specificationId)
-                .ifPresent(s -> result.rejectValue("name", "unique", "Specification already exists."));
-
-        specification.setId(specificationId);
-        if (result.hasErrors()) {
-            populateFormModel(model);
-            return ViewConstants.VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM2;
-        }
-
-        specificationService.save(specification);
-        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, "Specification updated.");
-        return String.format(RedirectConstants.REDIRECT_TREE_SPECIFICATION_EDIT, specification.getId());
-    }
-
     @PostMapping("/specification/{specificationId}/delete")
     public String processDelete(@PathVariable("specificationId") int specificationId, RedirectAttributes redirectAttributes) {
 
@@ -202,27 +130,12 @@ public class SpecificationFormController implements SoamFormController {
         if ((specification.getStakeholders() != null && !specification.getStakeholders().isEmpty()) ||
                 (specification.getSpecificationObjectives() != null && !specification.getSpecificationObjectives().isEmpty())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Please delete any Stakeholders and Specification Objectives first.");
-            return RedirectConstants.REDIRECT_TREE_DEFAULT1;
+            return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
         }
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", specification.getName()));
         specificationService.delete(specification);
 
-        return RedirectConstants.REDIRECT_TREE_DEFAULT1;
-    }
-
-    @PostMapping("/specification2/{specificationId}/delete")
-    public String processDelete2(
-            @PathVariable("specificationId") int specificationId, RedirectAttributes redirectAttributes) {
-        Specification specification = specificationService.getById(specificationId);
-        if ((specification.getStakeholders() != null && !specification.getStakeholders().isEmpty()) ||
-                (specification.getSpecificationObjectives() != null && !specification.getSpecificationObjectives().isEmpty())) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Please delete any Stakeholders and Specification Objectives first.");
-            return RedirectConstants.REDIRECT_TREE_DEFAULT;
-        }
-        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", specification.getName()));
-        specificationService.delete(specification);
-
-        return RedirectConstants.REDIRECT_TREE_DEFAULT;
+        return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

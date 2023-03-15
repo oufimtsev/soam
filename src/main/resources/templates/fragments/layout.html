@@ -19,7 +19,7 @@
 
   <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
   <script th:src="@{/webjars/jstree/3.3.14/jstree.min.js}"></script>
-  <script type="text/javascript" th:src="@{/resources/js/specifications1.js}"></script>
+  <script type="text/javascript" th:src="@{/resources/js/specifications.js}"></script>
   <link th:href="@{/webjars/font-awesome/4.7.0/css/font-awesome.min.css}" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/resources/css/soam.css}" />
   <link th:href="@{/webjars/jstree/3.3.14/themes/default/style.min.css}" rel="stylesheet">
@@ -53,10 +53,7 @@
             <span class="fa fa-home" aria-hidden="true"></span>
             <span>Home</span>
           </li>
-          <li th:replace="~{::menuItem ('/specifications1','specifications','Specifications(classic)','','Specifications(classic)')}">
-            <span>Specifications</span>
-          </li>
-          <li th:replace="~{::menuItem ('/specifications2','specifications_spa','Specifications(SPA)','','Specifications(SPA)')}">
+          <li th:replace="~{::menuItem ('/specifications','specifications','Specifications','','Specifications')}">
             <span>Specifications</span>
           </li>
           <li class="nav-item dropdown" >
@@ -83,42 +80,6 @@
           </li>
         </ul>
       </div>
-    </div>
-  </nav>
-  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu !='template' && false && specification != null }" >
-    <div class="container">
-      <ol class="breadcrumb m-0 p-0" >
-        <li class="breadcrumb-item" th:classappend="${specification == null ? 'active' : ''}">
-          <a th:href="@{/}">Home</a>
-        </li>
-        <li class="breadcrumb-item" th:with="specificationActive=${stakeholder == null && specificationObjective == null && specificationObjectives == null}" th:classappend="${specificationActive ? 'active' : ''}" >
-          <a th:if="${specification['new']}">Specifications</a>
-
-          <a th:if="${!specificationActive && !specification['new']}" th:text="${specification.name}"
-             th:href="@{/specification/__${specification.id}__}">Specification</a>
-          <span th:if="${specificationActive && !specification['new']}" th:text="${specification.name}">Specification Name</span>
-        </li>
-        <li class="breadcrumb-item"  th:with="stakeholderActive=${stakeholderObjective == null}"  th:if="${stakeholder != null}" th:classappend="${stakeholderActive ? 'active' : ''}"  >
-          <a th:if="${stakeholder['new']}">Stakeholder</a>
-
-          <a th:if="${!stakeholderActive && !stakeholder['new']}" th:text="${stakeholder.name}"
-             th:href="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__}">Stakeholder Name</a>
-          <span th:if="${stakeholderActive && !stakeholder['new']}" th:text="${stakeholder.name}">StakeholderName</span>
-        </li>
-        <li class="breadcrumb-item active" th:if="${specificationObjectives != null}">
-          <span>Specification Objectives</span>
-        </li>
-        <li class="breadcrumb-item active" th:if="${specificationObjective != null}">
-          <a th:if="${specificationObjective['new']}">Specification Objective</a>
-
-          <a th:if="${!specificationObjective['new']}" th:text="${specificationObjective.name}">Specification Objective Name</a>
-        </li>
-        <li class="breadcrumb-item active" th:if="${stakeholderObjective != null}">
-          <a th:if="${stakeholderObjective['new']}">Stakeholder Objective</a>
-
-          <a th:if="${!stakeholderObjective['new']}" th:text="${stakeholderObjective.specificationObjective.name}">Stakeholder Objective Name</a>
-        </li>
-      </ol>
     </div>
   </nav>
   <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='templates' }" >

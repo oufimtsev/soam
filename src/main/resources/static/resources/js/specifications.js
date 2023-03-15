@@ -35,9 +35,11 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
+                            treeEntity.id = 'specification_' + item.id;
                             treeEntity.children = [
                                 {
                                     'text': 'Objectives',
+                                    'id': 'specification_' + item.id + '_specificationObjectives',
                                     'data': {
                                         'type': 'specificationObjectives',
                                         'specificationId': item.id
@@ -46,6 +48,7 @@ function jsTreeDataLoader(obj, callback) {
                                 },
                                 {
                                     'text': 'Stakeholders',
+                                    'id': 'specification_' + item.id + '_stakeholders',
                                     'data': {
                                         'type': 'stakeholders',
                                         'specificationId': item.id
@@ -62,7 +65,11 @@ function jsTreeDataLoader(obj, callback) {
                 fetch('/tree/specification/' + obj.data.specificationId + '/specificationObjective')
                     .then(response => response.json())
                     .then(items => {
-                        const children = items.map(createTreeEntity);
+                        const children = items.map(item => {
+                            const treeEntity = createTreeEntity(item);
+                            treeEntity.id = 'specificationObjective_' + item.id;
+                            return treeEntity;
+                        });
                         callback(children);
                     });
                 break;
@@ -72,6 +79,7 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
+                            treeEntity.id = 'stakeholder_' + item.id;
                             treeEntity.children = true;
                             return treeEntity;
                         });
@@ -82,7 +90,11 @@ function jsTreeDataLoader(obj, callback) {
                 fetch('/tree/stakeholder/' + obj.data.id + '/stakeholderObjective')
                     .then(response => response.json())
                     .then(items => {
-                        const children = items.map(createTreeEntity);
+                        const children = items.map(item => {
+                            const treeEntity = createTreeEntity(item);
+                            treeEntity.id = 'stakeholderObjective_' + item.id;
+                            return treeEntity;
+                        });
                         callback(children);
                     });
                 break;
@@ -92,15 +104,9 @@ function jsTreeDataLoader(obj, callback) {
 
 function deleteEntity(entityName, url) {
     if (confirm('Are you sure you want to delete this ' + entityName + '?')) {
-        $('#tree').jstree().deselect_all();
-        fetch(url, {
-            'method': 'POST'
-        })
-            .then(response => response.text())
-            .then(text => {
-                $('#main').html(text);
-                $('#tree').jstree().refresh();
-            });
+        const form = $('#commonDeleteForm')[0];
+        form.action = url;
+        form.submit();
     }
 }
 
@@ -111,7 +117,7 @@ function loadMainPanel(url) {
 }
 
 function createUpdateAction(node) {
-    let url = '/' + node.data.type + '2/' + node.data.id + '/edit';
+    let url = '/' + node.data.type + '/' + node.data.id + '/edit';
     for (let i = 0; i < node.parents.length; i ++) {
         const parentData = $('#tree').jstree().get_node(node.parents[i]).data;
         if (parentData && parentData.id) {
@@ -121,9 +127,7 @@ function createUpdateAction(node) {
     return {
        'label': 'Update',
        'action': obj => {
-           $('#tree').jstree().deselect_all();
-           $('#tree').jstree().select_node(node, true);
-           loadMainPanel(url);
+           window.location.href = url;
        }
    };
 }
@@ -145,29 +149,25 @@ $(document).ready(function () {
                             'createComplete': {
                                 'label': 'Create Complete',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification2/new?collectionType=templateDeepCopy');
+                                    window.location.href = '/specification/new?collectionType=templateDeepCopy';
                                 }
                             },
                             'copyComplete': {
                                 'label': 'Copy Complete',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification2/new?collectionType=srcSpecification');
+                                    window.location.href = '/specification/new?collectionType=srcSpecification';
                                 }
                             },
                             'copyTemplate': {
                                 'label': 'Copy Template',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification2/new?collectionType=copyTemplate');
+                                    window.location.href = '/specification/new?collectionType=copyTemplate';
                                 }
                             },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification2/new');
+                                    window.location.href = '/specification/new';
                                 }
                             }
                         });
@@ -177,15 +177,13 @@ $(document).ready(function () {
                             'copyTemplate': {
                                 'label': 'Copy Template',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification/' + node.data.specificationId + '/specificationObjective2/new?collectionType=copyTemplate');
+                                    window.location.href = '/specification/' + node.data.specificationId + '/specificationObjective/new?collectionType=copyTemplate';
                                 }
                             },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification/' + node.data.specificationId + '/specificationObjective2/new');
+                                    window.location.href = '/specification/' + node.data.specificationId + '/specificationObjective/new';
                                 }
                             }
                         });
@@ -195,15 +193,13 @@ $(document).ready(function () {
                             'copyTemplate': {
                                 'label': 'Copy Template',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder2/new?collectionType=copyTemplate');
+                                    window.location.href = '/specification/' + node.data.specificationId + '/stakeholder/new?collectionType=copyTemplate';
                                 }
                             },
                             'enter': {
                                 'label': 'Enter',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder2/new');
+                                    window.location.href = '/specification/' + node.data.specificationId + '/stakeholder/new';
                                 }
                             }
                         });
@@ -214,7 +210,7 @@ $(document).ready(function () {
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
-                                    deleteEntity('Specification', '/specification2/' + node.data.id + '/delete');
+                                    deleteEntity('Specification', '/specification/' + node.data.id + '/delete');
                                 }
                             }
                         });
@@ -225,7 +221,7 @@ $(document).ready(function () {
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
-                                    deleteEntity('Specification Objective', '/specification/' + node.data.specificationId + '/specificationObjective2/' + node.data.id + '/delete');
+                                    deleteEntity('Specification Objective', '/specification/' + node.data.specificationId + '/specificationObjective/' + node.data.id + '/delete');
                                 }
                             }
                         });
@@ -236,14 +232,13 @@ $(document).ready(function () {
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
-                                    deleteEntity('Stakeholder', '/specification/' + node.data.specificationId + '/stakeholder2/' + node.data.id + '/delete');
+                                    deleteEntity('Stakeholder', '/specification/' + node.data.specificationId + '/stakeholder/' + node.data.id + '/delete');
                                 }
                             },
                             'addObjective': {
                                 'label': 'Add Objective',
                                 'action': obj => {
-                                    $('#tree').jstree().deselect_all();
-                                    loadMainPanel('/specification/' + node.data.specificationId + '/stakeholder/' + node.data.id + '/stakeholderObjective2/new');
+                                    window.location.href = '/specification/' + node.data.specificationId + '/stakeholder/' + node.data.id + '/stakeholderObjective/new';
                                 }
                             }
                         });
@@ -254,7 +249,7 @@ $(document).ready(function () {
                             'delete': {
                                 'label': 'Delete',
                                 'action': obj => {
-                                    deleteEntity('Stakeholder Objective', '/specification/' + node.data.specificationId + '/stakeholder/' + node.data.stakeholderId + '/stakeholderObjective2/' + node.data.id + '/delete');
+                                    deleteEntity('Stakeholder Objective', '/specification/' + node.data.specificationId + '/stakeholder/' + node.data.stakeholderId + '/stakeholderObjective/' + node.data.id + '/delete');
                                 }
                             }
                         });
@@ -282,19 +277,41 @@ $(document).ready(function () {
 //    });
 })
 
-function soamFormSubmit(form) {
-    const action = form.action;
-    fetch(form.action, {
-        method: form.method,
-        body: new FormData(form)
-    })
-        .then(response => response.text())
-        .then(text => {
-            $('#main').html(text);
-            $('#tree').jstree().refresh();
-        });
+function updateTreeForSpecification(specificationId) {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.select_node('specification_' + specificationId);
+    });
 }
 
-function soamFormCancel() {
-    loadMainPanel('/specifications2/default');
+function updateTreeForSpecificationObjective(specificationId, specificationObjectiveId) {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('specification_' + specificationId);
+        jsTree.open_node('specification_' + specificationId + '_specificationObjectives', () => {
+            jsTree.select_node('specificationObjective_' + specificationObjectiveId);
+        });
+    });
+}
+
+function updateTreeForStakeholder(specificationId, stakeholderId) {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('specification_' + specificationId);
+        jsTree.open_node('specification_' + specificationId + '_stakeholders', () => {
+            jsTree.select_node('stakeholder_' + stakeholderId);
+        });
+    });
+}
+
+function updateTreeForStakeholderObjective(specificationId, stakeholderId, stakeholderObjectiveId) {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('specification_' + specificationId);
+        jsTree.open_node('specification_' + specificationId + '_stakeholders', () => {
+            jsTree.open_node('stakeholder_' + stakeholderId, () => {
+                jsTree.select_node('stakeholderObjective_' + stakeholderObjectiveId);
+            });
+        });
+    });
 }
