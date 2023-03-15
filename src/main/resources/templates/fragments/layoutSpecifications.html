@@ -1,0 +1,23 @@
+<!doctype html>
+<html th:fragment="layout (templateSpecifications, head, menu)" class="h-100"
+    th:replace="~{fragments/layoutCommon :: layout (~{::content}, ${head}, ${menu})}">
+<head>
+</head>
+<body>
+  <th:block th:fragment="content">
+    <div class="row h-100">
+      <div class="col-4">
+        <h2>Entity Explorer</h2>
+        <div id="tree"></div>
+      </div>
+      <div class="col-8">
+          <div th:replace="~{fragments/flash :: flash}"></div>
+          <th:block th:replace="${templateSpecifications}" />
+          <div class="container mt-4">
+          </div>
+      </div>
+    </div>
+  </th:block>
+</body>
+
+</html>

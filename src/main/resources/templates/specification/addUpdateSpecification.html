@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 
 <html xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'specifications')}">
+  th:replace="~{fragments/layoutSpecifications :: layout (~{::contentBody}, ~{::head}, 'specifications')}">
 <head>
   <script type="text/javascript" th:src="@{/resources/js/collectionDropdown.js}"></script>
 </head>
 <body>
+  <th:block th:fragment="contentBody">
   <h2>Specification</h2>
 
   <form th:object="${specification}" class="form-horizontal" id="add-specification-form" method="post">
@@ -54,5 +55,6 @@
   <script type="text/javascript">
     updateTreeForSpecification([[${specification.id}]]);
   </script>
+  </th:block>
 </body>
 </html>

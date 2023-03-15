@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 
 <html xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'specifications')}">
+      th:replace="~{fragments/layoutSpecifications :: layout (~{::contentBody}, ~{::head}, 'specifications')}">
 <head>
 </head>
 <body>
-Please select an item in Entity Explorer.
+<th:block th:fragment="contentBody">
+    Please select an item in Entity Explorer.
+</th:block>
 </body>
 
 </html>

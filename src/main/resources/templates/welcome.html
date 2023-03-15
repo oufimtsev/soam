@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'home')}">
+<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::contentBody}, ~{::head},'home')}">
 <head></head>
 <body>
+<th:block th:fragment="contentBody">
 <p class="display-6">Stakeholder &amp; Objective Analysis and Management</p>
 <div class="row">
     <div class="col-md-12">
@@ -23,7 +24,7 @@
             </div>
     </div>
 </div>
-
+</th:block>
 </body>
 
 </html>

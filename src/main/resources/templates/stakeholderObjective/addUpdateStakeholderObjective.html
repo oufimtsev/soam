@@ -1,54 +1,60 @@
 <!DOCTYPE html>
 
 <html xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'specifications')}">
+      th:replace="~{fragments/layoutSpecifications :: layout (~{::contentBody}, ~{::head}, 'specifications')}">
 <head>
-  <script type="text/javascript" th:src="@{/resources/js/collectionDropdown.js}"></script>
+    <script type="text/javascript" th:src="@{/resources/js/collectionDropdown.js}"></script>
 </head>
 <body>
-  <h2>Stakeholder Objective</h2>
+<th:block th:fragment="contentBody">
+    <h2>Stakeholder Objective</h2>
 
-  <form th:object="${stakeholderObjective}" class="form-horizontal" id="add-stakeholder-objective-form" method="post">
-    <input type="hidden" th:field="*{stakeholder}"/>
-    <input type="hidden" th:field="*{specificationObjective}"/>
-    <input type="hidden" id="collectionItemId" name="collectionItemId" th:attr="value=*{specificationObjective.id}"/>
-    <input type="hidden" id="name" onchange="console.log(this.value)"/>
-    <div class="col-sm-offset-2 d-flex justify-content-end">
+    <form th:object="${stakeholderObjective}" class="form-horizontal" id="add-stakeholder-objective-form" method="post">
+        <input type="hidden" th:field="*{stakeholder}"/>
+        <input type="hidden" th:field="*{specificationObjective}"/>
+        <input type="hidden" id="collectionItemId" name="collectionItemId"
+               th:attr="value=*{specificationObjective.id}"/>
+        <input type="hidden" id="name" onchange="console.log(this.value)"/>
+        <div class="col-sm-offset-2 d-flex justify-content-end">
       <span th:if="${stakeholderObjective['new']}">
-        <div th:replace="~{fragments/collectionDropdown :: specificationObjectivesDropdown(${specification.specificationObjectives}, 'Use Specification Objective', 'No Specification Objectives defined', 'existingSpecificationObjective')}" />
+        <div th:replace="~{fragments/collectionDropdown :: specificationObjectivesDropdown(${specification.specificationObjectives}, 'Use Specification Objective', 'No Specification Objectives defined', 'existingSpecificationObjective')}"/>
       </span>
-    </div>
-    <div class="form-group has-feedback">
-      <input
-        th:replace="~{fragments/inputField :: readOnly ('Name', 'specificationObjective.name', 'text')}" />
-      <input
-        th:replace="~{fragments/inputField :: readOnly ('Description', 'specificationObjective.description', 'text')}" />
-      <input
-        th:replace="~{fragments/inputField :: input ('Notes', 'notes', 'textarea')}" />
-      <input
-        th:replace="~{fragments/prioritySelectField :: select ('Priority', 'priority', ${priorities})}" />
-    </div>
-    <div class="form-group">
-      <div class="col-sm-offset-2 col-sm-10 d-flex">
-        <a class="btn btn-primary" type="button" href="/specifications">
-          <i class="fa fa-ban me-1" aria-hidden="true"></i>
-          <span>Cancel</span>
-        </a>
-        <button class="btn btn-primary ms-2" type="submit"
-          th:with="text=${stakeholderObjective['new']} ? 'Add Stakeholder Objective' : 'Update Stakeholder Objective',
+        </div>
+        <div class="form-group has-feedback">
+            <input
+                    th:replace="~{fragments/inputField :: readOnly ('Name', 'specificationObjective.name', 'text')}"/>
+            <input
+                    th:replace="~{fragments/inputField :: readOnly ('Description', 'specificationObjective.description', 'text')}"/>
+            <input
+                    th:replace="~{fragments/inputField :: input ('Notes', 'notes', 'textarea')}"/>
+            <input
+                    th:replace="~{fragments/prioritySelectField :: select ('Priority', 'priority', ${priorities})}"/>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 d-flex">
+                <a class="btn btn-primary" type="button" href="/specifications">
+                    <i class="fa fa-ban me-1" aria-hidden="true"></i>
+                    <span>Cancel</span>
+                </a>
+                <button class="btn btn-primary ms-2" type="submit"
+                        th:with="text=${stakeholderObjective['new']} ? 'Add Stakeholder Objective' : 'Update Stakeholder Objective',
                   icon=${stakeholderObjective['new']} ? 'fa-plus' : 'fa-pencil-square-o'">
-          <i class="fa me-1"  th:classappend="${icon}" aria-hidden="true"></i>
-          <span th:text="${text}">Add/Update</span>
-        </button>
-        <span class="flex-grow-1"></span>
-      </div>
-    </div>
-  </form>
-  <form th:if="${!stakeholderObjective['new']}" id="deleteForm" th:object="${stakeholderObjective}" th:action="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective/__${stakeholderObjective.id}__/delete}" method="post">
-    <input type="hidden" th:field="*{id}"/>
-  </form>
-  <script type="text/javascript">
+                    <i class="fa me-1" th:classappend="${icon}" aria-hidden="true"></i>
+                    <span th:text="${text}">Add/Update</span>
+                </button>
+                <span class="flex-grow-1"></span>
+            </div>
+        </div>
+    </form>
+    <form th:if="${!stakeholderObjective['new']}" id="deleteForm" th:object="${stakeholderObjective}"
+          th:action="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective/__${stakeholderObjective.id}__/delete}"
+          method="post">
+        <input type="hidden" th:field="*{id}"/>
+    </form>
+    <script type="text/javascript">
     updateTreeForStakeholderObjective([[${specification.id}]], [[${stakeholder.id}]], [[${stakeholderObjective.id}]]);
-  </script>
+
+    </script>
+</th:block>
 </body>
 </html>
