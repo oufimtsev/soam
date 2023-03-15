@@ -110,12 +110,6 @@ function deleteEntity(entityName, url) {
     }
 }
 
-function loadMainPanel(url) {
-    fetch(url)
-        .then(response => response.text())
-        .then(text => $('#main').html(text));
-}
-
 function createUpdateAction(node) {
     let url = '/' + node.data.type + '/' + node.data.id + '/edit';
     for (let i = 0; i < node.parents.length; i ++) {
@@ -133,8 +127,6 @@ function createUpdateAction(node) {
 }
 
 $(document).ready(function () {
-    loadMainPanel('/specifications2/default');
-
     $('#tree').jstree({
         'core': {
             'data': jsTreeDataLoader
@@ -258,23 +250,6 @@ $(document).ready(function () {
             }
         }
     });
-
-//    $('#tree').on('activate_node.jstree', (e, data) => {
-//        console.log("activate_node: data: " + data);
-//        let url;
-//        if (data.node.data.id) {
-//            url = '/' + data.node.data.type + '2/' + data.node.data.id + '/edit';
-//            for (let i = 0; i < data.node.parents.length; i ++) {
-//                const parentData = $('#tree').jstree().get_node(data.node.parents[i]).data;
-//                if (parentData && parentData.id) {
-//                    url = '/' + parentData.type + '/' + parentData.id + url;
-//                }
-//            }
-//        } else {
-//            url = '/specifications2/default';
-//        }
-//        loadMainPanel(url);
-//    });
 })
 
 function updateTreeForSpecification(specificationId) {
