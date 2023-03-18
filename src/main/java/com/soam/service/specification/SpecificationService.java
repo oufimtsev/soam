@@ -55,9 +55,8 @@ public class SpecificationService {
                 .orElseThrow(() -> new EntityNotFoundException("Specification", specificationId));
     }
 
-    public Page<Specification> findByPrefix(String name, int page) {
-        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
-        return specificationRepository.findByNameStartsWithIgnoreCase(name, pageable);
+    public List<Specification> findByPrefix(String name) {
+        return specificationRepository.findByNameStartsWithIgnoreCase(name, SORT_ORDER);
     }
 
     public Optional<Specification> findByName(String name) {
@@ -66,6 +65,11 @@ public class SpecificationService {
 
     public List<Specification> findAll() {
         return specificationRepository.findAll(SORT_ORDER);
+    }
+
+    public Page<Specification> findAll(int page) {
+        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
+        return specificationRepository.findAll(pageable);
     }
 
     public Specification save(Specification specification) {

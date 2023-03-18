@@ -23,6 +23,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -129,12 +131,10 @@ class SpecificationServiceTest {
 
     @Test
     void findByPrefixTest() {
-        given(specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any())).willReturn(new PageImpl<>(List.of(TEST_SPECIFICATION_1)));
-        given(soamProperties.getPageSize()).willReturn(20);
+        given(specificationRepository.findByNameStartsWithIgnoreCase(eq("Test"), any())).willReturn(List.of(TEST_SPECIFICATION_1));
 
-        Page<Specification> result = specificationService.findByPrefix("Test", 0);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(TEST_SPECIFICATION_1.getId(), result.iterator().next().getId());
+        List<Specification> result = specificationService.findByPrefix("Test");
+        assertEquals(List.of(TEST_SPECIFICATION_1), result);
     }
 
     @Test
@@ -148,10 +148,20 @@ class SpecificationServiceTest {
 
     @Test
     void findAllTest() {
-        given(specificationRepository.findAll(any())).willReturn(List.of(TEST_SPECIFICATION_1));
+        given(specificationRepository.findAll(any(Sort.class))).willReturn(List.of(TEST_SPECIFICATION_1));
 
         List<Specification> result = specificationService.findAll();
         assertEquals(1, result.size());
+    }
+
+    @Test
+    void findAllWithPaginationTest() {
+        given(specificationRepository.findAll(any(Pageable.class))).willReturn(new PageImpl<>(List.of(TEST_SPECIFICATION_1)));
+        given(soamProperties.getPageSize()).willReturn(20);
+
+        Page<Specification> result = specificationService.findAll(0);
+        assertEquals(1, result.getTotalElements());
+        assertEquals(TEST_SPECIFICATION_1.getId(), result.iterator().next().getId());
     }
 
     @Test

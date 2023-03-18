@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.util.StringUtils;
@@ -38,7 +39,7 @@ public class SpecificationController {
 		return ViewConstants.VIEW_FIND_SPECIFICATION;
 	}
 
-	@GetMapping("/specifications_todo")
+	@PostMapping("/specification/find")
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, Specification specification, BindingResult result, Model model) {
 		if (StringUtils.isEmpty(specification.getName())) {
@@ -46,23 +47,24 @@ public class SpecificationController {
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 
-		Page<Specification> specificationResults = specificationService.findByPrefix(specification.getName(), page - 1);
+		List<Specification> specificationResults = specificationService.findByPrefix(specification.getName());
 		if (specificationResults.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 
-		if (specificationResults.getTotalElements() == 1) {
-			specification = specificationResults.iterator().next();
-			return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+		if (specificationResults.size() == 1) {
+			specification = specificationResults.get(0);
+			return String.format(RedirectConstants.REDIRECT_SPECIFICATION_EDIT, specification.getId());
 		}
 
-		return addPaginationModel(page, model, specificationResults);
+		model.addAttribute(ModelConstants.ATTR_SPECIFICATIONS, specificationResults);
+		return ViewConstants.VIEW_SPECIFICATION_LIST;
 	}
 
 	@GetMapping("/specification/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<Specification> specificationResults = specificationService.findByPrefix("", page - 1);
+		Page<Specification> specificationResults = specificationService.findAll(page - 1);
 		addPaginationModel(page, model, specificationResults);
 
 		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, new Specification()); // for breadcrumb

@@ -172,6 +172,12 @@ $(document).ready(function () {
                                 'action': obj => {
                                     window.location.href = '/specification/new';
                                 }
+                            },
+                            'filter': {
+                                'label': 'Filter',
+                                'action': obj => {
+                                    window.location.href = '/specification/find';
+                                }
                             }
                         });
                         break;

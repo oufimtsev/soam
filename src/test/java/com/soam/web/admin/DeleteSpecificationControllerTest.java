@@ -93,7 +93,7 @@ class DeleteSpecificationControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        given(specificationService.findByPrefix(eq(""), anyInt())).willReturn(specifications);
+        given(specificationService.findAll(anyInt())).willReturn(specifications);
         mockMvc.perform(get(URL_VIEW_SPECIFICATION_LIST).param("page", "1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PAGINATED))

@@ -1,31 +1,32 @@
 <!DOCTYPE html>
 
 <html xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout (~{::body}, ~{::head},'specifications')}">
+      th:replace="~{fragments/layoutSpecifications :: layout (~{::contentBody}, ~{::head},'specifications')}">
 <head></head>
 <body>
-<h2>Find Specifications</h2>
-<form th:object="${specification}" th:action="@{/specifications}" method="get"
-      class="form-horizontal" id="search-specification-form">
-  <div class="form-group">
-    <div class="control-group" id="lastNameGroup">
-      <label class="col-sm-2 control-label">Name </label>
-      <div class="col-sm-10">
-        <input class="form-control" th:field="*{name}" size="30" /> <span class="help-inline"><div
-              th:if="${#fields.hasAnyErrors()}">
+<th:block th:fragment="contentBody">
+    <h2>Find Specifications</h2>
+    <form th:object="${specification}" th:action="@{/specification/find}" method="post"
+          class="form-horizontal" id="search-specification-form">
+        <div class="form-group">
+            <div class="control-group" id="lastNameGroup">
+                <label class="col-sm-2 control-label">Name </label>
+                <div class="col-sm-10">
+                    <input class="form-control" th:field="*{name}" size="30"/> <span class="help-inline"><div
+                        th:if="${#fields.hasAnyErrors()}">
               <p th:each="err : ${#fields.allErrors()}" th:text="${err}">Error</p>
             </div></span>
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-primary"><i class="fa fa-search me-1" aria-hidden="true"></i> Find
-        Specification</button>
-      <a class="btn btn-primary" th:href="@{/specification/list}"><i class="fa fa-list-ul me-1" aria-hidden="true"></i> List all</a>
-    </div>
-  </div>
-  <a class="btn btn-primary" th:href="@{/specification/new}"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add Specification</a>
-</form>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-search me-1" aria-hidden="true"></i> Find
+                    Specification
+                </button>
+            </div>
+        </div>
+    </form>
+</th:block>
 </body>
 </html>

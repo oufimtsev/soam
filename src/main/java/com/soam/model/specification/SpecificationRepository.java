@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface SpecificationRepository extends CrudRepository<Specification, Integer> {
     List<Specification> findAll(Sort sort);
-    Page<Specification> findByNameStartsWithIgnoreCase(String name, Pageable pageable);
+    Page<Specification> findAll(Pageable pageable);
+    List<Specification> findByNameStartsWithIgnoreCase(String name, Sort sort);
     Optional<Specification> findByNameIgnoreCase(String name);
 }

@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
@@ -70,8 +71,8 @@ class SpecificationControllerTest {
 
     @Test
     void testProcessFindFormSuccess() throws Exception {
-        Page<Specification> specifications = new PageImpl<Specification>(Lists.newArrayList(TEST_SPECIFICATION_1, new Specification()));
-        Mockito.when(specificationService.findByPrefix(anyString(), anyInt())).thenReturn(specifications);
+        List<Specification> specifications = Lists.newArrayList(TEST_SPECIFICATION_1, new Specification());
+        Mockito.when(specificationService.findByPrefix(anyString())).thenReturn(specifications);
         mockMvc.perform(get("/specifications?page=1").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_LIST));
@@ -79,10 +80,10 @@ class SpecificationControllerTest {
 
     @Test
     void testProcessFindFormByName() throws Exception {
-        Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
+        List<Specification> specifications = Lists.newArrayList(TEST_SPECIFICATION_1);
 
-        Mockito.when(specificationService.findByPrefix(eq("Test"), anyInt())).thenReturn(specifications);
-        Mockito.when(specificationService.findByPrefix(eq("Not Present"), anyInt())).thenReturn(new PageImpl<>(new ArrayList<>()));
+        Mockito.when(specificationService.findByPrefix(eq("Test"))).thenReturn(specifications);
+        Mockito.when(specificationService.findByPrefix(eq("Not Present"))).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/specifications?page=1").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
@@ -101,7 +102,7 @@ class SpecificationControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        Mockito.when(specificationService.findByPrefix(eq(""), anyInt())).thenReturn(specifications);
+        Mockito.when(specificationService.findAll(anyInt())).thenReturn(specifications);
         mockMvc.perform(get("/specification/list").param("page", "1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))

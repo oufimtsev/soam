@@ -29,7 +29,7 @@ public class DeleteSpecificationController {
 
     @GetMapping("/admin/deleteSpecification/list")
     public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-        Page<Specification> specificationResults = specificationService.findByPrefix("", page - 1);
+        Page<Specification> specificationResults = specificationService.findAll(0);
         addPaginationModel(page, model, specificationResults);
 
         return ViewConstants.VIEW_ADMIN_DELETE_SPECIFICATION;
