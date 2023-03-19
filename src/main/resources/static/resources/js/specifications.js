@@ -4,7 +4,6 @@ const TREE_ICON_MAP = {
     'stakeholder': 'fa fa-user',
     'stakeholderObjective': 'fa fa-check-square-o'
 };
-const DEFAULT_MESSAGE = 'Please select an item in Entity Explorer';
 
 function createTreeEntity(item) {
     const treeEntity = {

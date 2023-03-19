@@ -1,11 +1,11 @@
 <!doctype html>
-<html th:fragment="layout (templateSpecifications, head, menu)" class="h-100"
+<html th:fragment="layout (templates, head, menu)" class="h-100"
       th:replace="~{fragments/layoutCommon :: layout (~{::contentBody}, ~{::contentHead}, ${menu})}">
 <head>
     <th:block th:fragment="contentHead">
         <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
         <script th:src="@{/webjars/jstree/3.3.14/jstree.min.js}"></script>
-        <script type="text/javascript" th:src="@{/resources/js/specifications.js}"></script>
+        <script type="text/javascript" th:src="@{/resources/js/templates.js}"></script>
         <th:block th:insert="${head}" />
     </th:block>
 </head>
@@ -13,12 +13,12 @@
 <th:block th:fragment="contentBody">
     <div class="row h-100">
         <div class="col-4">
-            <h2>Entity Explorer</h2>
+            <h2>Template Explorer</h2>
             <div id="tree"></div>
         </div>
         <div class="col-8">
             <div th:replace="~{fragments/flash :: flash}"></div>
-            <th:block th:replace="${templateSpecifications}"/>
+            <th:block th:replace="${templates}"/>
             <div class="container mt-4">
             </div>
         </div>

@@ -7,6 +7,8 @@ public final class ViewConstants {
     public static final String VIEW_SPECIFICATION_DETAILS = "specification/specificationDetails";
     public static final String VIEW_SPECIFICATION_ADD_OR_UPDATE_FORM = "specification/addUpdateSpecification";
 
+    public static final String VIEW_TEMPLATE_DEFAULT = "template/default";
+
     public static final String VIEW_FIND_SPECIFICATION_TEMPLATE =  "specification/template/findSpecificationTemplate";
     public static final String VIEW_SPECIFICATION_TEMPLATE_LIST = "specification/template/specificationTemplateList";
     public static final String VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM = "specification/template/addUpdateSpecificationTemplate";

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class SpecificationTemplateFormController implements SoamFormController {
     public static String CREATE_MODE_FROM_TEMPLATE = "templateDeepCopy";
@@ -34,9 +36,10 @@ public class SpecificationTemplateFormController implements SoamFormController {
     }
 
     @GetMapping("/specification/template/new")
-    public String initCreationForm(Model model) {
+    public String initCreationForm(Model model, @RequestParam(name = "collectionType", required = false) String collectionType) {
         SpecificationTemplate specificationTemplate = new SpecificationTemplate();
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
+        model.addAttribute(ModelConstants.ATTR_COLLECTION_TYPE, collectionType == null ? "" : collectionType);
         populateFormModel(model);
 
         return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
@@ -60,14 +63,15 @@ public class SpecificationTemplateFormController implements SoamFormController {
             //creating new Specification Template as a deep copy of source Specification Template
             SpecificationTemplate srcSpecificationTemplate = specificationTemplateService.getById(collectionItemId);
             specificationTemplate = specificationTemplateService.saveDeepCopy(srcSpecificationTemplate, specificationTemplate);
-            redirectAttributes.addFlashAttribute(
-                    SoamFormController.FLASH_SUCCESS,
-                    String.format("Created %s", getSpecificationTemplateOverviewMessage(specificationTemplate))
-            );
         } else {
-            specificationTemplateService.save(specificationTemplate);
+            specificationTemplate.setTemplateLinks(List.of());
+            specificationTemplate = specificationTemplateService.save(specificationTemplate);
         }
-        return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
+        redirectAttributes.addFlashAttribute(
+                SoamFormController.FLASH_SUCCESS,
+                String.format("Created %s", getSpecificationTemplateOverviewMessage(specificationTemplate))
+        );
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_EDIT, specificationTemplate.getId());
     }
 
     @GetMapping("/specification/template/{specificationTemplateId}/edit")
@@ -94,27 +98,23 @@ public class SpecificationTemplateFormController implements SoamFormController {
             return ViewConstants.VIEW_SPECIFICATION_TEMPLATE_ADD_OR_UPDATE_FORM;
         }
 
-        specificationTemplateService.save(specificationTemplate);
-        return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
+        specificationTemplate = specificationTemplateService.save(specificationTemplate);
+        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_EDIT, specificationTemplate.getId());
     }
 
     @PostMapping("/specification/template/{specificationTemplateId}/delete")
     public String processDelete(
-            @PathVariable("specificationTemplateId") int specificationTemplateId, @RequestParam("id") int formId,
+            @PathVariable("specificationTemplateId") int specificationTemplateId,
             RedirectAttributes redirectAttributes) {
-        if (specificationTemplateId != formId) {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Malformed request.");
+        SpecificationTemplate specificationTemplate = specificationTemplateService.getById(specificationTemplateId);
+        if (specificationTemplate.getTemplateLinks() != null && !specificationTemplate.getTemplateLinks().isEmpty()) {
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Please delete any Template Links first.");
         } else {
-            SpecificationTemplate specificationTemplate = specificationTemplateService.getById(specificationTemplateId);
-            if (specificationTemplate.getTemplateLinks() != null && !specificationTemplate.getTemplateLinks().isEmpty()) {
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, "Please delete any Template Links first.");
-            } else {
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted %s.", specificationTemplate.getName()));
-                specificationTemplateService.delete(specificationTemplate);
-            }
+            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted %s.", specificationTemplate.getName()));
+            specificationTemplateService.delete(specificationTemplate);
         }
 
-        return RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_TEMPLATE_DEFAULT;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

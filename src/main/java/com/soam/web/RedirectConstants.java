@@ -7,6 +7,8 @@ public final class RedirectConstants {
     public static final String REDIRECT_SPECIFICATION_DETAILS = "redirect:/specification/%s";
     public static final String REDIRECT_SPECIFICATION_EDIT = "redirect:/specification/%s/edit";
 
+    public static final String REDIRECT_TEMPLATE_DEFAULT = "redirect:/templates";
+
     public static final String REDIRECT_SPECIFICATION_TEMPLATE_LIST = "redirect:/specification/template/list";
     public static final String REDIRECT_SPECIFICATION_TEMPLATE_EDIT = "redirect:/specification/template/%s/edit";
 

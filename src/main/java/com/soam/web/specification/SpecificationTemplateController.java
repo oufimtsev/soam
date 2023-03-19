@@ -30,6 +30,11 @@ public class SpecificationTemplateController implements SoamFormController {
 		return ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE;
 	}
 
+	@GetMapping("/templates")
+	public String defaultTree(Model model) {
+		return ViewConstants.VIEW_TEMPLATE_DEFAULT;
+	}
+
 	@GetMapping("/specification/templates")
 	public String processFindForm(
 			@RequestParam(defaultValue = "1") int page, SpecificationTemplate specificationTemplate,
