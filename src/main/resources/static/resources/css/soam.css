@@ -7972,6 +7972,12 @@ strong {
 .breadcrumb-nav {
   background-color: rgba(0, 0, 0, 0.05); }
 
+.jstree-default .jstree-anchor {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+}
+
 @media (max-width: 768px) {
   .navbar-toggle {
     position: absolute;
