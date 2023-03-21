@@ -47,6 +47,7 @@ function jsTreeDataLoader(obj, callback) {
             {
                 'text': 'Links (Option 1)',
                 'id': 'links1',
+                'icon': 'fa fa-chain',
                 'data': {
                     'type': 'links1'
                 },
