@@ -20,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -135,6 +136,15 @@ public class TemplateLinkController implements SoamFormController {
             templateLinkService.delete(templateLink);
         }
         return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
+    }
+
+    @PostMapping("/templateLink/{templateLinkId}/delete")
+    public String processDelete2(
+            @PathVariable("templateLinkId") int templateLinkId, RedirectAttributes redirectAttributes) {
+        TemplateLink templateLink = templateLinkService.getById(templateLinkId);
+        redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(templateLink)));
+        templateLinkService.delete(templateLink);
+        return RedirectConstants.REDIRECT_TEMPLATE_DEFAULT;
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

@@ -100,9 +100,10 @@ public class TemplateTreeController {
                         stakeholderTemplateService.getById(stakeholderTemplateId)
                 ).spliterator(), false)
                 .map(templateLink -> Map.of(
-                        "id", String.valueOf(templateLink.getObjectiveTemplate().getId()),
+                        "id", String.valueOf(templateLink.getId()),
                         "specificationTemplateId", String.valueOf(templateLink.getSpecificationTemplate().getId()),
                         "stakeholderTemplateId", String.valueOf(templateLink.getStakeholderTemplate().getId()),
+                        "objectiveTemplateId", String.valueOf(templateLink.getObjectiveTemplate().getId()),
                         "name", templateLink.getObjectiveTemplate().getName(),
                         "type", "link_objectiveTemplate"
                 ))

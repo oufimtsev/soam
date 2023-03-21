@@ -106,7 +106,6 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
-//                            treeEntity.id = 'link_specificationTemplate_' + item.id;
                             treeEntity.children = true;
                             return treeEntity;
                         });
@@ -119,7 +118,6 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
-//                            treeEntity.id = 'link_stakeholderTemplate_' + item.id;
                             treeEntity.children = true;
                             return treeEntity;
                         });
@@ -132,7 +130,6 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
-//                            treeEntity.id = 'link_stakeholderTemplate_' + item.id;
                             return treeEntity;
                         });
                         callback(children);
@@ -144,7 +141,6 @@ function jsTreeDataLoader(obj, callback) {
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
-//                            treeEntity.id = 'link_specificationTemplate_' + item.id;
                             return treeEntity;
                         });
                         callback(children);
@@ -158,16 +154,20 @@ function getNodeUrl(node) {
     let url = '/';
     switch (node.data.type) {
         case 'specificationTemplate':
-            url += 'specification';
+            url += 'specification/template/';
             break;
         case 'stakeholderTemplate':
-            url += 'stakeholder';
+            url += 'stakeholder/template/';
             break;
         case 'objectiveTemplate':
-            url += 'objective';
+            url += 'objective/template/';
+            break;
+        case 'link_objectiveTemplate':
+        case 'templateLink':
+            url += 'templateLink/';
             break;
     }
-    url += '/template/' + node.data.id;
+    url += node.data.id;
     return url;
 }
 
@@ -293,6 +293,16 @@ $(document).ready(function () {
                         callback({
                             'update': createUpdateAction(node),
                             'delete': createDeleteAction('Objective Template', node)
+                        });
+                        break;
+                    case 'link_objectiveTemplate':
+                        callback({
+                            'delete': createDeleteAction('Template Link', node)
+                        });
+                        break;
+                    case 'templateLink':
+                        callback({
+                            'delete': createDeleteAction('Template Link', node)
                         });
                         break;
                 }
