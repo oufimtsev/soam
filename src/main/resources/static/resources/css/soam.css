@@ -7972,10 +7972,23 @@ strong {
 .breadcrumb-nav {
   background-color: rgba(0, 0, 0, 0.05); }
 
-.jstree-default .jstree-anchor {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 100%;
+
+.jstree-default a {
+    white-space: normal !important;
+    height: auto;
+    word-break: break-all;
+}
+.jstree-anchor {
+    height: auto !important;
+}
+.jstree-default li > ins {
+    vertical-align: top;
+}
+.jstree-leaf {
+    height: auto;
+}
+.jstree-leaf a{
+    height: auto !important;
 }
 
 @media (max-width: 768px) {

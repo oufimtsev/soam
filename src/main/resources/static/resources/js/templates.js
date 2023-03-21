@@ -1,7 +1,11 @@
 const TREE_ICON_MAP = {
     'specificationTemplate': 'fa fa-file-text-o',
     'objectiveTemplate': 'fa fa-bullseye',
-    'stakeholderTemplate': 'fa fa-user'
+    'stakeholderTemplate': 'fa fa-user',
+    'link_specificationTemplate': 'fa fa-file-text-o',
+    'link_stakeholderTemplate': 'fa fa-user',
+    'link_objectiveTemplate': 'fa fa-bullseye',
+    'templateLink': 'fa fa-chain'
 };
 
 function createTreeEntity(item) {
@@ -39,6 +43,22 @@ function jsTreeDataLoader(obj, callback) {
                     'type': 'objectiveTemplates'
                 },
                 'children': true
+            },
+            {
+                'text': 'Links (Option 1)',
+                'id': 'links1',
+                'data': {
+                    'type': 'links1'
+                },
+                'children': true
+            },
+            {
+                'text': 'Links (Option 2)',
+                'id': 'links2',
+                'data': {
+                    'type': 'links2'
+                },
+                'children': true
             }
         ]);
     } else {
@@ -74,6 +94,57 @@ function jsTreeDataLoader(obj, callback) {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
                             treeEntity.id = 'objectiveTemplate_' + item.id;
+                            return treeEntity;
+                        });
+                        callback(children);
+                    });
+                break;
+            case 'links1':
+                fetch('/tree/link/specificationTemplate')
+                    .then(response => response.json())
+                    .then(items => {
+                        const children = items.map(item => {
+                            const treeEntity = createTreeEntity(item);
+//                            treeEntity.id = 'link_specificationTemplate_' + item.id;
+                            treeEntity.children = true;
+                            return treeEntity;
+                        });
+                        callback(children);
+                    });
+                break;
+            case 'link_specificationTemplate':
+                fetch('/tree/link/specificationTemplate/' + obj.data.id + '/stakeholderTemplate')
+                    .then(response => response.json())
+                    .then(items => {
+                        const children = items.map(item => {
+                            const treeEntity = createTreeEntity(item);
+//                            treeEntity.id = 'link_stakeholderTemplate_' + item.id;
+                            treeEntity.children = true;
+                            return treeEntity;
+                        });
+                        callback(children);
+                    });
+                break;
+            case 'link_stakeholderTemplate':
+                fetch('/tree/link/specificationTemplate/' + obj.data.specificationTemplateId + '/stakeholderTemplate/' + obj.data.id + '/objectiveTemplate')
+                    .then(response => response.json())
+                    .then(items => {
+                        const children = items.map(item => {
+                            const treeEntity = createTreeEntity(item);
+//                            treeEntity.id = 'link_stakeholderTemplate_' + item.id;
+                            return treeEntity;
+                        });
+                        callback(children);
+                    });
+                break;
+            case 'links2':
+                fetch('/tree/link/templateLink')
+                    .then(response => response.json())
+                    .then(items => {
+                        const children = items.map(item => {
+                            const treeEntity = createTreeEntity(item);
+//                            treeEntity.id = 'link_specificationTemplate_' + item.id;
+                            treeEntity.children = true;
                             return treeEntity;
                         });
                         callback(children);
