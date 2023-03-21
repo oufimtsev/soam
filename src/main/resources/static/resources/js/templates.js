@@ -144,7 +144,6 @@ function jsTreeDataLoader(obj, callback) {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
 //                            treeEntity.id = 'link_specificationTemplate_' + item.id;
-                            treeEntity.children = true;
                             return treeEntity;
                         });
                         callback(children);

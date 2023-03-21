@@ -53,6 +53,9 @@
           <li th:replace="~{::menuItem ('/specifications','specifications','Specifications','','Specifications')}">
             <span>Specifications</span>
           </li>
+          <li th:replace="~{::menuItem ('/templates','templates','Templates (new)','','Templates (new)')}">
+            <span>Templates</span>
+          </li>
           <li class="nav-item dropdown" >
             <a class="nav-link dropdown-toggle" th:classappend="${menu=='templates' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Templates
