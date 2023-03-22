@@ -106,7 +106,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
     @ExceptionHandler(EntityNotFoundException.class)
     public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());
-        return RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_LIST;
+        return RedirectConstants.REDIRECT_TEMPLATE_DEFAULT;
     }
 
     private void populateFormModel(Model model) {

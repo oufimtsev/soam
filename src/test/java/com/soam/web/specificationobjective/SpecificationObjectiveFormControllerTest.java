@@ -142,7 +142,7 @@ class SpecificationObjectiveFormControllerTest {
 
         mockMvc.perform(get(URL_NEW_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
     }
 
     @Test
@@ -153,7 +153,7 @@ class SpecificationObjectiveFormControllerTest {
                         .param("notes", "Specification Objective notes")
                         .param("description", "Description"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS, TEST_SPECIFICATION_1.getId(), 400)));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_EDIT, TEST_SPECIFICATION_1.getId(), 400)));
     }
 
     @Test
@@ -202,12 +202,12 @@ class SpecificationObjectiveFormControllerTest {
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_SPECIFICATION_OBJECTIVE_1.getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
         mockMvc.perform(get(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
     }
 
     @Test
@@ -218,7 +218,7 @@ class SpecificationObjectiveFormControllerTest {
                         .param("notes", "notes here")
                         .param("description", "description there"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS,
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_EDIT,
                         TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())));
     }
 
@@ -231,7 +231,7 @@ class SpecificationObjectiveFormControllerTest {
                         .param("description", "descr"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
                         .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
@@ -250,7 +250,7 @@ class SpecificationObjectiveFormControllerTest {
                         .param("description", "descr"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
         mockMvc.perform(post(URL_EDIT_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
                         .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))
@@ -265,43 +265,32 @@ class SpecificationObjectiveFormControllerTest {
 
     @Test
     void testProcessDeleteSuccess() throws Exception {
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
-                        .param("id", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_1.getId())))
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUCCESS))
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_3.getId())
-                        .param("id", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_3.getId())))
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_3.getId()))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUCCESS))
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
     }
 
     @Test
     void testProcessDeleteError() throws Exception {
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_2.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
-                        .param("id", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_1.getId())))
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_2.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_2.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_SPECIFICATION_OBJECTIVE_1.getId())
-                        .param("id", String.valueOf(TEST_SPECIFICATION_OBJECTIVE_1.getId())))
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_SPECIFICATION_OBJECTIVE_1.getId()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID)
-                        .param("id", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))
+        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_SPECIFICATION_OBJECTIVE_ID))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
-
-        mockMvc.perform(post(URL_DELETE_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_SPECIFICATION_OBJECTIVE_1.getId())
-                        .param("id", String.valueOf(EMPTY_SPECIFICATION_OBJECTIVE_ID)))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
     }
 }

@@ -155,7 +155,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         }
 
         stakeholderObjective = stakeholderObjectiveService.save(stakeholderObjective);
-        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
+        return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_OBJECTIVE_EDIT, specification.getId(), stakeholder.getId(), stakeholderObjective.getId());
     }
 
     @PostMapping("/stakeholderObjective/{stakeholderObjectiveId}/delete")
@@ -177,13 +177,13 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     @ExceptionHandler(EntityNotFoundException.class)
     public String errorHandlerSpecification(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());
-        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
+        return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
     }
 
     @ExceptionHandler(IllegalStakeholderIdException.class)
     public String errorHandlerStakeholder(RedirectAttributes redirectAttributes, IllegalStakeholderIdException e) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Incorrect request parameters.");
-        return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, e.specification.getId());
+        return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
     }
 
     private void populateFormModel(Model model) {

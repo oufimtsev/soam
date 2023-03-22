@@ -28,6 +28,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationController.class)
@@ -73,7 +74,7 @@ class SpecificationControllerTest {
     void testProcessFindFormSuccess() throws Exception {
         List<Specification> specifications = Lists.newArrayList(TEST_SPECIFICATION_1, new Specification());
         Mockito.when(specificationService.findByPrefix(anyString())).thenReturn(specifications);
-        mockMvc.perform(get("/specifications?page=1").param("name", "Te"))
+        mockMvc.perform(post("/specification/find").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_LIST));
     }
@@ -85,15 +86,15 @@ class SpecificationControllerTest {
         Mockito.when(specificationService.findByPrefix(eq("Test"))).thenReturn(specifications);
         Mockito.when(specificationService.findByPrefix(eq("Not Present"))).thenReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/specifications?page=1").param("name", "Test"))
+        mockMvc.perform(post("/specification/find").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_EDIT, TEST_SPECIFICATION_1.getId())));
 
-        mockMvc.perform(get("/specifications?page=1").param("name", "Not Present"))
+        mockMvc.perform(post("/specification/find").param("name", "Not Present"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));
 
-        mockMvc.perform(get("/specifications?page=1").param("name", ""))
+        mockMvc.perform(post("/specification/find").param("name", ""))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));

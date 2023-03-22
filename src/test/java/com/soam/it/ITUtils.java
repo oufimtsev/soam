@@ -1,7 +1,6 @@
 package com.soam.it;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -10,7 +9,6 @@ import org.springframework.test.web.servlet.htmlunit.MockMvcWebClientBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,10 +31,10 @@ public final class ITUtils {
     private static final String URL_EDIT_STAKEHOLDER_OBJECTIVE = "http://localhost/specification/%s/stakeholder/%s/stakeholderObjective/%s/edit";
     private static final String URL_TEMPLATE_LINK_LIST = "http://localhost/templateLink/list";
 
-    private static final Pattern REDIRECT_SPECIFICATION_DETAILS = Pattern.compile("^http://localhost/specification/(\\d+)$");
-    private static final Pattern REDIRECT_STAKEHOLDER_DETAILS = Pattern.compile("^http://localhost/specification/(\\d+)/stakeholder/(\\d+)$");
-    private static final Pattern REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS = Pattern.compile("^http://localhost/specification/(\\d+)/specificationObjective/(\\d+)$");
-    private static final Pattern REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS = Pattern.compile("^http://localhost/specification/(\\d+)/stakeholder/(\\d+)/stakeholderObjective/(\\d+)$");
+    private static final Pattern REDIRECT_SPECIFICATION_EDIT = Pattern.compile("^http://localhost/specification/(\\d+)/edit$");
+    private static final Pattern REDIRECT_STAKEHOLDER_EDIT = Pattern.compile("^http://localhost/specification/(\\d+)/stakeholder/(\\d+)/edit$");
+    private static final Pattern REDIRECT_SPECIFICATION_OBJECTIVE_EDIT = Pattern.compile("^http://localhost/specification/(\\d+)/specificationObjective/(\\d+)/edit$");
+    private static final Pattern REDIRECT_STAKEHOLDER_OBJECTIVE_EDIT = Pattern.compile("^http://localhost/specification/(\\d+)/stakeholder/(\\d+)/stakeholderObjective/(\\d+)/edit$");
     private static final Pattern REDIRECT_SPECIFICATION_TEMPLATE_EDIT = Pattern.compile("^http://localhost/specification/template/(\\d+)/edit$");
     private static final Pattern REDIRECT_STAKEHOLDER_TEMPLATE_EDIT = Pattern.compile("^http://localhost/stakeholder/template/(\\d+)/edit$");
     private static final Pattern REDIRECT_OBJECTIVE_TEMPLATE_EDIT = Pattern.compile("^http://localhost/objective/template/(\\d+)/edit$");
@@ -53,27 +51,27 @@ public final class ITUtils {
     }
 
     public static int addSpecification(WebClient webClient, String name, String description, String notes, String collectionType, int collectionItemId) throws IOException {
-        return addEditSoamObject(webClient, URL_NEW_SPECIFICATION, REDIRECT_SPECIFICATION_DETAILS,
+        return addEditSoamObject(webClient, URL_NEW_SPECIFICATION, REDIRECT_SPECIFICATION_EDIT,
                 name, description, notes, collectionType, collectionItemId);
     }
 
     public static int addStakeholder(WebClient webClient, int specificationId, String name, String description, String notes) throws IOException {
-        return addEditSoamObject(webClient, String.format(URL_NEW_STAKEHOLDER, specificationId), REDIRECT_STAKEHOLDER_DETAILS,
+        return addEditSoamObject(webClient, String.format(URL_NEW_STAKEHOLDER, specificationId), REDIRECT_STAKEHOLDER_EDIT,
                 name, description, notes, null, -1);
     }
 
     public static int editStakeholder(WebClient webClient, int specificationId, int stakeholderId, String name, String description, String notes) throws IOException {
-        return addEditSoamObject(webClient, String.format(URL_EDIT_STAKEHOLDER, specificationId, stakeholderId), REDIRECT_STAKEHOLDER_DETAILS,
+        return addEditSoamObject(webClient, String.format(URL_EDIT_STAKEHOLDER, specificationId, stakeholderId), REDIRECT_STAKEHOLDER_EDIT,
                 name, description, notes, null, -1);
     }
 
     public static int addSpecificationObjective(WebClient webClient, int specificationId, String name, String description, String notes) throws IOException {
-        return addEditSoamObject(webClient, String.format(URL_NEW_SPECIFICATION_OBJECTIVE, specificationId), REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS,
+        return addEditSoamObject(webClient, String.format(URL_NEW_SPECIFICATION_OBJECTIVE, specificationId), REDIRECT_SPECIFICATION_OBJECTIVE_EDIT,
                 name, description, notes, null, -1);
     }
 
     public static int editSpecificationObjective(WebClient webClient, int specificationId, int specificationObjectiveId, String name, String description, String notes) throws IOException {
-        return addEditSoamObject(webClient, String.format(URL_EDIT_SPECIFICATION_OBJECTIVE, specificationId, specificationObjectiveId), REDIRECT_SPECIFICATION_OBJECTIVE_DETAILS,
+        return addEditSoamObject(webClient, String.format(URL_EDIT_SPECIFICATION_OBJECTIVE, specificationId, specificationObjectiveId), REDIRECT_SPECIFICATION_OBJECTIVE_EDIT,
                 name, description, notes, null, -1);
     }
 
@@ -136,8 +134,8 @@ public final class ITUtils {
             form.getInputByName("collectionType").setValue(collectionType);
             form.getInputByName("collectionItemId").setValue(String.valueOf(collectionItemId));
         }
-        HtmlPage detailsPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
-        Matcher redirectMatcher = detailsPagePattern.matcher(detailsPage.getUrl().toString());
+        HtmlPage redirectPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
+        Matcher redirectMatcher = detailsPagePattern.matcher(redirectPage.getUrl().toString());
         assertTrue(redirectMatcher.matches());
         return Integer.parseInt(redirectMatcher.group(redirectMatcher.groupCount()));
     }
@@ -151,7 +149,7 @@ public final class ITUtils {
         form.getInputByName("collectionItemId").setValue(String.valueOf(specificationObjectiveId));
         form.getTextAreaByName("notes").setText(notes);
         HtmlPage detailsPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
-        Matcher redirectMatcher = REDIRECT_STAKEHOLDER_OBJECTIVE_DETAILS.matcher(detailsPage.getUrl().toString());
+        Matcher redirectMatcher = REDIRECT_STAKEHOLDER_OBJECTIVE_EDIT.matcher(detailsPage.getUrl().toString());
         assertTrue(redirectMatcher.matches());
         assertEquals(specificationId, Integer.parseInt(redirectMatcher.group(1)));
         assertEquals(stakeholderId, Integer.parseInt(redirectMatcher.group(2)));
@@ -171,13 +169,8 @@ public final class ITUtils {
             form.getInputByName("collectionItemId").setValue(String.valueOf(collectionItemId));
         }
         form.getTextAreaByName("notes").setText(notes);
-        HtmlPage listingPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
-        HtmlAnchor a = (HtmlAnchor) listingPage.querySelectorAll("table tbody tr td:nth-of-type(1) a").stream()
-                .filter(node -> name.equals(node.getTextContent()))
-                .findFirst()
-                .orElseThrow();
-        URL detailsPageUrl = listingPage.getFullyQualifiedUrl(a.getHrefAttribute());
-        Matcher redirectMatcher = editPagePattern.matcher(detailsPageUrl.toString());
+        HtmlPage editPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
+        Matcher redirectMatcher = editPagePattern.matcher(editPage.getBaseURL().toString());
         assertTrue(redirectMatcher.matches());
         return Integer.parseInt(redirectMatcher.group(1));
     }

@@ -141,7 +141,7 @@ public class SpecificationFormController implements SoamFormController {
     @ExceptionHandler(EntityNotFoundException.class)
     public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());
-        return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
+        return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
     }
 
     private String getSpecificationOverviewMessage(Specification specification) {
