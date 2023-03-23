@@ -45,19 +45,10 @@ function jsTreeDataLoader(obj, callback) {
                 'children': true
             },
             {
-                'text': 'Links (Option 1)',
-                'id': 'links1',
-                'icon': 'fa fa-chain',
+                'text': 'Links',
+                'id': 'links',
                 'data': {
-                    'type': 'links1'
-                },
-                'children': true
-            },
-            {
-                'text': 'Links (Option 2)',
-                'id': 'links2',
-                'data': {
-                    'type': 'links2'
+                    'type': 'links'
                 },
                 'children': true
             }
@@ -100,42 +91,7 @@ function jsTreeDataLoader(obj, callback) {
                         callback(children);
                     });
                 break;
-            case 'links1':
-                fetch('/tree/link/specificationTemplate')
-                    .then(response => response.json())
-                    .then(items => {
-                        const children = items.map(item => {
-                            const treeEntity = createTreeEntity(item);
-                            treeEntity.children = true;
-                            return treeEntity;
-                        });
-                        callback(children);
-                    });
-                break;
-            case 'link_specificationTemplate':
-                fetch('/tree/link/specificationTemplate/' + obj.data.id + '/stakeholderTemplate')
-                    .then(response => response.json())
-                    .then(items => {
-                        const children = items.map(item => {
-                            const treeEntity = createTreeEntity(item);
-                            treeEntity.children = true;
-                            return treeEntity;
-                        });
-                        callback(children);
-                    });
-                break;
-            case 'link_stakeholderTemplate':
-                fetch('/tree/link/specificationTemplate/' + obj.data.specificationTemplateId + '/stakeholderTemplate/' + obj.data.id + '/objectiveTemplate')
-                    .then(response => response.json())
-                    .then(items => {
-                        const children = items.map(item => {
-                            const treeEntity = createTreeEntity(item);
-                            return treeEntity;
-                        });
-                        callback(children);
-                    });
-                break;
-            case 'links2':
+            case 'links':
                 fetch('/tree/link/templateLink')
                     .then(response => response.json())
                     .then(items => {
@@ -162,7 +118,6 @@ function getNodeUrl(node) {
         case 'objectiveTemplate':
             url += 'objective/template/';
             break;
-        case 'link_objectiveTemplate':
         case 'templateLink':
             url += 'templateLink/';
             break;
