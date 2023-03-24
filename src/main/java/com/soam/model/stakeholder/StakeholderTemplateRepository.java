@@ -15,5 +15,5 @@ public interface StakeholderTemplateRepository extends CrudRepository<Stakeholde
     Page<StakeholderTemplate> findAll(Pageable pageable);
     Optional<StakeholderTemplate> findByName(String name);
     Optional<StakeholderTemplate> findByNameIgnoreCase(String name);
-    Page<StakeholderTemplate> findByNameStartsWithIgnoreCase(String name, Pageable pageable);
+    List<StakeholderTemplate> findByNameStartsWithIgnoreCase(String name, Sort sort);
 }

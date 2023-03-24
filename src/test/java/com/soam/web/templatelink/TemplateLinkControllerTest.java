@@ -41,9 +41,10 @@ class TemplateLinkControllerTest {
     private static final ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_1 = new ObjectiveTemplate();
     private static final ObjectiveTemplate TEST_OBJECTIVE_TEMPLATE_2 = new ObjectiveTemplate();
 
+    private static final int NEW_TEMPLATE_LINK_ID = 5000;
     private static final int EMPTY_TEMPLATE_LINK_ID = 10000;
 
-    private static final String URL_VIEW_TEMPLATE_LINK_LIST = "/templateLink/list";
+    private static final String URL_VIEW_FIND_TEMPLATE_LINK = "/templateLink/find";
     private static final String URL_NEW_TEMPLATE_LINK = "/templateLink/new";
     private static final String URL_DELETE_TEMPLATE_LINK = "/templateLink/delete";
 
@@ -116,7 +117,7 @@ class TemplateLinkControllerTest {
         given(templateLinkService.save(any())).will(invocation -> {
             TemplateLink templateLink = invocation.getArgument(0);
             if (templateLink.getId() == null) {
-                templateLink.setId(5000);
+                templateLink.setId(NEW_TEMPLATE_LINK_ID);
             }
             return templateLink;
         });
@@ -127,8 +128,8 @@ class TemplateLinkControllerTest {
     }
 
     @Test
-    void testListAll() throws Exception {
-        mockMvc.perform(get(URL_VIEW_TEMPLATE_LINK_LIST))
+    void testFind() throws Exception {
+        mockMvc.perform(get(URL_VIEW_FIND_TEMPLATE_LINK))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists(ModelConstants.ATTR_TEMPLATE_LINKS))
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
@@ -141,34 +142,34 @@ class TemplateLinkControllerTest {
     @Test
     void testProcessCreationFormSuccess() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE_LINK)
-                        .param("newTemplateLink.specificationTemplate", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId()))
-                        .param("newTemplateLink.stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
-                        .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_2.getId())))
+                        .param("specificationTemplate", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId()))
+                        .param("stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
+                        .param("objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_2.getId())))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
-                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
+                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK))
+                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUCCESS))
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_TEMPLATE_LINK_EDIT, NEW_TEMPLATE_LINK_ID)));
     }
 
     @Test
     void testProcessCreationFormError() throws Exception {
         mockMvc.perform(post(URL_NEW_TEMPLATE_LINK)
-                        .param("newTemplateLink.specificationTemplate", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId()))
-                        .param("newTemplateLink.stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
-                        .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
-                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
+                        .param("specificationTemplate", String.valueOf(TEST_SPECIFICATION_TEMPLATE.getId()))
+                        .param("stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
+                        .param("objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK))
+                .andExpect(model().attributeExists(SoamFormController.FLASH_DANGER))
+                .andExpect(view().name(ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM));
 
         mockMvc.perform(post(URL_NEW_TEMPLATE_LINK)
-                        .param("newTemplateLink.specificationTemplate", "-1")
-                        .param("newTemplateLink.stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
-                        .param("newTemplateLink.objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
+                        .param("specificationTemplate", "-1")
+                        .param("stakeholderTemplate", String.valueOf(TEST_STAKEHOLDER_TEMPLATE.getId()))
+                        .param("objectiveTemplate", String.valueOf(TEST_OBJECTIVE_TEMPLATE_1.getId())))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(model().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK))
+                .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_TEMPLATE_LINK, "specificationTemplate.name"))
+                .andExpect(view().name(ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM));
     }
 
     @Test

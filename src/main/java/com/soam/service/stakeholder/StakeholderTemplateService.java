@@ -31,9 +31,8 @@ public class StakeholderTemplateService {
                 .orElseThrow(() -> new EntityNotFoundException("Stakeholder Template", stakeholderTemplateId));
     }
 
-    public Page<StakeholderTemplate> findByPrefix(String name, int page) {
-        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
-        return stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
+    public List<StakeholderTemplate> findByPrefix(String name) {
+        return stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(name, SORT_ORDER);
     }
 
     public Optional<StakeholderTemplate> findByName(String name) {
@@ -42,6 +41,11 @@ public class StakeholderTemplateService {
 
     public List<StakeholderTemplate> findAll() {
         return stakeholderTemplateRepository.findAll(SORT_ORDER);
+    }
+
+    public Page<StakeholderTemplate> findAll(int page) {
+        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
+        return stakeholderTemplateRepository.findAll(pageable);
     }
 
     public StakeholderTemplate save(StakeholderTemplate stakeholderTemplate) {

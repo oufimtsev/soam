@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
@@ -30,32 +32,30 @@ public class StakeholderTemplateController implements SoamFormController {
 		return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 	}
 
-	@GetMapping("/stakeholder/templates")
-	public String processFindForm(
-			@RequestParam(defaultValue = "1") int page, StakeholderTemplate stakeholderTemplate,
-		  	BindingResult result, Model model) {
+	@PostMapping("/stakeholder/template/find")
+	public String processFindForm(StakeholderTemplate stakeholderTemplate, BindingResult result, Model model) {
 		if (StringUtils.isEmpty(stakeholderTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 
-		Page<StakeholderTemplate> stakeholderResults = stakeholderTemplateService.findByPrefix(stakeholderTemplate.getName(), page - 1);
-		if (stakeholderResults.isEmpty()) {
+		List<StakeholderTemplate> stakeholderTemplates = stakeholderTemplateService.findByPrefix(stakeholderTemplate.getName());
+		if (stakeholderTemplates.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			return ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE;
 		}
 
-		if (stakeholderResults.getTotalElements() == 1) {
-			stakeholderTemplate = stakeholderResults.iterator().next();
-			return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_EDIT, stakeholderTemplate.getId());
+		if (stakeholderTemplates.size() == 1) {
+			return String.format(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_EDIT, stakeholderTemplates.get(0).getId());
 		}
 
-		return addPaginationModel(page, model, stakeholderResults);
+		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplates);
+		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;
 	}
 
 	@GetMapping("/stakeholder/template/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<StakeholderTemplate> stakeholderTemplateResults = stakeholderTemplateService.findByPrefix("", page - 1);
+		Page<StakeholderTemplate> stakeholderTemplateResults = stakeholderTemplateService.findAll(page - 1);
 		addPaginationModel(page, model, stakeholderTemplateResults);
 		model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, new StakeholderTemplate());
 		return ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST;

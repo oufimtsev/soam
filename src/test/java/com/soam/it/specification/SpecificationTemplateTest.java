@@ -17,7 +17,7 @@ import java.io.IOException;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class SpecificationTemplateTest {
     private static final String URL_SPECIFICATION_TEMPLATE_EDIT = "http://localhost/specification/template/%s/edit";
-    private static final String URL_TEMPLATE_LINK_LIST = "http://localhost/templateLink/list";
+    private static final String URL_FIND_TEMPLATE_LINK = "http://localhost/templateLink/find";
 
     private WebClient webClient;
 
@@ -51,8 +51,8 @@ class SpecificationTemplateTest {
         ITValidationUtils.validateSpecificationTemplateEdit(specificationTemplateCopyPage, "Copy of Test Specification Template",
                 "Test Specification Template Description", "Test Specification Template Notes");
 
-        HtmlPage templateLinkPage = webClient.getPage(URL_TEMPLATE_LINK_LIST);
-        ITValidationUtils.validateTemplateLink(templateLinkPage, specificationTemplateCopyId, new String[][] {
+        HtmlPage findTemplateLinkPage = webClient.getPage(URL_FIND_TEMPLATE_LINK);
+        ITValidationUtils.validateTemplateLink(findTemplateLinkPage, specificationTemplateCopyId, new String[][] {
                 {"Copy of Test Specification Template", "Test Stakeholder Template", "Test Objective Template"}
         });
     }

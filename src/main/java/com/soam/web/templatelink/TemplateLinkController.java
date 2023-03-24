@@ -78,12 +78,12 @@ public class TemplateLinkController implements SoamFormController {
         }
     }
 
-    @GetMapping("/templateLink/list")
+    @GetMapping("/templateLink/find")
     public String listAll() {
         return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
-    @PostMapping("/templateLink/list")
+    @PostMapping("/templateLink/find")
     public String listFiltered(
             @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
         if (templateLinkForm.getNewTemplateLink() != null) {
@@ -160,13 +160,13 @@ public class TemplateLinkController implements SoamFormController {
     @PostMapping("/templateLink/new")
     public String processCreationForm(
             @Valid TemplateLink templateLink, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
-        if (templateLink.getSpecificationTemplate().isNew()) {
+        if (templateLink.getSpecificationTemplate() == null || templateLink.getSpecificationTemplate().isNew()) {
             result.rejectValue("specificationTemplate.name", "notBlank", "Should not be empty");
         }
-        if (templateLink.getStakeholderTemplate().isNew()) {
+        if (templateLink.getStakeholderTemplate() == null || templateLink.getStakeholderTemplate().isNew()) {
             result.rejectValue("stakeholderTemplate.name", "notBlank", "Should not be empty");
         }
-        if (templateLink.getObjectiveTemplate().isNew()) {
+        if (templateLink.getObjectiveTemplate() == null || templateLink.getObjectiveTemplate().isNew()) {
             result.rejectValue("objectiveTemplate.name", "notBlank", "Should not be empty");
         }
         if (result.hasErrors()) {

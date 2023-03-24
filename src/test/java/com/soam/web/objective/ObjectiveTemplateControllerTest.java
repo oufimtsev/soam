@@ -18,10 +18,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ObjectiveTemplateController.class)
@@ -57,29 +59,29 @@ class ObjectiveTemplateControllerTest {
 
     @Test
     void testProcessFindFormSuccess() throws Exception {
-        Page<ObjectiveTemplate> objectiveTemplates = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_TEMPLATE_1, new ObjectiveTemplate()));
-        given(objectiveTemplateService.findByPrefix(anyString(), anyInt())).willReturn(objectiveTemplates);
-        mockMvc.perform(get("/objective/templates?page=1").param("name", "Te"))
+        List<ObjectiveTemplate> objectiveTemplates = Lists.newArrayList(TEST_OBJECTIVE_TEMPLATE_1, new ObjectiveTemplate());
+        given(objectiveTemplateService.findByPrefix(anyString())).willReturn(objectiveTemplates);
+        mockMvc.perform(post("/objective/template/find").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST));
     }
 
     @Test
     void testProcessFindFormByName() throws Exception {
-        Page<ObjectiveTemplate> objectives = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_TEMPLATE_1));
+        List<ObjectiveTemplate> objectives = Lists.newArrayList(TEST_OBJECTIVE_TEMPLATE_1);
 
-        given(objectiveTemplateService.findByPrefix(eq("Test"), anyInt())).willReturn(objectives);
-        given(objectiveTemplateService.findByPrefix(eq("Not Present"), anyInt())).willReturn(new PageImpl<>(new ArrayList<>()));
+        given(objectiveTemplateService.findByPrefix(eq("Test"))).willReturn(objectives);
+        given(objectiveTemplateService.findByPrefix(eq("Not Present"))).willReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/objective/templates?page=1").param("name", "Test"))
+        mockMvc.perform(post("/objective/template/find").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_EDIT, TEST_OBJECTIVE_TEMPLATE_1.getId())));
 
-        mockMvc.perform(get("/objective/templates?page=1").param("name", "Not Present"))
+        mockMvc.perform(post("/objective/template/find").param("name", "Not Present"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE));
 
-        mockMvc.perform(get("/objective/templates?page=1").param("name", ""))
+        mockMvc.perform(post("/objective/template/find").param("name", ""))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, "name"))
@@ -89,7 +91,7 @@ class ObjectiveTemplateControllerTest {
     @Test
     void testListAll() throws Exception{
         Page<ObjectiveTemplate> objectiveTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_OBJECTIVE_TEMPLATE_1));
-        given(objectiveTemplateService.findByPrefix(any(String.class), anyInt())).willReturn(objectiveTemplatesPage);
+        given(objectiveTemplateService.findAll(anyInt())).willReturn(objectiveTemplatesPage);
 
         mockMvc.perform(get("/objective/template/list"))
                 .andExpect(status().isOk())

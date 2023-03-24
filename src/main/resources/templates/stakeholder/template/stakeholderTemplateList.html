@@ -1,57 +1,38 @@
 <!DOCTYPE html>
 
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body}, ~{::head}, 'templates')}">
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layoutTemplates :: layout (~{::contentBody}, ~{::head}, 'templates')}">
 <head></head>
 <body>
-<h2>Stakeholder Templates</h2>
+<th:block th:fragment="contentBody">
+    <h2>Stakeholder Templates</h2>
 
-<table id="stakeholder_templates" class="table table-striped">
-  <thead>
-  <tr>
-      <th style="width: 200px;">Name</th>
-      <th>Priority</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="stakeholderTemplate : ${stakeholderTemplates}">
-    <td>
-      <a th:href="@{/stakeholder/template/__${stakeholderTemplate.id}__/edit}" th:text="${stakeholderTemplate.name}"/></a>
-    </td>
-    <td th:text="${stakeholderTemplate.priority}"/>
-  </tr>
-  </tbody>
-</table>
-<div th:if="${totalPages > 1}">
-  <span>Pages:</span>
-  <span>[</span>
-  <span th:each="i: ${#numbers.sequence(1, totalPages)}">
-      <a th:if="${currentPage != i}" th:href="@{'/stakeholder/template/list?page=' + ${i}}">[[${i}]]</a>
-      <span th:unless="${currentPage != i}">[[${i}]]</span>
-    </span>
-  <span>]&nbsp;</span>
-  <span>
-      <a th:if="${currentPage > 1}" th:href="@{'/stakeholder/template/list?page=1'}" title="First"
-         class="fa fa-fast-backward"></a>
-      <span th:unless="${currentPage > 1}" title="First" class="fa fa-fast-backward"></span>
-    </span>
-  <span>
-      <a th:if="${currentPage > 1}" th:href="@{'/stakeholder/template/list?page=__${currentPage - 1}__'}" title="Previous"
-         class="fa fa-step-backward"></a>
-      <span th:unless="${currentPage > 1}" title="Previous" class="fa fa-step-backward"></span>
-    </span>
-  <span>
-      <a th:if="${currentPage < totalPages}" th:href="@{'/stakeholder/template/list?page=__${currentPage + 1}__'}" title="Next"
-         class="fa fa-step-forward"></a>
-      <span th:unless="${currentPage < totalPages}" title="Next" class="fa fa-step-forward"></span>
-    </span>
-  <span>
-      <a th:if="${currentPage < totalPages}" th:href="@{'/stakeholder/template/list?page=__${totalPages}__'}" title="Last"
-         class="fa fa-fast-forward"></a>
-      <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-step-forward"></span>
-    </span>
-</div>
-<div th:replace="~{fragments/flash :: subFlashMessage}"></div>
-<a class="btn btn-primary" th:href="@{/stakeholder/template/new}"><i class="fa fa-plus me-1" aria-hidden="true"></i> Add Stakeholder Template</a>
+    <table id="stakeholder_templates" class="table table-striped">
+        <thead>
+        <tr>
+            <th style="width: 200px;">Name</th>
+            <th>Priority</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="stakeholderTemplate : ${stakeholderTemplates}">
+            <td>
+                <a th:href="@{/stakeholder/template/__${stakeholderTemplate.id}__/edit}"
+                   th:text="${stakeholderTemplate.name}"/></a>
+            </td>
+            <td th:text="${stakeholderTemplate.priority}"/>
+        </tr>
+        </tbody>
+    </table>
+    <a class="btn btn-primary" type="button" href="/templates">
+        <i class="fa fa-ban me-1" aria-hidden="true"></i>
+        <span>Cancel</span>
+    </a>
+    <script type="text/javascript">
+    updateTreeForStakeholderTemplates();
+
+    </script>
+</th:block>
 </body>
 </html>
 

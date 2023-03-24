@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.util.StringUtils;
 
@@ -30,32 +31,30 @@ public class ObjectiveTemplateController implements SoamFormController {
 		return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 	}
 
-	@GetMapping("/objective/templates")
-	public String processFindForm(
-			@RequestParam(defaultValue = "1") int page, ObjectiveTemplate objectiveTemplate,
-		  	BindingResult result, Model model) {
+	@PostMapping("/objective/template/find")
+	public String processFindForm(ObjectiveTemplate objectiveTemplate, BindingResult result, Model model) {
 		if (StringUtils.isEmpty(objectiveTemplate.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
-		Page<ObjectiveTemplate> objectiveResults = objectiveTemplateService.findByPrefix(objectiveTemplate.getName(), page - 1);
-		if (objectiveResults.isEmpty()) {
+		List<ObjectiveTemplate> objectiveTemplates = objectiveTemplateService.findByPrefix(objectiveTemplate.getName());
+		if (objectiveTemplates.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			return ViewConstants.VIEW_FIND_OBJECTIVE_TEMPLATE;
 		}
 
-		if (objectiveResults.getTotalElements() == 1) {
-			objectiveTemplate = objectiveResults.iterator().next();
-			return String.format(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_EDIT, objectiveTemplate.getId());
+		if (objectiveTemplates.size() == 1) {
+			return String.format(RedirectConstants.REDIRECT_OBJECTIVE_TEMPLATE_EDIT, objectiveTemplates.get(0).getId());
 		}
 
-		return addPaginationModel(page, model, objectiveResults);
+		model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplates);
+		return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST;
 	}
 
 	@GetMapping("/objective/template/list")
 	public String listAll(@RequestParam(defaultValue = "1") int page, Model model) {
-		Page<ObjectiveTemplate> objectiveTemplateResults = objectiveTemplateService.findByPrefix("", page - 1);
+		Page<ObjectiveTemplate> objectiveTemplateResults = objectiveTemplateService.findAll(page - 1);
 		addPaginationModel(page, model, objectiveTemplateResults);
 		model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATE, new ObjectiveTemplate());
 		return ViewConstants.VIEW_OBJECTIVE_TEMPLATE_LIST;

@@ -107,24 +107,55 @@ function jsTreeDataLoader(obj, callback) {
     }
 }
 
-function getNodeUrl(node) {
+function getBaseNodeUrl(node) {
     let url = '/';
     switch (node.data.type) {
         case 'specificationTemplate':
-            url += 'specification/template/';
+        case 'specificationTemplates':
+            url += 'specification/template';
             break;
         case 'stakeholderTemplate':
-            url += 'stakeholder/template/';
+        case 'stakeholderTemplates':
+            url += 'stakeholder/template';
             break;
         case 'objectiveTemplate':
-            url += 'objective/template/';
+        case 'objectiveTemplates':
+            url += 'objective/template';
             break;
         case 'templateLink':
-            url += 'templateLink/';
+        case 'templateLinks':
+            url += 'templateLink';
             break;
     }
-    url += node.data.id;
     return url;
+}
+
+function getNodeUrl(node) {
+    let url = getBaseNodeUrl(node);
+    url += '/' + node.data.id;
+    return url;
+}
+
+function createEnterAction(node) {
+    let url = getBaseNodeUrl(node);
+    url += '/new';
+    return {
+       'label': 'Enter',
+       'action': obj => {
+           window.location.href = url;
+       }
+   };
+}
+
+function createFilterAction(node) {
+    let url = getBaseNodeUrl(node);
+    url += '/find';
+    return {
+       'label': 'Filter',
+       'action': obj => {
+           window.location.href = url;
+       }
+   };
 }
 
 function createUpdateAction(node) {
@@ -175,18 +206,8 @@ $(document).ready(function () {
                                     window.location.href = '/specification/template/new?collectionType=copyTemplate';
                                 }
                             },
-                            'enter': {
-                                'label': 'Enter',
-                                'action': obj => {
-                                    window.location.href = '/specification/template/new';
-                                }
-                            },
-//                            'filter': {
-//                                'label': 'Filter',
-//                                'action': obj => {
-//                                    window.location.href = '/specification/find';
-//                                }
-//                            }
+                            'enter': createEnterAction(node),
+                            'filter': createFilterAction(node)
                         });
                         break;
                     case 'stakeholderTemplates':
@@ -197,18 +218,8 @@ $(document).ready(function () {
                                     window.location.href = '/stakeholder/template/new?collectionType=copyTemplate';
                                 }
                             },
-                            'enter': {
-                                'label': 'Enter',
-                                'action': obj => {
-                                    window.location.href = '/stakeholder/template/new';
-                                }
-                            },
-//                            'filter': {
-//                                'label': 'Filter',
-//                                'action': obj => {
-//                                    window.location.href = '/specification/find';
-//                                }
-//                            }
+                            'enter': createEnterAction(node),
+                            'filter': createFilterAction(node)
                         });
                         break;
                     case 'objectiveTemplates':
@@ -219,18 +230,8 @@ $(document).ready(function () {
                                     window.location.href = '/objective/template/new?collectionType=copyTemplate';
                                 }
                             },
-                            'enter': {
-                                'label': 'Enter',
-                                'action': obj => {
-                                    window.location.href = '/objective/template/new';
-                                }
-                            },
-//                            'filter': {
-//                                'label': 'Filter',
-//                                'action': obj => {
-//                                    window.location.href = '/specification/find';
-//                                }
-//                            }
+                            'enter': createEnterAction(node),
+                            'filter': createFilterAction(node)
                         });
                         break;
                     case 'specificationTemplate':
@@ -253,12 +254,8 @@ $(document).ready(function () {
                         break;
                     case 'templateLinks':
                         callback({
-                            'enter': {
-                                'label': 'Enter',
-                                'action': obj => {
-                                    window.location.href = '/templateLink/new';
-                                }
-                            }
+                            'enter': createEnterAction(node),
+                            'filter': createFilterAction(node)
                         });
                         break;
                     case 'templateLink':
@@ -272,6 +269,34 @@ $(document).ready(function () {
         }
     });
 })
+
+function updateTreeForSpecificationTemplates() {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('specificationTemplates');
+    });
+}
+
+function updateTreeForStakeholderTemplates() {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('stakeholderTemplates');
+    });
+}
+
+function updateTreeForObjectiveTemplates() {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('objectiveTemplates');
+    });
+}
+
+function updateTreeForTemplateLinks() {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('templateLinks');
+    });
+}
 
 function updateTreeForSpecificationTemplate(specificationTemplateId) {
     $('#tree').on('ready.jstree', (e, data) => {

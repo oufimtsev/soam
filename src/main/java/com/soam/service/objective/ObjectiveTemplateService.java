@@ -31,9 +31,8 @@ public class ObjectiveTemplateService {
                 .orElseThrow(() -> new EntityNotFoundException("Objective Template", objectiveTemplateId));
     }
 
-    public Page<ObjectiveTemplate> findByPrefix(String name, int page) {
-        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
-        return objectiveTemplateRepository.findByNameStartsWithIgnoreCase(name, pageable);
+    public List<ObjectiveTemplate> findByPrefix(String name) {
+        return objectiveTemplateRepository.findByNameStartsWithIgnoreCase(name, SORT_ORDER);
     }
 
     public Optional<ObjectiveTemplate> findByName(String name) {
@@ -42,6 +41,11 @@ public class ObjectiveTemplateService {
 
     public List<ObjectiveTemplate> findAll() {
         return objectiveTemplateRepository.findAll(SORT_ORDER);
+    }
+
+    public Page<ObjectiveTemplate> findAll(int page) {
+        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
+        return objectiveTemplateRepository.findAll(pageable);
     }
 
     public ObjectiveTemplate save(ObjectiveTemplate objectiveTemplate) {

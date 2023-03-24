@@ -15,5 +15,5 @@ public interface ObjectiveTemplateRepository extends CrudRepository<ObjectiveTem
     Page<ObjectiveTemplate> findAll(Pageable pageable);
     Optional<ObjectiveTemplate> findByName(String name);
     Optional<ObjectiveTemplate> findByNameIgnoreCase(String name);
-    Page<ObjectiveTemplate> findByNameStartsWithIgnoreCase(String name, Pageable pageable);
+    List<ObjectiveTemplate> findByNameStartsWithIgnoreCase(String name, Sort sort);
 }

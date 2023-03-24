@@ -18,10 +18,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(StakeholderTemplateController.class)
@@ -57,29 +59,29 @@ class StakeholderTemplateControllerTest {
 
     @Test
     void testProcessFindFormSuccess() throws Exception {
-        Page<StakeholderTemplate> stakeholderTemplates = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1, new StakeholderTemplate()));
-        given(stakeholderTemplateService.findByPrefix(anyString(), anyInt())).willReturn(stakeholderTemplates);
-        mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Te"))
+        List<StakeholderTemplate> stakeholderTemplates = Lists.newArrayList(TEST_STAKEHOLDER_1, new StakeholderTemplate());
+        given(stakeholderTemplateService.findByPrefix(anyString())).willReturn(stakeholderTemplates);
+        mockMvc.perform(post("/stakeholder/template/find").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_TEMPLATE_LIST));
     }
 
     @Test
     void testProcessFindFormByName() throws Exception {
-        Page<StakeholderTemplate> stakeholders = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
+        List<StakeholderTemplate> stakeholders = Lists.newArrayList(TEST_STAKEHOLDER_1);
 
-        given(stakeholderTemplateService.findByPrefix(eq("Test"), anyInt())).willReturn(stakeholders);
-        given(stakeholderTemplateService.findByPrefix(eq("Not Present"), anyInt())).willReturn(new PageImpl<>(new ArrayList<>()));
+        given(stakeholderTemplateService.findByPrefix(eq("Test"))).willReturn(stakeholders);
+        given(stakeholderTemplateService.findByPrefix(eq("Not Present"))).willReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Test"))
+        mockMvc.perform(post("/stakeholder/template/find").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_STAKEHOLDER_TEMPLATE_EDIT, TEST_STAKEHOLDER_1.getId())));
 
-        mockMvc.perform(get("/stakeholder/templates?page=1").param("name", "Not Present"))
+        mockMvc.perform(post("/stakeholder/template/find").param("name", "Not Present"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_STAKEHOLDER_TEMPLATE));
 
-        mockMvc.perform(get("/stakeholder/templates?page=1").param("name", ""))
+        mockMvc.perform(post("/stakeholder/template/find").param("name", ""))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, "name"))
@@ -89,7 +91,7 @@ class StakeholderTemplateControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<StakeholderTemplate> stakeholderTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_STAKEHOLDER_1));
-        given(stakeholderTemplateService.findByPrefix(any(String.class), anyInt())).willReturn(stakeholderTemplatesPage);
+        given(stakeholderTemplateService.findAll(anyInt())).willReturn(stakeholderTemplatesPage);
 
         mockMvc.perform(get("/stakeholder/template/list"))
                 .andExpect(status().isOk())

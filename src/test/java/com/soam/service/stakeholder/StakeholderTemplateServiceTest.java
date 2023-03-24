@@ -66,12 +66,10 @@ class StakeholderTemplateServiceTest {
 
     @Test
     void findByPrefixTest() {
-        given(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any())).willReturn(new PageImpl<>(List.of(TEST_STAKEHOLDER_TEMPLATE_1)));
-        given(soamProperties.getPageSize()).willReturn(20);
+        given(stakeholderTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any())).willReturn(List.of(TEST_STAKEHOLDER_TEMPLATE_1));
 
-        Page<StakeholderTemplate> result = stakeholderTemplateService.findByPrefix("Test", 0);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(TEST_STAKEHOLDER_TEMPLATE_1.getId(), result.iterator().next().getId());
+        List<StakeholderTemplate> result = stakeholderTemplateService.findByPrefix("Test");
+        assertEquals(List.of(TEST_STAKEHOLDER_TEMPLATE_1), result);
     }
 
     @Test

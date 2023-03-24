@@ -40,25 +40,23 @@ public class SpecificationController {
 	}
 
 	@PostMapping("/specification/find")
-	public String processFindForm(
-			@RequestParam(defaultValue = "1") int page, Specification specification, BindingResult result, Model model) {
+	public String processFindForm(Specification specification, BindingResult result, Model model) {
 		if (StringUtils.isEmpty(specification.getName())) {
 			result.rejectValue("name", "notBlank", "not blank");
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 
-		List<Specification> specificationResults = specificationService.findByPrefix(specification.getName());
-		if (specificationResults.isEmpty()) {
+		List<Specification> specifications = specificationService.findByPrefix(specification.getName());
+		if (specifications.isEmpty()) {
 			result.rejectValue("name", "notFound", "not found");
 			return ViewConstants.VIEW_FIND_SPECIFICATION;
 		}
 
-		if (specificationResults.size() == 1) {
-			specification = specificationResults.get(0);
-			return String.format(RedirectConstants.REDIRECT_SPECIFICATION_EDIT, specification.getId());
+		if (specifications.size() == 1) {
+			return String.format(RedirectConstants.REDIRECT_SPECIFICATION_EDIT, specifications.get(0).getId());
 		}
 
-		model.addAttribute(ModelConstants.ATTR_SPECIFICATIONS, specificationResults);
+		model.addAttribute(ModelConstants.ATTR_SPECIFICATIONS, specifications);
 		return ViewConstants.VIEW_SPECIFICATION_LIST;
 	}
 

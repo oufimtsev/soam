@@ -110,9 +110,9 @@ public final class ITValidationUtils {
 
         HtmlPage filteredPage = button.click();
         filteredPage.querySelectorAll("table tbody tr").forEach(row -> {
-            String actualSpecificationTemplateName = row.querySelector("td:nth-of-type(1)").getTextContent();
-            String actualStakeholderTemplateName = row.querySelector("td:nth-of-type(2)").getTextContent();
-            String actualObjectiveTemplateName = row.querySelector("td:nth-of-type(3)").getTextContent();
+            String actualSpecificationTemplateName = row.querySelector("td:nth-of-type(2) a").getTextContent();
+            String actualStakeholderTemplateName = row.querySelector("td:nth-of-type(3) a").getTextContent();
+            String actualObjectiveTemplateName = row.querySelector("td:nth-of-type(4) a").getTextContent();
             String[] expectedTemplateLink = templateLinkMap.get(actualSpecificationTemplateName);
             assertEquals(expectedTemplateLink[0], actualSpecificationTemplateName);
             assertEquals(expectedTemplateLink[1], actualStakeholderTemplateName);

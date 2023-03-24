@@ -29,6 +29,7 @@ public final class ITUtils {
     private static final String URL_EDIT_STAKEHOLDER = "http://localhost/specification/%s/stakeholder/%s/edit";
     private static final String URL_EDIT_SPECIFICATION_OBJECTIVE = "http://localhost/specification/%s/specificationObjective/%s/edit";
     private static final String URL_EDIT_STAKEHOLDER_OBJECTIVE = "http://localhost/specification/%s/stakeholder/%s/stakeholderObjective/%s/edit";
+    private static final String URL_NEW_TEMPLATE_LINK = "http://localhost/templateLink/new";
     private static final String URL_TEMPLATE_LINK_LIST = "http://localhost/templateLink/list";
 
     private static final Pattern REDIRECT_SPECIFICATION_EDIT = Pattern.compile("^http://localhost/specification/(\\d+)/edit$");
@@ -112,13 +113,13 @@ public final class ITUtils {
     }
 
     public static void addTemplateLink(WebClient webClient, int specificationTemplateId, int stakeholderTemplateId, int objectiveTemplateId) throws IOException {
-        HtmlPage page = webClient.getPage(URL_TEMPLATE_LINK_LIST);
-        HtmlForm form = page.getHtmlElementById("templateLinksForm");
-        form.getSelectByName("newTemplateLink.specificationTemplate").setSelectedAttribute(String.valueOf(specificationTemplateId), true);
-        form.getSelectByName("newTemplateLink.stakeholderTemplate").setSelectedAttribute(String.valueOf(stakeholderTemplateId), true);
-        form.getSelectByName("newTemplateLink.objectiveTemplate").setSelectedAttribute(String.valueOf(objectiveTemplateId), true);
+        HtmlPage page = webClient.getPage(URL_NEW_TEMPLATE_LINK);
+        HtmlForm form = page.getHtmlElementById("add-template-link-form");
+        form.getSelectByName("specificationTemplate").setSelectedAttribute(String.valueOf(specificationTemplateId), true);
+        form.getSelectByName("stakeholderTemplate").setSelectedAttribute(String.valueOf(stakeholderTemplateId), true);
+        form.getSelectByName("objectiveTemplate").setSelectedAttribute(String.valueOf(objectiveTemplateId), true);
 
-        HtmlButton addButton = form.querySelector("form tfoot button");
+        HtmlButton addButton = form.querySelector("button");
         addButton.click();
     }
 

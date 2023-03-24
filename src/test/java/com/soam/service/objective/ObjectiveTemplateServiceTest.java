@@ -66,12 +66,10 @@ class ObjectiveTemplateServiceTest {
 
     @Test
     void findByPrefixTest() {
-        given(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any())).willReturn(new PageImpl<>(List.of(TEST_OBJECTIVE_TEMPLATE_1)));
-        given(soamProperties.getPageSize()).willReturn(20);
+        given(objectiveTemplateRepository.findByNameStartsWithIgnoreCase(eq("Test"), any())).willReturn(List.of(TEST_OBJECTIVE_TEMPLATE_1));
 
-        Page<ObjectiveTemplate> result = objectiveTemplateService.findByPrefix("Test", 0);
-        assertEquals(1, result.getTotalElements());
-        assertEquals(TEST_OBJECTIVE_TEMPLATE_1.getId(), result.iterator().next().getId());
+        List<ObjectiveTemplate> result = objectiveTemplateService.findByPrefix("Test");
+        assertEquals(List.of(TEST_OBJECTIVE_TEMPLATE_1), result);
     }
 
     @Test

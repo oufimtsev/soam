@@ -18,10 +18,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationTemplateController.class)
@@ -57,29 +59,29 @@ class SpecificationTemplateControllerTest {
 
     @Test
     void testProcessFindFormSuccess() throws Exception {
-        Page<SpecificationTemplate> specificationTemplates = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1, new SpecificationTemplate()));
-        given(specificationTemplateService.findByPrefix(anyString(), anyInt())).willReturn(specificationTemplates);
-        mockMvc.perform(get("/specification/templates?page=1").param("name", "Te"))
+        List<SpecificationTemplate> specificationTemplates = Lists.newArrayList(TEST_SPECIFICATION_1, new SpecificationTemplate());
+        given(specificationTemplateService.findByPrefix(anyString())).willReturn(specificationTemplates);
+        mockMvc.perform(post("/specification/template/find").param("name", "Te"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST));
     }
 
     @Test
     void testProcessFindFormByName() throws Exception {
-        Page<SpecificationTemplate> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
+        List<SpecificationTemplate> specifications = Lists.newArrayList(TEST_SPECIFICATION_1);
 
-        given(specificationTemplateService.findByPrefix(eq("Test"), anyInt())).willReturn(specifications);
-        given(specificationTemplateService.findByPrefix(eq("Not Present"), anyInt())).willReturn(new PageImpl<>(new ArrayList<>()));
+        given(specificationTemplateService.findByPrefix(eq("Test"))).willReturn(specifications);
+        given(specificationTemplateService.findByPrefix(eq("Not Present"))).willReturn(new ArrayList<>());
 
-        mockMvc.perform(get("/specification/templates?page=1").param("name", "Test"))
+        mockMvc.perform(post("/specification/template/find").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_EDIT, TEST_SPECIFICATION_1.getId())));
 
-        mockMvc.perform(get("/specification/templates?page=1").param("name", "Not Present"))
+        mockMvc.perform(post("/specification/template/find").param("name", "Not Present"))
                 .andExpect(status().isOk())
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
 
-        mockMvc.perform(get("/specification/templates?page=1").param("name", ""))
+        mockMvc.perform(post("/specification/template/find").param("name", ""))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
@@ -89,7 +91,7 @@ class SpecificationTemplateControllerTest {
     @Test
     void testListAll() throws Exception {
         Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        given(specificationTemplateService.findByPrefix(any(String.class), anyInt())).willReturn(specificationTemplatesPage);
+        given(specificationTemplateService.findAll(anyInt())).willReturn(specificationTemplatesPage);
 
         mockMvc.perform(get("/specification/template/list"))
                 .andExpect(status().isOk())
