@@ -99,7 +99,7 @@ public class TemplateLinkController implements SoamFormController {
         return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
-    @PostMapping("/templateLink/new")
+//    @PostMapping("/templateLink/new")
     public String processCreateForm(
             @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         TemplateLink templateLink = templateLinkForm.getNewTemplateLink();
@@ -147,28 +147,18 @@ public class TemplateLinkController implements SoamFormController {
         return RedirectConstants.REDIRECT_TEMPLATE_DEFAULT;
     }
 
-    @GetMapping("/templateLink/new1")
-    public String initCreationForm1(Model model) {
+    @GetMapping("/templateLink/new")
+    public String initCreationForm(Model model) {
         model.addAttribute(ModelConstants.ATTR_TEMPLATE_LINK, new TemplateLink());
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateService.findAll());
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateService.findAll());
         model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateService.findAll());
 
-        return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM1;
+        return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM;
     }
 
-    @GetMapping("/templateLink/new2")
-    public String initCreationForm2(Model model) {
-        model.addAttribute(ModelConstants.ATTR_TEMPLATE_LINK, new TemplateLink());
-        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATES, specificationTemplateService.findAll());
-        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATES, stakeholderTemplateService.findAll());
-        model.addAttribute(ModelConstants.ATTR_OBJECTIVE_TEMPLATES, objectiveTemplateService.findAll());
-
-        return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM2;
-    }
-
-    @PostMapping("/templateLink/new1")
-    public String processCreationForm1(
+    @PostMapping("/templateLink/new")
+    public String processCreationForm(
             @Valid TemplateLink templateLink, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (templateLink.getSpecificationTemplate().isNew()) {
             result.rejectValue("specificationTemplate.name", "notBlank", "Should not be empty");
@@ -180,7 +170,7 @@ public class TemplateLinkController implements SoamFormController {
             result.rejectValue("objectiveTemplate.name", "notBlank", "Should not be empty");
         }
         if (result.hasErrors()) {
-            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM1;
+            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM;
         }
 
         Optional<TemplateLink> maybeExistingTemplateLink =
@@ -191,62 +181,23 @@ public class TemplateLinkController implements SoamFormController {
         if (maybeExistingTemplateLink.isEmpty()) {
             templateLink = templateLinkService.save(templateLink);
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully created Template Link %s.", getTemplateLinkTitle(templateLink)));
-            return String.format(RedirectConstants.REDIRECT_TEMPLATE_LINK_EDIT1, templateLink.getId());
+            return String.format(RedirectConstants.REDIRECT_TEMPLATE_LINK_EDIT, templateLink.getId());
         } else {
             model.addAttribute(SoamFormController.FLASH_DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
-            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM1;
+            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM;
         }
     }
 
-    @PostMapping("/templateLink/new2")
-    public String processCreationForm2(
-            @Valid TemplateLink templateLink, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
-        if (templateLink.getSpecificationTemplate().isNew()) {
-            result.rejectValue("specificationTemplate.name", "notBlank", "Should not be empty");
-        }
-        if (templateLink.getStakeholderTemplate().isNew()) {
-            result.rejectValue("stakeholderTemplate.name", "notBlank", "Should not be empty");
-        }
-        if (templateLink.getObjectiveTemplate().isNew()) {
-            result.rejectValue("objectiveTemplate.name", "notBlank", "Should not be empty");
-        }
-        if (result.hasErrors()) {
-            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM2;
-        }
-
-        Optional<TemplateLink> maybeExistingTemplateLink =
-                templateLinkService.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
-                        templateLink.getSpecificationTemplate(), templateLink.getStakeholderTemplate(),
-                        templateLink.getObjectiveTemplate());
-        redirectAttributes.addFlashAttribute(ModelConstants.ATTR_TEMPLATE_LINK, templateLink);
-        if (maybeExistingTemplateLink.isEmpty()) {
-            templateLink = templateLinkService.save(templateLink);
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully created Template Link %s.", getTemplateLinkTitle(templateLink)));
-            return String.format(RedirectConstants.REDIRECT_TEMPLATE_LINK_EDIT2, templateLink.getId());
-        } else {
-            model.addAttribute(SoamFormController.FLASH_DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
-            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM2;
-        }
-    }
-
-    @GetMapping("/templateLink/{templateLinkId}/edit1")
-    public String initUpdateForm1(
+    @GetMapping("/templateLink/{templateLinkId}/edit")
+    public String initUpdateForm(
             @PathVariable("templateLinkId") int templateLinkId, Model model, RedirectAttributes redirectAttributes) {
         TemplateLink templateLink = templateLinkService.getById(templateLinkId);
         model.addAttribute(ModelConstants.ATTR_TEMPLATE_LINK, templateLink);
-        return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM1;
+        return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM;
     }
 
-    @GetMapping("/templateLink/{templateLinkId}/edit2")
-    public String initUpdateForm2(
-            @PathVariable("templateLinkId") int templateLinkId, Model model, RedirectAttributes redirectAttributes) {
-        TemplateLink templateLink = templateLinkService.getById(templateLinkId);
-        model.addAttribute(ModelConstants.ATTR_TEMPLATE_LINK, templateLink);
-        return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM2;
-    }
-
-    @PostMapping("/templateLink/{templateLinkId}/edit1")
-    public String processUpdateForm1(
+    @PostMapping("/templateLink/{templateLinkId}/edit")
+    public String processUpdateForm(
             @Valid TemplateLink templateLink, BindingResult result,
             @PathVariable("templateLinkId") int templateLinkId, Model model, RedirectAttributes redirectAttributes) {
         Optional<TemplateLink> maybeExistingTemplateLink =
@@ -259,31 +210,10 @@ public class TemplateLinkController implements SoamFormController {
         if (maybeExistingTemplateLink.isEmpty()) {
             templateLink = templateLinkService.save(templateLink);
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully updated Template Link %s.", getTemplateLinkTitle(templateLink)));
-            return String.format(RedirectConstants.REDIRECT_TEMPLATE_LINK_EDIT1, templateLink.getId());
+            return String.format(RedirectConstants.REDIRECT_TEMPLATE_LINK_EDIT, templateLink.getId());
         } else {
             model.addAttribute(SoamFormController.FLASH_DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
-            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM1;
-        }
-    }
-
-    @PostMapping("/templateLink/{templateLinkId}/edit2")
-    public String processUpdateForm2(
-            @Valid TemplateLink templateLink, BindingResult result,
-            @PathVariable("templateLinkId") int templateLinkId, Model model, RedirectAttributes redirectAttributes) {
-        Optional<TemplateLink> maybeExistingTemplateLink =
-                templateLinkService.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
-                        templateLink.getSpecificationTemplate(), templateLink.getStakeholderTemplate(),
-                        templateLink.getObjectiveTemplate())
-                        .filter(tl -> tl.getId() != templateLinkId);
-
-        templateLink.setId(templateLinkId);
-        if (maybeExistingTemplateLink.isEmpty()) {
-            templateLink = templateLinkService.save(templateLink);
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully updated Template Link %s.", getTemplateLinkTitle(templateLink)));
-            return String.format(RedirectConstants.REDIRECT_TEMPLATE_LINK_EDIT2, templateLink.getId());
-        } else {
-            model.addAttribute(SoamFormController.FLASH_DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
-            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM2;
+            return ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM;
         }
     }
 

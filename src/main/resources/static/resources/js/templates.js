@@ -253,40 +253,17 @@ $(document).ready(function () {
                         break;
                     case 'templateLinks':
                         callback({
-                            'enter1': {
-                                'label': 'Enter (Option 1)',
+                            'enter': {
+                                'label': 'Enter',
                                 'action': obj => {
-                                    window.location.href = '/templateLink/new1';
+                                    window.location.href = '/templateLink/new';
                                 }
-                            },
-                            'enter2': {
-                                'label': 'Enter (Option 2)',
-                                'action': obj => {
-                                    window.location.href = '/templateLink/new2';
-                                }
-                            }/*,
-                            'enter3': {
-                                'label': 'Enter (Option 3)',
-                                'action': obj => {
-                                    window.location.href = '/templateLink/list';
-                                }
-                            }*/
+                            }
                         });
                         break;
                     case 'templateLink':
                         callback({
-                            'update1': {
-                                'label': 'Update (Option 1)',
-                                'action': obj => {
-                                    window.location.href = getNodeUrl(node) + '/edit1';
-                                }
-                            },
-                            'update2': {
-                                'label': 'Update (Option 2)',
-                                'action': obj => {
-                                    window.location.href = getNodeUrl(node) + '/edit2';
-                                }
-                            },
+                            'update': createUpdateAction(node),
                             'delete': createDeleteAction('Template Link', node)
                         });
                         break;
