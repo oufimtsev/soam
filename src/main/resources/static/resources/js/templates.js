@@ -46,9 +46,9 @@ function jsTreeDataLoader(obj, callback) {
             },
             {
                 'text': 'Links',
-                'id': 'links',
+                'id': 'templateLinks',
                 'data': {
-                    'type': 'links'
+                    'type': 'templateLinks'
                 },
                 'children': true
             }
@@ -91,12 +91,13 @@ function jsTreeDataLoader(obj, callback) {
                         callback(children);
                     });
                 break;
-            case 'links':
+            case 'templateLinks':
                 fetch('/tree/link/templateLink')
                     .then(response => response.json())
                     .then(items => {
                         const children = items.map(item => {
                             const treeEntity = createTreeEntity(item);
+                            treeEntity.id = 'templateLink_' + item.id;
                             return treeEntity;
                         });
                         callback(children);
@@ -250,13 +251,42 @@ $(document).ready(function () {
                             'delete': createDeleteAction('Objective Template', node)
                         });
                         break;
-                    case 'link_objectiveTemplate':
+                    case 'templateLinks':
                         callback({
-                            'delete': createDeleteAction('Template Link', node)
+                            'enter1': {
+                                'label': 'Enter (Option 1)',
+                                'action': obj => {
+                                    window.location.href = '/templateLink/new1';
+                                }
+                            },
+                            'enter2': {
+                                'label': 'Enter (Option 2)',
+                                'action': obj => {
+                                    window.location.href = '/templateLink/new2';
+                                }
+                            }/*,
+                            'enter3': {
+                                'label': 'Enter (Option 3)',
+                                'action': obj => {
+                                    window.location.href = '/templateLink/list';
+                                }
+                            }*/
                         });
                         break;
                     case 'templateLink':
                         callback({
+                            'update1': {
+                                'label': 'Update (Option 1)',
+                                'action': obj => {
+                                    window.location.href = getNodeUrl(node) + '/edit1';
+                                }
+                            },
+                            'update2': {
+                                'label': 'Update (Option 2)',
+                                'action': obj => {
+                                    window.location.href = getNodeUrl(node) + '/edit2';
+                                }
+                            },
                             'delete': createDeleteAction('Template Link', node)
                         });
                         break;
@@ -289,6 +319,15 @@ function updateTreeForObjectiveTemplate(objectiveTemplateId) {
         const jsTree = $('#tree').jstree();
         jsTree.open_node('objectiveTemplates', () => {
             jsTree.select_node('objectiveTemplate_' + objectiveTemplateId);
+        });
+    });
+}
+
+function updateTreeForTemplateLink(templateLinkId) {
+    $('#tree').on('ready.jstree', (e, data) => {
+        const jsTree = $('#tree').jstree();
+        jsTree.open_node('templateLinks', () => {
+            jsTree.select_node('templateLink_' + templateLinkId);
         });
     });
 }

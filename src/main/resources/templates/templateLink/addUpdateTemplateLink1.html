@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layoutTemplates :: layout (~{::contentBody}, ~{::head}, 'templates')}">
+<head>
+    <script type="text/javascript" th:src="@{/resources/js/collectionDropdown.js}"></script>
+</head>
+<body>
+<th:block th:fragment="contentBody">
+    <h2>Template Link</h2>
+
+    <form th:object="${templateLink}" class="form-horizontal" id="add-template-link-form" method="post">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Specification Template</th>
+                <th>Stakeholder Template</th>
+                <th>Objective Template</th>
+            </tr>
+            </thead>
+
+            <tfoot>
+            <tr>
+                <td>
+                    <input th:replace="~{fragments/templateLinkItemSelectField :: selectNewItem ('specificationTemplate', ${specificationTemplates}, 'fa-plus')}"/>
+                </td>
+                <td>
+                    <input th:replace="~{fragments/templateLinkItemSelectField :: selectNewItem ('stakeholderTemplate', ${stakeholderTemplates}, 'fa-chain')}"/>
+                </td>
+                <td>
+                    <input th:replace="~{fragments/templateLinkItemSelectField :: selectNewItem ('objectiveTemplate', ${objectiveTemplates}, 'fa-chain')}"/>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 d-flex align-items-center">
+                <a class="btn btn-primary" type="button" href="/templates">
+                    <i class="fa fa-ban me-1" aria-hidden="true"></i>
+                    <span>Cancel</span>
+                </a>
+                <button class="btn btn-primary ms-2" type="submit"
+                        th:with="text=${templateLink['new']} ? 'Add Template Link' : 'Update Template Link',
+                icon=${templateLink['new']} ? 'fa-plus' : 'fa-pencil-square-o'">
+                    <i class="fa me-2" th:classappend="${icon}" aria-hidden="true"></i><span th:text="${text}">Add/Update</span>
+                </button>
+                <span class="flex-grow-1"></span>
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript">
+    updateTreeForTemplateLink([[${templateLink.id}]]);
+    </script>
+</th:block>
+</body>
+</html>

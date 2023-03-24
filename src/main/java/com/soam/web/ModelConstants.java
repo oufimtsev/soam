@@ -13,6 +13,7 @@ public final class ModelConstants {
     public static final String ATTR_OBJECTIVE_TEMPLATE = "objectiveTemplate";
     public static final String ATTR_OBJECTIVE_TEMPLATES = "objectiveTemplates";
     public static final String ATTR_STAKEHOLDER_OBJECTIVE = "stakeholderObjective";
+    public static final String ATTR_TEMPLATE_LINK = "templateLink";
     public static final String ATTR_TEMPLATE_LINKS = "templateLinks";
     public static final String ATTR_TEMPLATE_LINK_FORM = "templateLinkForm";
     public static final String ATTR_ADMIN_SOAM_ENUM = "soamEnum";

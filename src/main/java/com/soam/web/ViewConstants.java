@@ -32,6 +32,8 @@ public final class ViewConstants {
     public static final String VIEW_STAKEHOLDER_OBJECTIVE_ADD_OR_UPDATE_FORM = "stakeholderObjective/addUpdateStakeholderObjective";
 
     public static final String VIEW_TEMPLATE_LINK_LIST = "templateLink/templateLinkList";
+    public static final String VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM1 = "templateLink/addUpdateTemplateLink1";
+    public static final String VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM2 = "templateLink/addUpdateTemplateLink2";
 
     public static final String VIEW_ADMIN_DELETE_SPECIFICATION = "admin/deleteSpecification";
     public static final String VIEW_ADMIN_SOAM_EMUM_LIST = "admin/soamEnumList";

@@ -1,15 +1,15 @@
 <html>
 <body>
 <th:block th:fragment="collectionDropdown(collection, caption, emptyCollectionMessage, collectionType)">
-    <div th:replace="~{:: collectionDropdownCommon (${collection}, ${caption}, ${emptyCollectionMessage}, ${collectionType}, 'name', 'description', 'notes', 'priority')}"></div>
+    <div th:replace="~{:: collectionDropdownCommon (${collection}, ${caption}, ${emptyCollectionMessage}, ${collectionType}, 'collectionItemId', 'name', 'description', 'notes', 'priority')}"></div>
 </th:block>
 
 <th:block th:fragment="specificationObjectivesDropdown(collection, caption, emptyCollectionMessage, collectionType)">
-    <div th:replace="~{:: collectionDropdownCommon (${collection}, ${caption}, ${emptyCollectionMessage}, ${collectionType}, 'specificationObjective.name', 'specificationObjective.description', 'notes', 'priority')}"></div>
+    <div th:replace="~{:: collectionDropdownCommon (${collection}, ${caption}, ${emptyCollectionMessage}, ${collectionType}, 'collectionItemId', 'specificationObjective.name', 'specificationObjective.description', 'notes', 'priority')}"></div>
 </th:block>
 
 <th:block
-        th:fragment="collectionDropdownCommon(collection, caption, emptyCollectionMessage, collectionType, nameField, descriptionField, notesField, priorityField)"
+        th:fragment="collectionDropdownCommon(collection, caption, emptyCollectionMessage, collectionType, idField, nameField, descriptionField, notesField, priorityField)"
         th:with="id = ${#strings.randomAlphanumeric(10)}, dropdownMenuButtonId = 'dropdownMenuButton_' + ${id}, idFieldName = ${collectionType} + 'Id'">
     <div class="dropdown">
         <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="dropdown" aria-expanded="false"
@@ -17,7 +17,7 @@
             <i class="fa fa-object-ungroup me-2" aria-hidden="true"></i><span th:text="${caption}">Use Item</span>
         </button>
         <ul class="dropdown-menu"
-            th:attr="aria-labelledby = ${dropdownMenuButtonId}, data-collection-type = ${collectionType}, data-name-field = ${nameField}, data-description-field = ${descriptionField}, data-notes-field = ${notesField}, data-priority-field = ${priorityField}">
+            th:attr="aria-labelledby = ${dropdownMenuButtonId}, data-collection-type = ${collectionType}, data-id-field = ${idField}, data-name-field = ${nameField}, data-description-field = ${descriptionField}, data-notes-field = ${notesField}, data-priority-field = ${priorityField}">
             <li class="dropdown-item disabled" th:if="${#lists.isEmpty(collection)}">
                 <span class="text-danger" th:text="${emptyCollectionMessage}">No items defined.</span>
             </li>
