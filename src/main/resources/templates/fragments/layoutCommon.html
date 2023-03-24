@@ -53,20 +53,20 @@
           <li th:replace="~{::menuItem ('/specifications','specifications','Specifications','','Specifications')}">
             <span>Specifications</span>
           </li>
-          <li th:replace="~{::menuItem ('/templates','templates','Templates (new)','','Templates (new)')}">
+          <li th:replace="~{::menuItem ('/templates','templates','Templates','','Templates')}">
             <span>Templates</span>
           </li>
-          <li class="nav-item dropdown" >
-            <a class="nav-link dropdown-toggle" th:classappend="${menu=='templates' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Templates
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" th:href="@{/specification/template/find}">Specifications</a></li>
-              <li><a class="dropdown-item" th:href="@{/stakeholder/template/find}">Stakeholders</a></li>
-              <li><a class="dropdown-item" th:href="@{/objective/template/find}">Objectives</a></li>
-              <li><a class="dropdown-item" th:href="@{/templateLink/list}">Template Links</a></li>
-            </ul>
-          </li>
+<!--          <li class="nav-item dropdown" >-->
+<!--            <a class="nav-link dropdown-toggle" th:classappend="${menu=='templates' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--              Templates-->
+<!--            </a>-->
+<!--            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+<!--              <li><a class="dropdown-item" th:href="@{/specification/template/find}">Specifications</a></li>-->
+<!--              <li><a class="dropdown-item" th:href="@{/stakeholder/template/find}">Stakeholders</a></li>-->
+<!--              <li><a class="dropdown-item" th:href="@{/objective/template/find}">Objectives</a></li>-->
+<!--              <li><a class="dropdown-item" th:href="@{/templateLink/list}">Template Links</a></li>-->
+<!--            </ul>-->
+<!--          </li>-->
           <li class="nav-item dropdown" >
             <a class="nav-link dropdown-toggle" th:classappend="${menu=='admin' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Admin
@@ -82,69 +82,69 @@
       </div>
     </div>
   </nav>
-  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='templates' }" >
-    <div class="container">
-      <ol class="breadcrumb m-0 p-0" th:if="${specificationTemplate != null }">
-        <li class="breadcrumb-item" >
-          <a th:href="@{/}">Home</a>
-        </li>
-        <li class="breadcrumb-item"  >
-          <a th:href="@{/specification/template/find}" th:if="${specificationTemplates != null}">Specification Templates</a>
-          <span th:if="${specificationTemplates == null}">Specification Templates</span>
-        </li>
-        <li class="breadcrumb-item" th:if="${specificationTemplates != null}" >
-          <span th:text="${specificationTemplate.id != null ?  (!#strings.isEmpty(specificationTemplate.name) ? specificationTemplate.name : 'Update Specification Template') : 'Add Specification Template'}">Specification Template</span>
-        </li>
-      </ol>
-      <ol class="breadcrumb m-0 p-0" th:if="${stakeholderTemplate != null }">
-        <li class="breadcrumb-item" >
-          <a th:href="@{/}">Home</a>
-        </li>
-        <li class="breadcrumb-item"  >
-          <a th:href="@{/stakeholder/template/find}" th:if="${stakeholderTemplates != null}">Stakeholder Templates</a>
-          <span th:if="${stakeholderTemplates == null}">Stakeholder Templates</span>
-        </li>
-        <li class="breadcrumb-item" th:if="${stakeholderTemplates != null}" >
-          <span th:text="${stakeholderTemplate.id != null ? (!#strings.isEmpty(stakeholderTemplate.name) ? stakeholderTemplate.name : 'Update Template') : 'Add Stakeholder Template'}">Stakeholder Template</span>
-        </li>
-      </ol>
-      <ol class="breadcrumb m-0 p-0" th:if="${objectiveTemplate != null }">
-        <li class="breadcrumb-item" >
-          <a th:href="@{/}">Home</a>
-        </li>
-        <li class="breadcrumb-item"  >
-          <a th:href="@{/objective/template/find}" th:if="${objectiveTemplates != null}">Objective Templates</a>
-          <span th:if="${objectiveTemplates == null}">Objective Templates</span>
-        </li>
-        <li class="breadcrumb-item" th:if="${objectiveTemplates != null}" >
-          <span th:text="${objectiveTemplate.id != null ? (!#strings.isEmpty(objectiveTemplate.name) ? objectiveTemplate.name : 'Update Template') : 'Add Objective Template'}">Objective Template</span>
-        </li>
-      </ol>
-    </div>
-  </nav>
-  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='admin' }" >
-    <div class="container">
-      <ol class="breadcrumb m-0 p-0">
-        <li class="breadcrumb-item">
-          <span>Admin</span>
-        </li>
-        <li class="breadcrumb-item" th:if="${specifications != null}">
-          <span>Delete Specification</span>
-        </li>
-        <li class="breadcrumb-item" th:if="${soamEnums != null}">
-          <span>Maintain Enums</span>
-        </li>
-        <th:block th:if="${soamEnum != null}">
-          <li class="breadcrumb-item" >
-            <a th:href="@{/admin/soamEnum/list}">Maintain Enums</a>
-          </li>
-          <li class="breadcrumb-item" >
-            <span th:text="${soamEnum.name}"></span>
-          </li>
-        </th:block>
-      </ol>
-    </div>
-  </nav>
+<!--  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='templates' }" >-->
+<!--    <div class="container">-->
+<!--      <ol class="breadcrumb m-0 p-0" th:if="${specificationTemplate != null }">-->
+<!--        <li class="breadcrumb-item" >-->
+<!--          <a th:href="@{/}">Home</a>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item"  >-->
+<!--          <a th:href="@{/specification/template/find}" th:if="${specificationTemplates != null}">Specification Templates</a>-->
+<!--          <span th:if="${specificationTemplates == null}">Specification Templates</span>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item" th:if="${specificationTemplates != null}" >-->
+<!--          <span th:text="${specificationTemplate.id != null ?  (!#strings.isEmpty(specificationTemplate.name) ? specificationTemplate.name : 'Update Specification Template') : 'Add Specification Template'}">Specification Template</span>-->
+<!--        </li>-->
+<!--      </ol>-->
+<!--      <ol class="breadcrumb m-0 p-0" th:if="${stakeholderTemplate != null }">-->
+<!--        <li class="breadcrumb-item" >-->
+<!--          <a th:href="@{/}">Home</a>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item"  >-->
+<!--          <a th:href="@{/stakeholder/template/find}" th:if="${stakeholderTemplates != null}">Stakeholder Templates</a>-->
+<!--          <span th:if="${stakeholderTemplates == null}">Stakeholder Templates</span>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item" th:if="${stakeholderTemplates != null}" >-->
+<!--          <span th:text="${stakeholderTemplate.id != null ? (!#strings.isEmpty(stakeholderTemplate.name) ? stakeholderTemplate.name : 'Update Template') : 'Add Stakeholder Template'}">Stakeholder Template</span>-->
+<!--        </li>-->
+<!--      </ol>-->
+<!--      <ol class="breadcrumb m-0 p-0" th:if="${objectiveTemplate != null }">-->
+<!--        <li class="breadcrumb-item" >-->
+<!--          <a th:href="@{/}">Home</a>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item"  >-->
+<!--          <a th:href="@{/objective/template/find}" th:if="${objectiveTemplates != null}">Objective Templates</a>-->
+<!--          <span th:if="${objectiveTemplates == null}">Objective Templates</span>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item" th:if="${objectiveTemplates != null}" >-->
+<!--          <span th:text="${objectiveTemplate.id != null ? (!#strings.isEmpty(objectiveTemplate.name) ? objectiveTemplate.name : 'Update Template') : 'Add Objective Template'}">Objective Template</span>-->
+<!--        </li>-->
+<!--      </ol>-->
+<!--    </div>-->
+<!--  </nav>-->
+<!--  <nav class="breadcrumb-nav mt-0 pt-1" aria-label="breadcrumb" th:if="${menu =='admin' }" >-->
+<!--    <div class="container">-->
+<!--      <ol class="breadcrumb m-0 p-0">-->
+<!--        <li class="breadcrumb-item">-->
+<!--          <span>Admin</span>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item" th:if="${specifications != null}">-->
+<!--          <span>Delete Specification</span>-->
+<!--        </li>-->
+<!--        <li class="breadcrumb-item" th:if="${soamEnums != null}">-->
+<!--          <span>Maintain Enums</span>-->
+<!--        </li>-->
+<!--        <th:block th:if="${soamEnum != null}">-->
+<!--          <li class="breadcrumb-item" >-->
+<!--            <a th:href="@{/admin/soamEnum/list}">Maintain Enums</a>-->
+<!--          </li>-->
+<!--          <li class="breadcrumb-item" >-->
+<!--            <span th:text="${soamEnum.name}"></span>-->
+<!--          </li>-->
+<!--        </th:block>-->
+<!--      </ol>-->
+<!--    </div>-->
+<!--  </nav>-->
   <div class="container-fluid h-100 p-5">
     <th:block th:insert="${contentBody}" />
   </div>
