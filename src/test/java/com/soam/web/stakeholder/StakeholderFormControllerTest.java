@@ -154,27 +154,6 @@ class StakeholderFormControllerTest {
     }
 
     @Test
-    void testViewDetails() throws Exception {
-        mockMvc.perform(get("/specification/{specificationId}/stakeholder/{stakeholderId}",
-                        TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER))
-                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER, hasProperty("name", is(TEST_STAKEHOLDER_1.getName()))))
-                .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_DETAILS));
-
-        mockMvc.perform(get("/specification/{specificationId}/stakeholder/{stakeholderId}", EMPTY_SPECIFICATION_ID,
-                        TEST_STAKEHOLDER_1.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
-
-        mockMvc.perform(get("/specification/{specificationId}/stakeholder/{stakeholderId}", TEST_SPECIFICATION_1.getId(),
-                        EMPTY_STAKEHOLDER_ID))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
-    }
-
-    @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_STAKEHOLDER, TEST_SPECIFICATION_1.getId()))
                 .andExpect(status().isOk())
@@ -208,7 +187,7 @@ class StakeholderFormControllerTest {
                         .param("description", "Description"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
         mockMvc.perform(post(URL_NEW_STAKEHOLDER, TEST_SPECIFICATION_1.getId())
                         .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))

@@ -65,16 +65,6 @@ public class StakeholderObjectiveFormController implements SoamFormController {
         }
     }
 
-    @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}")
-    public String showDetails(
-            Specification specification, Stakeholder stakeholder,
-            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId,
-            Model model, RedirectAttributes redirectAttributes) {
-        StakeholderObjective stakeholderObjective = stakeholderObjectiveService.getById(stakeholderObjectiveId);
-        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
-        return ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS;
-    }
-
     @GetMapping("/stakeholderObjective/new")
     public String initCreationForm(
             Specification specification, Stakeholder stakeholder, Model model, RedirectAttributes redirectAttributes) {

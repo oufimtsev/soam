@@ -110,17 +110,4 @@ class SpecificationControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_PAGINATED))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_LIST));
     }
-
-    @Test
-    void testViewDetails() throws Exception {
-        mockMvc.perform(get("/specification/{specificationId}", TEST_SPECIFICATION_1.getId()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
-                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION, hasProperty("name", is("Test Spec 1"))))
-                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_DETAILS));
-
-        mockMvc.perform(get("/specification/{specificationId}", EMPTY_SPECIFICATION_ID))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(RedirectConstants.REDIRECT_FIND_SPECIFICATION));
-    }
 }

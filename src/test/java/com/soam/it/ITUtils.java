@@ -124,7 +124,7 @@ public final class ITUtils {
     }
 
     private static int addEditSoamObject(
-            WebClient webClient, String pageUrl, Pattern detailsPagePattern, String name, String description,
+            WebClient webClient, String pageUrl, Pattern editPagePattern, String name, String description,
             String notes, String collectionType, int collectionItemId) throws IOException {
         HtmlPage page = webClient.getPage(pageUrl);
         HtmlForm form = page.querySelector("form");
@@ -136,7 +136,7 @@ public final class ITUtils {
             form.getInputByName("collectionItemId").setValue(String.valueOf(collectionItemId));
         }
         HtmlPage redirectPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
-        Matcher redirectMatcher = detailsPagePattern.matcher(redirectPage.getUrl().toString());
+        Matcher redirectMatcher = editPagePattern.matcher(redirectPage.getUrl().toString());
         assertTrue(redirectMatcher.matches());
         return Integer.parseInt(redirectMatcher.group(redirectMatcher.groupCount()));
     }
@@ -149,8 +149,8 @@ public final class ITUtils {
         form.getInputByName("stakeholder").setValue(String.valueOf(stakeholderId));
         form.getInputByName("collectionItemId").setValue(String.valueOf(specificationObjectiveId));
         form.getTextAreaByName("notes").setText(notes);
-        HtmlPage detailsPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
-        Matcher redirectMatcher = REDIRECT_STAKEHOLDER_OBJECTIVE_EDIT.matcher(detailsPage.getUrl().toString());
+        HtmlPage editPage = form.getOneHtmlElementByAttribute("button", "type", "submit").click();
+        Matcher redirectMatcher = REDIRECT_STAKEHOLDER_OBJECTIVE_EDIT.matcher(editPage.getUrl().toString());
         assertTrue(redirectMatcher.matches());
         assertEquals(specificationId, Integer.parseInt(redirectMatcher.group(1)));
         assertEquals(stakeholderId, Integer.parseInt(redirectMatcher.group(2)));

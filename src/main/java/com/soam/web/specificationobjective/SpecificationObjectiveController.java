@@ -42,15 +42,6 @@ public class SpecificationObjectiveController {
         return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_LIST;
     }
 
-    @GetMapping("/specificationObjective/{specificationObjectiveId}")
-    public String showDetails(
-            Specification specification, @PathVariable("specificationObjectiveId") int specificationObjectiveId,
-            Model model, RedirectAttributes redirectAttributes) {
-        SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
-        model.addAttribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, specificationObjective);
-        return ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS;
-    }
-
     @ExceptionHandler(EntityNotFoundException.class)
     public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());

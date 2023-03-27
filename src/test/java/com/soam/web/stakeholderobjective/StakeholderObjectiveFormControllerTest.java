@@ -148,29 +148,6 @@ class StakeholderObjectiveFormControllerTest {
     }
 
     @Test
-    void testViewDetails() throws Exception {
-        mockMvc.perform(get(URL_VIEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId(), TEST_STAKEHOLDER_OBJECTIVE_1.getId()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE))
-                .andExpect(model().attribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, hasProperty("notes", is(TEST_STAKEHOLDER_OBJECTIVE_1.getNotes()))))
-                .andExpect(view().name(ViewConstants.VIEW_STAKEHOLDER_OBJECTIVE_DETAILS));
-
-        mockMvc.perform(get(URL_VIEW_STAKEHOLDER_OBJECTIVE, EMPTY_SPECIFICATION_ID, TEST_STAKEHOLDER_1.getId(), TEST_STAKEHOLDER_OBJECTIVE_1.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
-
-        mockMvc.perform(get(URL_VIEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), EMPTY_STAKEHOLDER_ID, TEST_STAKEHOLDER_OBJECTIVE_1.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
-
-        mockMvc.perform(get(URL_VIEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId(), EMPTY_STAKEHOLDER_OBJECTIVE_ID))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
-    }
-
-    @Test
     void testInitCreationForm() throws Exception {
         mockMvc.perform(get(URL_NEW_STAKEHOLDER_OBJECTIVE, TEST_SPECIFICATION_1.getId(), TEST_STAKEHOLDER_1.getId()))
                 .andExpect(status().isOk())

@@ -79,13 +79,6 @@ public class SpecificationController {
 		return ViewConstants.VIEW_SPECIFICATION_LIST;
 	}
 
-	@GetMapping("/specification/{specificationId}")
-	public String showDetails(@PathVariable("specificationId") int specificationId, Model model) {
-		Specification specification = specificationService.getById(specificationId);
-		model.addAttribute(ModelConstants.ATTR_SPECIFICATION, specification);
-		return ViewConstants.VIEW_SPECIFICATION_DETAILS;
-	}
-
 	@ExceptionHandler(EntityNotFoundException.class)
 	public String errorHandler(RedirectAttributes redirectAttributes) {
 		return RedirectConstants.REDIRECT_FIND_SPECIFICATION;

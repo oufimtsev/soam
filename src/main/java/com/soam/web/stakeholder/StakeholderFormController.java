@@ -50,15 +50,6 @@ public class StakeholderFormController implements SoamFormController {
         return specificationService.getById(specificationId);
     }
 
-    @GetMapping("/stakeholder/{stakeholderId}")
-    public String showDetails(
-            @PathVariable("specificationId") int specificationId, @PathVariable("stakeholderId") int stakeholderId,
-            Model model, RedirectAttributes redirectAttributes) {
-        Stakeholder stakeholder = stakeholderService.getById(stakeholderId);
-        model.addAttribute(ModelConstants.ATTR_STAKEHOLDER, stakeholder);
-        return ViewConstants.VIEW_STAKEHOLDER_DETAILS;
-    }
-
     @GetMapping("/stakeholder/new")
     public String initCreationForm(
             Specification specification, Model model,
@@ -79,7 +70,7 @@ public class StakeholderFormController implements SoamFormController {
             @Valid Stakeholder stakeholder, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (stakeholder.getSpecification() == null || !Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
+            return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
         }
 
         stakeholderService.findBySpecificationAndName(specification, stakeholder.getName()).ifPresent(s ->

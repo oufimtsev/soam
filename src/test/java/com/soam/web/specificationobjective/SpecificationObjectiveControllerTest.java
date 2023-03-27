@@ -83,24 +83,4 @@ class SpecificationObjectiveControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVES))
                 .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_LIST));
     }
-
-    @Test
-    void testViewDetails() throws Exception {
-        mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),  TEST_SPECIFICATION_OBJECTIVE.getId()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE))
-                .andExpect(model().attribute(ModelConstants.ATTR_SPECIFICATION_OBJECTIVE, hasProperty("name", is(TEST_SPECIFICATION_OBJECTIVE.getName()))))
-                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_DETAILS));
-
-        mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, EMPTY_SPECIFICATION_ID,
-                        TEST_SPECIFICATION_OBJECTIVE.getId()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
-
-        mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION.getId(),
-                        EMPTY_SPECIFICATION_OBJECTIVE_ID))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_LIST));
-    }
 }

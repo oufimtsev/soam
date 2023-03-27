@@ -12,16 +12,15 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class StakeholderObjectiveTest {
-    private static final String URL_SPECIFICATION_DETAILS = "http://localhost/specification/%s";
-    private static final String URL_STAKEHOLDER_DETAILS = "http://localhost/specification/%s/stakeholder/%s";
-    private static final String URL_STAKEHOLDER_OBJECTIVE_DETAILS = "http://localhost/specification/%s/stakeholder/%s/stakeholderObjective/%s";
+    private static final String URL_SPECIFICATION_EDIT = "http://localhost/specification/%s/edit";
+    private static final String URL_STAKEHOLDER_EDIT = "http://localhost/specification/%s/stakeholder/%s/edit";
+    private static final String URL_STAKEHOLDER_OBJECTIVE_EDIT = "http://localhost/specification/%s/stakeholder/%s/stakeholderObjective/%s/edit";
 
     private WebClient webClient;
 
@@ -51,18 +50,17 @@ class StakeholderObjectiveTest {
 
         //make sure that parent SOAM object is not affected by the POST action. This may happen in case Controller
         //does not isolate Model attributes from POST data binding
-        HtmlPage specificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, specificationId));
-        ITValidationUtils.validateSpecificationDetails(specificationDetailsPage, "Test Specification",
-                "Test Specification Description", "Test Specification Notes", List.of("Test Stakeholder"));
+        HtmlPage specificationEditPage = webClient.getPage(String.format(URL_SPECIFICATION_EDIT, specificationId));
+        ITValidationUtils.validateSpecificationEdit(specificationEditPage, "Test Specification",
+                "Test Specification Description", "Test Specification Notes");
 
-        HtmlPage stakeholderDetailsPage = webClient.getPage(String.format(URL_STAKEHOLDER_DETAILS, specificationId, stakeholderId));
-        ITValidationUtils.validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder", "Test Stakeholder Description",
-                "Test Stakeholder Notes", List.of("Test Specification Objective"));
+        HtmlPage stakeholderEditPage = webClient.getPage(String.format(URL_STAKEHOLDER_EDIT, specificationId, stakeholderId));
+        ITValidationUtils.validateStakeholderEdit(stakeholderEditPage, "Test Stakeholder", "Test Stakeholder Description",
+                "Test Stakeholder Notes");
 
-        HtmlPage stakeholderObjectiveDetailsPage = webClient.getPage(String.format(URL_STAKEHOLDER_OBJECTIVE_DETAILS, specificationId, stakeholderId, stakeholderObjectiveId));
-        ITValidationUtils.validateStakeholderObjectiveDetails(stakeholderObjectiveDetailsPage, "Test Specification Objective",
-                "Test Stakeholder", "Test Specification Objective Description",
-                "Test Stakeholder Objective Notes");
+        HtmlPage stakeholderObjectiveEditPage = webClient.getPage(String.format(URL_STAKEHOLDER_OBJECTIVE_EDIT, specificationId, stakeholderId, stakeholderObjectiveId));
+        ITValidationUtils.validateStakeholderObjectiveEdit(stakeholderObjectiveEditPage, "Test Specification Objective",
+                "Test Specification Objective Description", "Test Stakeholder Objective Notes");
     }
 
     @Test
@@ -85,17 +83,16 @@ class StakeholderObjectiveTest {
 
         //make sure that parent SOAM object is not affected by the POST action. This may happen in case Controller
         //does not isolate Model attributes from POST data binding
-        HtmlPage specificationDetailsPage = webClient.getPage(String.format(URL_SPECIFICATION_DETAILS, specificationId));
-        ITValidationUtils.validateSpecificationDetails(specificationDetailsPage, "Test Specification",
-                "Test Specification Description", "Test Specification Notes", List.of("Test Stakeholder"));
+        HtmlPage specificationEditPage = webClient.getPage(String.format(URL_SPECIFICATION_EDIT, specificationId));
+        ITValidationUtils.validateSpecificationEdit(specificationEditPage, "Test Specification",
+                "Test Specification Description", "Test Specification Notes");
 
-        HtmlPage stakeholderDetailsPage = webClient.getPage(String.format(URL_STAKEHOLDER_DETAILS, specificationId, stakeholderId));
-        ITValidationUtils.validateStakeholderDetails(stakeholderDetailsPage, "Test Stakeholder", "Test Stakeholder Description",
-                "Test Stakeholder Notes", List.of("Test Specification Objective"));
+        HtmlPage stakeholderEditPage = webClient.getPage(String.format(URL_STAKEHOLDER_EDIT, specificationId, stakeholderId));
+        ITValidationUtils.validateStakeholderEdit(stakeholderEditPage, "Test Stakeholder", "Test Stakeholder Description",
+                "Test Stakeholder Notes");
 
-        HtmlPage stakeholderObjectiveDetailsPage = webClient.getPage(String.format(URL_STAKEHOLDER_OBJECTIVE_DETAILS, specificationId, stakeholderId, editedStakeholderObjectiveId));
-        ITValidationUtils.validateStakeholderObjectiveDetails(stakeholderObjectiveDetailsPage, "Test Specification Objective",
-                "Test Stakeholder", "Test Specification Objective Description",
-                "Updated Test Stakeholder Objective Notes");
+        HtmlPage stakeholderObjectiveEditPage = webClient.getPage(String.format(URL_STAKEHOLDER_OBJECTIVE_EDIT, specificationId, stakeholderId, editedStakeholderObjectiveId));
+        ITValidationUtils.validateStakeholderObjectiveEdit(stakeholderObjectiveEditPage, "Test Specification Objective",
+                "Test Specification Objective Description", "Updated Test Stakeholder Objective Notes");
     }
 }
