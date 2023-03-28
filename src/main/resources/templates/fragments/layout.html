@@ -1,12 +1,12 @@
 <!doctype html>
-<html th:fragment="layout (template, head, menu)" class="h-100"
-      th:replace="~{fragments/layoutCommon :: layout (~{::content}, ${head}, ${menu})}">
+<html th:fragment="layout (inContentBody, inContentHead, inMenu)" class="h-100"
+      th:replace="~{fragments/layoutCommon :: layout (~{::content}, ${inContentHead}, ${inMenu})}">
 <head>
 </head>
 <body>
 <th:block th:fragment="content">
     <div th:replace="~{fragments/flash :: flash}"></div>
-    <th:block th:replace="${template}"/>
+    <th:block th:replace="${inContentBody}"/>
     <div class="container mt-4">
     </div>
 </th:block>

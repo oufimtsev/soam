@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:fragment="layout (contentBody, contentHead, menu)" class="h-100">
+<html th:fragment="layout (inCommonContentBody, inCommonContentHead, inCommonMenu)" class="h-100">
 
 <head>
 
@@ -21,7 +21,7 @@
   <link rel="stylesheet" th:href="@{/resources/css/soam.css}" />
   <link th:href="@{/webjars/jstree/3.3.14/themes/default/style.min.css}" rel="stylesheet">
 
-  <th:block th:insert="${contentHead}" />
+  <th:block th:insert="${inCommonContentHead}" />
 
 </head>
 
@@ -36,7 +36,7 @@
 
         <ul class="navbar-nav me-auto mb-2 mb-lg-0" th:remove="all">
           <li th:fragment="menuItem (link,active,title,glyph,text)" th:class="nav-item">
-            <a th:class="${active==menu ? 'nav-link active' : 'nav-link'}" th:href="@{__${link}__}" th:title="${title}">
+            <a th:class="${active==inCommonMenu ? 'nav-link active' : 'nav-link'}" th:href="@{__${link}__}" th:title="${title}">
               <span th:class="'fa fa-'+${glyph}" class="fa fa-home"></span>
               <span th:text="${text}">Template</span>
             </a>
@@ -56,19 +56,8 @@
           <li th:replace="~{::menuItem ('/templates','templates','Templates','','Templates')}">
             <span>Templates</span>
           </li>
-<!--          <li class="nav-item dropdown" >-->
-<!--            <a class="nav-link dropdown-toggle" th:classappend="${menu=='templates' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--              Templates-->
-<!--            </a>-->
-<!--            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">-->
-<!--              <li><a class="dropdown-item" th:href="@{/specification/template/find}">Specifications</a></li>-->
-<!--              <li><a class="dropdown-item" th:href="@{/stakeholder/template/find}">Stakeholders</a></li>-->
-<!--              <li><a class="dropdown-item" th:href="@{/objective/template/find}">Objectives</a></li>-->
-<!--              <li><a class="dropdown-item" th:href="@{/templateLink/list}">Template Links</a></li>-->
-<!--            </ul>-->
-<!--          </li>-->
           <li class="nav-item dropdown" >
-            <a class="nav-link dropdown-toggle" th:classappend="${menu=='admin' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" th:classappend="${inCommonMenu=='admin' ? 'active' : ''}" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Admin
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -83,7 +72,7 @@
     </div>
   </nav>
   <div class="container-fluid h-100 p-5">
-    <th:block th:insert="${contentBody}" />
+    <th:block th:insert="${inCommonContentBody}" />
   </div>
 
   <script th:src="@{/webjars/bootstrap/5.1.3/dist/js/bootstrap.bundle.min.js}"></script>

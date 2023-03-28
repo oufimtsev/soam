@@ -1,12 +1,12 @@
 <!doctype html>
-<html th:fragment="layout (templateSpecifications, head, menu)" class="h-100"
-      th:replace="~{fragments/layoutCommon :: layout (~{::contentBody}, ~{::contentHead}, ${menu})}">
+<html th:fragment="layout (inContentBody, inContentHead, inMenu)" class="h-100"
+      th:replace="~{fragments/layoutCommon :: layout (~{::contentBody}, ~{::contentHead}, ${inMenu})}">
 <head>
     <th:block th:fragment="contentHead">
         <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
         <script th:src="@{/webjars/jstree/3.3.14/jstree.min.js}"></script>
         <script type="text/javascript" th:src="@{/resources/js/specifications.js}"></script>
-        <th:block th:insert="${head}" />
+        <th:block th:insert="${inContentHead}" />
     </th:block>
 </head>
 <body>
@@ -18,7 +18,7 @@
         </div>
         <div class="col-8">
             <div th:replace="~{fragments/flash :: flash}"></div>
-            <th:block th:replace="${templateSpecifications}"/>
+            <th:block th:replace="${inContentBody}"/>
             <div class="container mt-4">
             </div>
         </div>
