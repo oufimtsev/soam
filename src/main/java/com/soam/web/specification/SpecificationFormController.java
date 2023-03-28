@@ -58,8 +58,8 @@ public class SpecificationFormController implements SoamFormController {
     @PostMapping("/specification/new")
     public String processCreationForm(
             @Valid Specification specification, BindingResult result,
-            @ModelAttribute("collectionType") String collectionType,
-            @ModelAttribute("collectionItemId") int collectionItemId,
+            @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,
+            @ModelAttribute(ModelConstants.ATTR_COLLECTION_ITEM_ID) int collectionItemId,
             Model model, RedirectAttributes redirectAttributes) {
         specificationService.findByName(specification.getName()).ifPresent(s ->
                 result.rejectValue("name", "unique", "Specification already exists."));

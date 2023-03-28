@@ -45,7 +45,7 @@ public class ObjectiveTemplateFormController implements SoamFormController {
 
     @PostMapping("/objective/template/new")
     public String processCreationForm(
-            @ModelAttribute("collectionType") String collectionType,
+            @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,
             @Valid ObjectiveTemplate objectiveTemplate, BindingResult result,
             Model model, RedirectAttributes redirectAttributes) {
         objectiveTemplateService.findByName(objectiveTemplate.getName()).ifPresent(ot ->

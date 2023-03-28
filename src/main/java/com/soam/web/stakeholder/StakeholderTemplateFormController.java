@@ -45,7 +45,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
 
     @PostMapping("/stakeholder/template/new")
     public String processCreationForm(
-            @ModelAttribute("collectionType") String collectionType,
+            @ModelAttribute(ModelConstants.ATTR_COLLECTION_TYPE) String collectionType,
             @Valid StakeholderTemplate stakeholderTemplate, BindingResult result,
             Model model, RedirectAttributes redirectAttributes) {
         stakeholderTemplateService.findByName(stakeholderTemplate.getName()).ifPresent(st ->
