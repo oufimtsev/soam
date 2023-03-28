@@ -40,10 +40,6 @@
             </div>
         </div>
     </form>
-    <form th:if="${!stakeholderTemplate['new']}" id="deleteForm" th:object="${stakeholderTemplate}"
-          th:action="@{/stakeholder/template/__${stakeholderTemplate.id}__/delete}" method="post">
-        <input type="hidden" th:field="*{id}"/>
-    </form>
     <script type="text/javascript">
     updateTreeForStakeholderTemplate([[${stakeholderTemplate.id}]]);
 

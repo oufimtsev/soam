@@ -46,11 +46,6 @@
             </div>
         </div>
     </form>
-    <form th:if="${!stakeholderObjective['new']}" id="deleteForm" th:object="${stakeholderObjective}"
-          th:action="@{/specification/__${specification.id}__/stakeholder/__${stakeholder.id}__/stakeholderObjective/__${stakeholderObjective.id}__/delete}"
-          method="post">
-        <input type="hidden" th:field="*{id}"/>
-    </form>
     <script type="text/javascript">
     updateTreeForStakeholderObjective([[${specification.id}]], [[${stakeholder.id}]], [[${stakeholderObjective.id}]]);
 

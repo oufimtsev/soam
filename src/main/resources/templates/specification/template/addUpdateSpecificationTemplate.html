@@ -45,10 +45,6 @@
             </div>
         </div>
     </form>
-    <form th:if="${!specificationTemplate['new']}" id="deleteForm" th:object="${specificationTemplate}"
-          th:action="@{/specification/template/__${specificationTemplate.id}__/delete}" method="post">
-        <input type="hidden" th:field="*{id}"/>
-    </form>
     <script type="text/javascript">
     updateTreeForSpecificationTemplate([[${specificationTemplate.id}]]);
 

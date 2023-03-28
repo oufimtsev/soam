@@ -40,10 +40,6 @@
             </div>
         </div>
     </form>
-    <form th:if="${!objectiveTemplate['new']}" id="deleteForm" th:object="${objectiveTemplate}"
-          th:action="@{/objective/template/__${objectiveTemplate.id}__/delete}" method="post">
-        <input type="hidden" th:field="*{id}"/>
-    </form>
     <script type="text/javascript">
     updateTreeForObjectiveTemplate([[${objectiveTemplate.id}]]);
 
