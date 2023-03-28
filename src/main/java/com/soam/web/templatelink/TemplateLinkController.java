@@ -99,47 +99,8 @@ public class TemplateLinkController implements SoamFormController {
         return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
-//    @PostMapping("/templateLink/new")
-    public String processCreateForm(
-            @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        TemplateLink templateLink = templateLinkForm.getNewTemplateLink();
-        Optional<TemplateLink> maybeExistingTemplateLink =
-                templateLinkService.findBySpecificationTemplateAndStakeholderTemplateAndObjectiveTemplate(
-                        templateLink.getSpecificationTemplate(), templateLink.getStakeholderTemplate(),
-                        templateLink.getObjectiveTemplate());
-        redirectAttributes.addFlashAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM, templateLinkForm);
-        if (maybeExistingTemplateLink.isEmpty()) {
-            if (bindingResult.hasErrors()) {
-                //the UI should never cause this error. This is protection mostly from malformed programmatic POST
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "New Template Link data is not complete.");
-            } else {
-                templateLink = templateLinkService.save(templateLink);
-                redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully created Template Link %s.", getTemplateLinkTitle(templateLink)));
-            }
-        } else {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, String.format("Template Link %s already exists.", getTemplateLinkTitle(templateLink)));
-        }
-        return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
-    }
-
-    @PostMapping("/templateLink/delete")
-    public String processDelete(
-            @Valid TemplateLinkFormDto templateLinkForm, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM, templateLinkForm);
-
-        TemplateLink templateLink = templateLinkService.getById(templateLinkForm.getDeleteTemplateLinkId());
-        if (bindingResult.hasErrors()) {
-            //the UI should never cause this error. This is protection mostly from malformed programmatic POST
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "New form data is malformed.");
-        } else {
-            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUB_MESSAGE, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(templateLink)));
-            templateLinkService.delete(templateLink);
-        }
-        return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
-    }
-
     @PostMapping("/templateLink/{templateLinkId}/delete")
-    public String processDelete2(
+    public String processDelete(
             @PathVariable("templateLinkId") int templateLinkId, RedirectAttributes redirectAttributes) {
         TemplateLink templateLink = templateLinkService.getById(templateLinkId);
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_SUCCESS, String.format("Successfully deleted Template Link %s.", getTemplateLinkTitle(templateLink)));
@@ -220,7 +181,7 @@ public class TemplateLinkController implements SoamFormController {
     @ExceptionHandler(EntityNotFoundException.class)
     public String errorHandler(EntityNotFoundException e, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, e.getMessage());
-        return RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST;
+        return RedirectConstants.REDIRECT_TEMPLATE_DEFAULT;
     }
 
     private static String getTemplateLinkTitle(TemplateLink templateLink) {

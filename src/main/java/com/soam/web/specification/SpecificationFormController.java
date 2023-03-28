@@ -120,12 +120,6 @@ public class SpecificationFormController implements SoamFormController {
 
     @PostMapping("/specification/{specificationId}/delete")
     public String processDelete(@PathVariable("specificationId") int specificationId, RedirectAttributes redirectAttributes) {
-
-//        if (specificationId != formId) {
-//            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, "Malformed request.");
-//            return RedirectConstants.REDIRECT_SPECIFICATION_LIST;
-//        }
-
         Specification specification = specificationService.getById(specificationId);
         if ((specification.getStakeholders() != null && !specification.getStakeholders().isEmpty()) ||
                 (specification.getSpecificationObjectives() != null && !specification.getSpecificationObjectives().isEmpty())) {

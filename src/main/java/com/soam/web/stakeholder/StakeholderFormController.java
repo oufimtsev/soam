@@ -123,11 +123,6 @@ public class StakeholderFormController implements SoamFormController {
     public String processDelete(
             @ModelAttribute(binding = false) Specification specification, @PathVariable("stakeholderId") int stakeholderId,
             RedirectAttributes redirectAttributes) {
-//        if (stakeholderId != formId) {
-//            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-//            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DETAILS, specification.getId());
-//        }
-
         Stakeholder stakeholder = stakeholderService.getById(stakeholderId);
         if (!Objects.equals(specification.getId(), stakeholder.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);

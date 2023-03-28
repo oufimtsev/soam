@@ -63,7 +63,7 @@ public class StakeholderTemplateFormController implements SoamFormController {
 
     @GetMapping("/stakeholder/template/{stakeholderTemplateId}/edit")
     public String initUpdateForm(
-            @PathVariable("stakeholderTemplateId") int stakeholderId, Model model, RedirectAttributes redirectAttributes) {
+            @PathVariable("stakeholderTemplateId") int stakeholderId, Model model) {
         StakeholderTemplate stakeholderTemplate = stakeholderTemplateService.getById(stakeholderId);
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_TEMPLATE, stakeholderTemplate);
         populateFormModel(model);

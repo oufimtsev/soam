@@ -58,7 +58,7 @@ public class SpecificationController {
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)
-	public String errorHandler(RedirectAttributes redirectAttributes) {
-		return RedirectConstants.REDIRECT_FIND_SPECIFICATION;
+	public String errorHandler() {
+		return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
 	}
 }

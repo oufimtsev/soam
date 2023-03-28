@@ -124,8 +124,7 @@ public class StakeholderObjectiveFormController implements SoamFormController {
     @GetMapping("/stakeholderObjective/{stakeholderObjectiveId}/edit")
     public String initUpdateForm(
             Specification specification, Stakeholder stakeholder,
-            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model,
-            RedirectAttributes redirectAttributes) {
+            @PathVariable("stakeholderObjectiveId") int stakeholderObjectiveId, Model model) {
         StakeholderObjective stakeholderObjective = stakeholderObjectiveService.getById(stakeholderObjectiveId);
         model.addAttribute(ModelConstants.ATTR_STAKEHOLDER_OBJECTIVE, stakeholderObjective);
         populateFormModel(model);

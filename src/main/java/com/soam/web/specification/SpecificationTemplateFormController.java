@@ -76,8 +76,7 @@ public class SpecificationTemplateFormController implements SoamFormController {
 
     @GetMapping("/specification/template/{specificationTemplateId}/edit")
     public String initUpdateForm(
-            @PathVariable("specificationTemplateId") int specificationId, Model model,
-            RedirectAttributes redirectAttributes) {
+            @PathVariable("specificationTemplateId") int specificationId, Model model) {
         SpecificationTemplate specificationTemplate = specificationTemplateService.getById(specificationId);
         model.addAttribute(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, specificationTemplate);
         populateFormModel(model);

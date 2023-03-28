@@ -46,7 +46,6 @@ class TemplateLinkControllerTest {
 
     private static final String URL_VIEW_FIND_TEMPLATE_LINK = "/templateLink/find";
     private static final String URL_NEW_TEMPLATE_LINK = "/templateLink/new";
-    private static final String URL_DELETE_TEMPLATE_LINK = "/templateLink/delete";
 
     static {
         PriorityType lowPriority = new PriorityType();
@@ -170,26 +169,5 @@ class TemplateLinkControllerTest {
                 .andExpect(model().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_TEMPLATE_LINK, "specificationTemplate.name"))
                 .andExpect(view().name(ViewConstants.VIEW_TEMPLATE_LINK_ADD_OR_UPDATE_FORM));
-    }
-
-    @Test
-    void testProcessDeleteSuccess() throws Exception {
-        mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK)
-                        .param("deleteTemplateLinkId", String.valueOf(TEST_TEMPLATE_LINK.getId())))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_SUB_MESSAGE))
-                .andExpect(flash().attributeExists(ModelConstants.ATTR_TEMPLATE_LINK_FORM))
-                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
-    }
-
-    @Test
-    void testProcessDeleteError() throws Exception {
-        TemplateLinkFormDto templateLinkFormDto = new TemplateLinkFormDto();
-        templateLinkFormDto.setDeleteTemplateLinkId(EMPTY_TEMPLATE_LINK_ID);
-        mockMvc.perform(post(URL_DELETE_TEMPLATE_LINK)
-                        .param("deleteTemplateLinkId", String.valueOf(templateLinkFormDto.getDeleteTemplateLinkId())))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(RedirectConstants.REDIRECT_TEMPLATE_LINK_LIST));
     }
 }

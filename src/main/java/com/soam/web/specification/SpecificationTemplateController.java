@@ -24,7 +24,7 @@ public class SpecificationTemplateController implements SoamFormController {
 	}
 
 	@GetMapping("/templates")
-	public String defaultTree(Model model) {
+	public String defaultTree() {
 		return ViewConstants.VIEW_TEMPLATE_DEFAULT;
 	}
 
