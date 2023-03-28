@@ -7,7 +7,6 @@
 <th:block th:fragment="contentBody">
     <h2>Find Template Link</h2>
     <form id="templateLinksForm" th:object="${templateLinkForm}" method="post">
-        <input type="hidden" th:field="*{deleteTemplateLinkId}"/>
         <table id="templateLinks" class="table table-striped">
             <thead>
             <tr>

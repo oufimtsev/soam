@@ -84,18 +84,7 @@ public class TemplateLinkController implements SoamFormController {
     }
 
     @PostMapping("/templateLink/find")
-    public String listFiltered(
-            @ModelAttribute(ModelConstants.ATTR_TEMPLATE_LINK_FORM) TemplateLinkFormDto templateLinkForm, Model model) {
-        if (templateLinkForm.getNewTemplateLink() != null) {
-            if (templateLinkForm.getFilterSpecificationTemplate() != null) {
-                templateLinkForm.getNewTemplateLink().setSpecificationTemplate(
-                        templateLinkForm.getFilterSpecificationTemplate());
-            }
-            if (templateLinkForm.getFilterStakeholderTemplate() != null) {
-                templateLinkForm.getNewTemplateLink().setStakeholderTemplate(
-                        templateLinkForm.getFilterStakeholderTemplate());
-            }
-        }
+    public String listFiltered() {
         return ViewConstants.VIEW_TEMPLATE_LINK_LIST;
     }
 
