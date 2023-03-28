@@ -7,24 +7,15 @@ import com.soam.model.specificationobjective.SpecificationObjective;
 import com.soam.service.EntityNotFoundException;
 import com.soam.service.specification.SpecificationService;
 import com.soam.service.specificationobjective.SpecificationObjectiveService;
-import com.soam.web.ModelConstants;
-import com.soam.web.RedirectConstants;
-import com.soam.web.SoamFormController;
-import com.soam.web.ViewConstants;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SpecificationObjectiveController.class)
 @Import(SoamConfiguration.class)
@@ -34,9 +25,6 @@ class SpecificationObjectiveControllerTest {
 
     private static final int EMPTY_SPECIFICATION_ID = 99;
     private static final int EMPTY_SPECIFICATION_OBJECTIVE_ID = 999;
-
-    private static final String URL_VIEW_SPECIFICATION_OBJECTIVE_LIST = "/specification/{specificationId}/specificationObjective/list";
-    private static final String URL_VIEW_SPECIFICATION_OBJECTIVE = "/specification/{specificationId}/specificationObjective/{specificationObjectiveId}";
 
     static {
         PriorityType lowPriority = new PriorityType();
@@ -73,14 +61,5 @@ class SpecificationObjectiveControllerTest {
 
         given(specificationObjectiveService.getById(TEST_SPECIFICATION_OBJECTIVE.getId())).willReturn(TEST_SPECIFICATION_OBJECTIVE);
         given(specificationObjectiveService.getById(EMPTY_SPECIFICATION_OBJECTIVE_ID)).willThrow(new EntityNotFoundException("Specification Objective", EMPTY_SPECIFICATION_OBJECTIVE_ID));
-    }
-
-    @Test
-    void testListAll() throws Exception {
-        mockMvc.perform(get(URL_VIEW_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION.getId()))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
-                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_OBJECTIVES))
-                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_OBJECTIVE_LIST));
     }
 }

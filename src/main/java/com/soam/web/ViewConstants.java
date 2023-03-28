@@ -18,7 +18,6 @@ public final class ViewConstants {
     public static final String VIEW_STAKEHOLDER_TEMPLATE_LIST = "stakeholder/template/stakeholderTemplateList";
     public static final String VIEW_STAKEHOLDER_TEMPLATE_ADD_OR_UPDATE_FORM = "stakeholder/template/addUpdateStakeholderTemplate";
 
-    public static final String VIEW_SPECIFICATION_OBJECTIVE_LIST = "specificationObjective/specificationObjectiveList";
     public static final String VIEW_SPECIFICATION_OBJECTIVE_ADD_OR_UPDATE_FORM = "specificationObjective/addUpdateSpecificationObjective";
 
     public static final String VIEW_FIND_OBJECTIVE_TEMPLATE = "objective/template/findObjectiveTemplate";
