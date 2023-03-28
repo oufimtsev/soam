@@ -13,14 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -86,16 +85,5 @@ class SpecificationTemplateControllerTest {
                 .andExpect(model().attributeHasErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE))
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION_TEMPLATE, "name"))
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION_TEMPLATE));
-    }
-
-    @Test
-    void testListAll() throws Exception {
-        Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_TEMPLATE_1));
-        given(specificationTemplateService.findAll(anyInt())).willReturn(specificationTemplatesPage);
-
-        mockMvc.perform(get("/specification/template/list"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION_TEMPLATES))
-                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_TEMPLATE_LIST));
     }
 }

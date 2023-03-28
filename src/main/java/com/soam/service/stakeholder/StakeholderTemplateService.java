@@ -1,12 +1,8 @@
 package com.soam.service.stakeholder;
 
-import com.soam.config.SoamProperties;
 import com.soam.model.stakeholder.StakeholderTemplate;
 import com.soam.model.stakeholder.StakeholderTemplateRepository;
 import com.soam.service.EntityNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +14,10 @@ public class StakeholderTemplateService {
     private static final Sort SORT_ORDER = Sort.by(Sort.Order.by("name").ignoreCase());
 
     private final StakeholderTemplateRepository stakeholderTemplateRepository;
-    private final SoamProperties soamProperties;
 
     public StakeholderTemplateService(
-            StakeholderTemplateRepository stakeholderTemplateRepository, SoamProperties soamProperties) {
+            StakeholderTemplateRepository stakeholderTemplateRepository) {
         this.stakeholderTemplateRepository = stakeholderTemplateRepository;
-        this.soamProperties = soamProperties;
     }
 
     public StakeholderTemplate getById(int stakeholderTemplateId) {
@@ -41,11 +35,6 @@ public class StakeholderTemplateService {
 
     public List<StakeholderTemplate> findAll() {
         return stakeholderTemplateRepository.findAll(SORT_ORDER);
-    }
-
-    public Page<StakeholderTemplate> findAll(int page) {
-        Pageable pageable = PageRequest.of(page, soamProperties.getPageSize(), SORT_ORDER);
-        return stakeholderTemplateRepository.findAll(pageable);
     }
 
     public StakeholderTemplate save(StakeholderTemplate stakeholderTemplate) {

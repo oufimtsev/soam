@@ -66,7 +66,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             RedirectAttributes redirectAttributes) {
         if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
+            return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
         }
 
         specificationObjectiveService.findBySpecificationAndName(specification, specificationObjective.getName()).ifPresent(so ->
@@ -101,7 +101,7 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             Model model, RedirectAttributes redirectAttributes) {
         if (specificationObjective.getSpecification() == null || !Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT, specification.getId());
+            return RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT;
         }
 
         specificationObjectiveService.findBySpecificationAndName(specification, specificationObjective.getName())
@@ -124,11 +124,6 @@ public class SpecificationObjectiveFormController implements SoamFormController 
             @PathVariable("specificationObjectiveId") int specificationObjectiveId,
             @ModelAttribute(binding = false) Specification specification,
             RedirectAttributes redirectAttributes) {
-//        if (specificationObjectiveId != formId) {
-//            redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);
-//            return String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, specification.getId());
-//        }
-//
         SpecificationObjective specificationObjective = specificationObjectiveService.getById(specificationObjectiveId);
         if (!Objects.equals(specification.getId(), specificationObjective.getSpecification().getId())) {
             redirectAttributes.addFlashAttribute(SoamFormController.FLASH_DANGER, MSG_MALFORMED_REQUEST);

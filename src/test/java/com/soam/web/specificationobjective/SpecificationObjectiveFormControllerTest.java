@@ -165,7 +165,7 @@ class SpecificationObjectiveFormControllerTest {
                         .param("description", "Description"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attributeExists(SoamFormController.FLASH_DANGER))
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_OBJECTIVE_LIST, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(RedirectConstants.REDIRECT_SPECIFICATION_DEFAULT));
 
         mockMvc.perform(post(URL_NEW_SPECIFICATION_OBJECTIVE, TEST_SPECIFICATION_1.getId())
                         .param("specification", String.valueOf(TEST_SPECIFICATION_1.getId()))

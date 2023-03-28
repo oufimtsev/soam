@@ -16,14 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -96,16 +95,5 @@ class SpecificationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors(ModelConstants.ATTR_SPECIFICATION, "name"))
                 .andExpect(view().name(ViewConstants.VIEW_FIND_SPECIFICATION));
-    }
-
-    @Test
-    void testListAll() throws Exception {
-        Page<Specification> specifications = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
-        Mockito.when(specificationService.findAll(anyInt())).thenReturn(specifications);
-        mockMvc.perform(get("/specification/list").param("page", "1"))
-                .andExpect(status().isOk())
-                .andExpect(model().attributeExists(ModelConstants.ATTR_SPECIFICATION))
-                .andExpect(model().attributeExists(ModelConstants.ATTR_PAGINATED))
-                .andExpect(view().name(ViewConstants.VIEW_SPECIFICATION_LIST));
     }
 }
