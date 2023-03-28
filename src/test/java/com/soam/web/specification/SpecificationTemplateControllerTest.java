@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(SpecificationTemplateController.class)
 @Import(SoamConfiguration.class)
 class SpecificationTemplateControllerTest {
-    private static final SpecificationTemplate TEST_SPECIFICATION_1 = new SpecificationTemplate();
+    private static final SpecificationTemplate TEST_SPECIFICATION_TEMPLATE_1 = new SpecificationTemplate();
 
     static {
         PriorityType lowPriority = new PriorityType();
@@ -37,11 +37,11 @@ class SpecificationTemplateControllerTest {
         lowPriority.setId(1);
         lowPriority.setSequence(1);
 
-        TEST_SPECIFICATION_1.setId(100);
-        TEST_SPECIFICATION_1.setName("Test Spec 1");
-        TEST_SPECIFICATION_1.setDescription("desc");
-        TEST_SPECIFICATION_1.setNotes("notes");
-        TEST_SPECIFICATION_1.setPriority(lowPriority);
+        TEST_SPECIFICATION_TEMPLATE_1.setId(100);
+        TEST_SPECIFICATION_TEMPLATE_1.setName("Test Spec 1");
+        TEST_SPECIFICATION_TEMPLATE_1.setDescription("desc");
+        TEST_SPECIFICATION_TEMPLATE_1.setNotes("notes");
+        TEST_SPECIFICATION_TEMPLATE_1.setPriority(lowPriority);
     }
 
     @Autowired
@@ -59,7 +59,7 @@ class SpecificationTemplateControllerTest {
 
     @Test
     void testProcessFindFormSuccess() throws Exception {
-        List<SpecificationTemplate> specificationTemplates = Lists.newArrayList(TEST_SPECIFICATION_1, new SpecificationTemplate());
+        List<SpecificationTemplate> specificationTemplates = Lists.newArrayList(TEST_SPECIFICATION_TEMPLATE_1, new SpecificationTemplate());
         given(specificationTemplateService.findByPrefix(anyString())).willReturn(specificationTemplates);
         mockMvc.perform(post("/specification/template/find").param("name", "Te"))
                 .andExpect(status().isOk())
@@ -68,14 +68,14 @@ class SpecificationTemplateControllerTest {
 
     @Test
     void testProcessFindFormByName() throws Exception {
-        List<SpecificationTemplate> specifications = Lists.newArrayList(TEST_SPECIFICATION_1);
+        List<SpecificationTemplate> specifications = Lists.newArrayList(TEST_SPECIFICATION_TEMPLATE_1);
 
         given(specificationTemplateService.findByPrefix(eq("Test"))).willReturn(specifications);
         given(specificationTemplateService.findByPrefix(eq("Not Present"))).willReturn(new ArrayList<>());
 
         mockMvc.perform(post("/specification/template/find").param("name", "Test"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_EDIT, TEST_SPECIFICATION_1.getId())));
+                .andExpect(view().name(String.format(RedirectConstants.REDIRECT_SPECIFICATION_TEMPLATE_EDIT, TEST_SPECIFICATION_TEMPLATE_1.getId())));
 
         mockMvc.perform(post("/specification/template/find").param("name", "Not Present"))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ class SpecificationTemplateControllerTest {
 
     @Test
     void testListAll() throws Exception {
-        Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_1));
+        Page<SpecificationTemplate> specificationTemplatesPage = new PageImpl<>(Lists.newArrayList(TEST_SPECIFICATION_TEMPLATE_1));
         given(specificationTemplateService.findAll(anyInt())).willReturn(specificationTemplatesPage);
 
         mockMvc.perform(get("/specification/template/list"))
